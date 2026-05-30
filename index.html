@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Records</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <style>
+        :root {
+            --primary: #5b7a5e;
+            --primary-light: #8fae91;
+            --bg: #faf9f7;
+            --card-bg: #ffffff;
+            --text: #2d2d2d;
+            --text-light: #6b6b6b;
+            --border: #e8e4df;
+            --accent-food: #e07a5f;
+            --accent-travel: #3d85c6;
+            --accent-checklist: #81b29a;
+            --shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 1.5rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .site-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+
+        .site-title span {
+            font-weight: 300;
+            color: var(--text-light);
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .nav-tab {
+            padding: 0.5rem 1.2rem;
+            border: none;
+            background: transparent;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            cursor: pointer;
+            border-radius: 20px;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .nav-tab:hover {
+            background: var(--border);
+        }
+
+        .nav-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .nav-tab.active[data-tab="food"] { background: var(--accent-food); }
+        .nav-tab.active[data-tab="travel"] { background: var(--accent-travel); }
+        .nav-tab.active[data-tab="checklist"] { background: var(--accent-checklist); }
+
+        /* Search & Filter Bar */
+        .filter-bar {
+            max-width: 1200px;
+            margin: 1.5rem auto;
+            padding: 0 2rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            padding: 0.6rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            background: var(--card-bg);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-box:focus {
+            border-color: var(--primary);
+        }
+
+        .tags-container {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+        }
+
+        .tag-btn {
+            padding: 0.3rem 0.8rem;
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            border-radius: 15px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-light);
+        }
+
+        .tag-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .tag-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 0.3rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.2rem;
+        }
+
+        .view-btn {
+            padding: 0.4rem 0.8rem;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            transition: all 0.2s;
+        }
+
+        .view-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem 3rem;
+        }
+
+        /* Timeline View */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -2rem;
+            top: 1.2rem;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 3px solid var(--bg);
+            box-shadow: 0 0 0 2px var(--primary);
+        }
+
+        .timeline-item[data-type="food"] .timeline-dot { background: var(--accent-food); box-shadow: 0 0 0 2px var(--accent-food); }
+        .timeline-item[data-type="travel"] .timeline-dot { background: var(--accent-travel); box-shadow: 0 0 0 2px var(--accent-travel); }
+        .timeline-item[data-type="checklist"] .timeline-dot { background: var(--accent-checklist); box-shadow: 0 0 0 2px var(--accent-checklist); }
+
+        .timeline-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .timeline-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .card-date {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            background: var(--bg);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+        }
+
+        .card-category {
+            font-size: 0.75rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .card-category.food { background: #fde8e4; color: var(--accent-food); }
+        .card-category.travel { background: #dceaf7; color: var(--accent-travel); }
+        .card-category.checklist { background: #e1f0e8; color: var(--accent-checklist); }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-content {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .card-image {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 0.8rem;
+        }
+
+        .card-tags {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+        }
+
+        .card-tag {
+            font-size: 0.75rem;
+            padding: 0.15rem 0.5rem;
+            background: var(--bg);
+            border-radius: 10px;
+            color: var(--text-light);
+        }
+
+        .card-location {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .card-location::before {
+            content: '📍';
+            font-size: 0.75rem;
+        }
+
+        /* Checklist specific */
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.4rem 0;
+        }
+
+        .checklist-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent-checklist);
+        }
+
+        .checklist-item.done span {
+            text-decoration: line-through;
+            color: var(--text-light);
+        }
+
+        /* Map View */
+        .map-container {
+            height: 500px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .map-container.visible {
+            display: block;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-light);
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-inner {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .filter-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .main-content {
+                padding: 0 1rem 2rem;
+            }
+
+            .timeline {
+                padding-left: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <h1 class="site-title">Life Records <span>/ 生活记录</span></h1>
+            <nav class="nav-tabs">
+                <button class="nav-tab active" data-tab="all">全部</button>
+                <button class="nav-tab" data-tab="food">美食</button>
+                <button class="nav-tab" data-tab="travel">旅行</button>
+                <button class="nav-tab" data-tab="checklist">清单</button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="filter-bar">
+        <input type="text" class="search-box" placeholder="搜索记录..." id="searchInput">
+        <div class="tags-container" id="tagsContainer"></div>
+        <div class="view-toggle">
+            <button class="view-btn active" data-view="timeline">时间线</button>
+            <button class="view-btn" data-view="map">地图</button>
+        </div>
+    </div>
+
+    <main class="main-content">
+        <div class="map-container" id="mapContainer">
+            <div id="map"></div>
+        </div>
+        <div class="timeline" id="timeline"></div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <script>
+        // State
+        let allData = [];
+        let currentTab = 'all';
+        let currentView = 'timeline';
+        let searchQuery = '';
+        let activeTags = new Set();
+        let map = null;
+        let markers = [];
+
+        // Load data from JSON files
+        async function loadData() {
+            try {
+                const [foodRes, travelRes, checklistRes] = await Promise.all([
+                    fetch('data/food.json').then(r => r.ok ? r.json() : []),
+                    fetch('data/travel.json').then(r => r.ok ? r.json() : []),
+                    fetch('data/checklist.json').then(r => r.ok ? r.json() : [])
+                ]);
+
+                allData = [
+                    ...foodRes.map(item => ({ ...item, type: 'food' })),
+                    ...travelRes.map(item => ({ ...item, type: 'travel' })),
+                    ...checklistRes.map(item => ({ ...item, type: 'checklist' }))
+                ].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                renderTags();
+                render();
+            } catch (e) {
+                console.error('Failed to load data:', e);
+                document.getElementById('timeline').innerHTML = `
+                    <div class="empty-state">
+                        <p>暂无记录</p>
+                        <p style="font-size: 0.9rem; margin-top: 0.5rem;">在 data/ 目录下添加 JSON 文件开始记录吧</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Render tags
+        function renderTags() {
+            const tags = new Set();
+            allData.forEach(item => {
+                if (item.tags) item.tags.forEach(t => tags.add(t));
+            });
+
+            const container = document.getElementById('tagsContainer');
+            container.innerHTML = Array.from(tags).map(tag => `
+                <button class="tag-btn ${activeTags.has(tag) ? 'active' : ''}" data-tag="${tag}">${tag}</button>
+            `).join('');
+        }
+
+        // Filter data
+        function getFilteredData() {
+            return allData.filter(item => {
+                if (currentTab !== 'all' && item.type !== currentTab) return false;
+                if (searchQuery) {
+                    const q = searchQuery.toLowerCase();
+                    const matchTitle = item.title && item.title.toLowerCase().includes(q);
+                    const matchContent = item.content && item.content.toLowerCase().includes(q);
+                    const matchLocation = item.location && item.location.toLowerCase().includes(q);
+                    const matchTags = item.tags && item.tags.some(t => t.toLowerCase().includes(q));
+                    if (!matchTitle && !matchContent && !matchLocation && !matchTags) return false;
+                }
+                if (activeTags.size > 0) {
+                    if (!item.tags || !item.tags.some(t => activeTags.has(t))) return false;
+                }
+                return true;
+            });
+        }
+
+        // Render timeline
+        function renderTimeline(data) {
+            const timeline = document.getElementById('timeline');
+
+            if (data.length === 0) {
+                timeline.innerHTML = `<div class="empty-state"><p>没有找到匹配的记录</p></div>`;
+                return;
+            }
+
+            timeline.innerHTML = data.map(item => {
+                let content = '';
+
+                if (item.type === 'checklist' && item.items) {
+                    content = `
+                        <div class="card-content">
+                            ${item.items.map(ci => `
+                                <div class="checklist-item ${ci.done ? 'done' : ''}">
+                                    <input type="checkbox" ${ci.done ? 'checked' : ''} disabled>
+                                    <span>${ci.text}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                } else {
+                    content = item.content ? `<p class="card-content">${item.content}</p>` : '';
+                }
+
+                const image = item.image ? `<img class="card-image" src="${item.image}" alt="${item.title}" loading="lazy">` : '';
+                const location = item.location ? `<div class="card-location">${item.location}</div>` : '';
+                const tags = item.tags ? `<div class="card-tags">${item.tags.map(t => `<span class="card-tag">${t}</span>`).join('')}</div>` : '';
+
+                return `
+                    <div class="timeline-item" data-type="${item.type}">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-card">
+                            <div class="card-header">
+                                <span class="card-date">${item.date}</span>
+                                <span class="card-category ${item.type}">
+                                    ${item.type === 'food' ? '美食' : item.type === 'travel' ? '旅行' : '清单'}
+                                </span>
+                            </div>
+                            <h3 class="card-title">${item.title}</h3>
+                            ${image}
+                            ${content}
+                            ${location}
+                            ${tags}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Render map
+        function renderMap(data) {
+            if (!map) {
+                map = L.map('map').setView([35.86, 104.19], 4);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors'
+                }).addTo(map);
+            }
+
+            // Clear markers
+            markers.forEach(m => map.removeLayer(m));
+            markers = [];
+
+            const itemsWithCoords = data.filter(item => item.lat && item.lng);
+
+            itemsWithCoords.forEach(item => {
+                const color = item.type === 'food' ? '#e07a5f' : item.type === 'travel' ? '#3d85c6' : '#81b29a';
+                const icon = L.divIcon({
+                    className: 'custom-marker',
+                    html: `<div style="background:${color};width:12px;height:12px;border-radius:50%;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3)"></div>`,
+                    iconSize: [12, 12],
+                    iconAnchor: [6, 6]
+                });
+
+                const marker = L.marker([item.lat, item.lng], { icon })
+                    .bindPopup(`
+                        <strong>${item.title}</strong><br>
+                        <small>${item.date}</small><br>
+                        ${item.content ? `<p style="margin:4px 0">${item.content}</p>` : ''}
+                        ${item.location ? `<small>📍 ${item.location}</small>` : ''}
+                    `)
+                    .addTo(map);
+
+                markers.push(marker);
+            });
+
+            if (itemsWithCoords.length > 0) {
+                const bounds = L.latLngBounds(itemsWithCoords.map(item => [item.lat, item.lng]));
+                map.fitBounds(bounds, { padding: [50, 50] });
+            }
+        }
+
+        // Main render
+        function render() {
+            const data = getFilteredData();
+
+            if (currentView === 'timeline') {
+                document.getElementById('mapContainer').classList.remove('visible');
+                renderTimeline(data);
+            } else {
+                document.getElementById('mapContainer').classList.add('visible');
+                renderTimeline(data);
+                setTimeout(() => {
+                    map && map.invalidateSize();
+                    renderMap(data);
+                }, 100);
+            }
+        }
+
+        // Event Listeners
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentTab = tab.dataset.tab;
+                render();
+            });
+        });
+
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentView = btn.dataset.view;
+                render();
+            });
+        });
+
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            render();
+        });
+
+        document.getElementById('tagsContainer').addEventListener('click', (e) => {
+            if (e.target.classList.contains('tag-btn')) {
+                const tag = e.target.dataset.tag;
+                if (activeTags.has(tag)) {
+                    activeTags.delete(tag);
+                    e.target.classList.remove('active');
+                } else {
+                    activeTags.add(tag);
+                    e.target.classList.add('active');
+                }
+                render();
+            }
+        });
+
+        // Init
+        loadData();
+    </script>
+</body>
+</html>
