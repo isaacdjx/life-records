@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Life Records</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <script src="https://webapi.amap.com/maps?v=2.0&key=f66cdc07203c3075a2a2ae1ea67eea8e"></script>
     <style>
         :root {
             --primary: #5b7a5e;
@@ -414,7 +414,6 @@
         <div class="timeline" id="timeline"></div>
     </main>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <script>
         // State
         let allData = [];
@@ -537,45 +536,59 @@
             }).join('');
         }
 
-        // Render map
+        // Render map (AMap 高德地图)
         function renderMap(data) {
             if (!map) {
-                map = L.map('map').setView([35.86, 104.19], 4);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; OpenStreetMap contributors'
-                }).addTo(map);
+                map = new AMap.Map('map', {
+                    zoom: 4,
+                    center: [104.19, 35.86],
+                    mapStyle: 'amap://styles/whitesmoke'
+                });
             }
 
             // Clear markers
-            markers.forEach(m => map.removeLayer(m));
+            map.clearMap();
             markers = [];
 
             const itemsWithCoords = data.filter(item => item.lat && item.lng);
 
             itemsWithCoords.forEach(item => {
                 const color = item.type === 'food' ? '#e07a5f' : item.type === 'travel' ? '#3d85c6' : '#81b29a';
-                const icon = L.divIcon({
-                    className: 'custom-marker',
-                    html: `<div style="background:${color};width:12px;height:12px;border-radius:50%;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3)"></div>`,
-                    iconSize: [12, 12],
-                    iconAnchor: [6, 6]
+
+                const markerContent = document.createElement('div');
+                markerContent.style.cssText = `background:${color};width:14px;height:14px;border-radius:50%;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3)`;
+
+                const marker = new AMap.Marker({
+                    position: [item.lng, item.lat],
+                    content: markerContent,
+                    offset: new AMap.Pixel(-7, -7)
                 });
 
-                const marker = L.marker([item.lat, item.lng], { icon })
-                    .bindPopup(`
+                const infoContent = `
+                    <div style="padding:8px;max-width:220px">
                         <strong>${item.title}</strong><br>
-                        <small>${item.date}</small><br>
-                        ${item.content ? `<p style="margin:4px 0">${item.content}</p>` : ''}
+                        <small style="color:#666">${item.date}</small>
+                        ${item.content ? `<p style="margin:6px 0;font-size:13px">${item.content}</p>` : ''}
                         ${item.location ? `<small>📍 ${item.location}</small>` : ''}
-                    `)
-                    .addTo(map);
+                    </div>
+                `;
+
+                const infoWindow = new AMap.InfoWindow({
+                    content: infoContent,
+                    offset: new AMap.Pixel(0, -10)
+                });
+
+                marker.on('click', () => {
+                    infoWindow.open(map, marker.getPosition());
+                });
 
                 markers.push(marker);
             });
 
+            map.add(markers);
+
             if (itemsWithCoords.length > 0) {
-                const bounds = L.latLngBounds(itemsWithCoords.map(item => [item.lat, item.lng]));
-                map.fitBounds(bounds, { padding: [50, 50] });
+                map.setFitView(markers, false, [50, 50, 50, 50]);
             }
         }
 
@@ -590,7 +603,7 @@
                 document.getElementById('mapContainer').classList.add('visible');
                 renderTimeline(data);
                 setTimeout(() => {
-                    map && map.invalidateSize();
+                    if (map) map.resize();
                     renderMap(data);
                 }, 100);
             }
