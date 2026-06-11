@@ -3,778 +3,426 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Life Records</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>我去过的地方</title>
     <script src="https://webapi.amap.com/maps?v=2.0&key=f66cdc07203c3075a2a2ae1ea67eea8e"></script>
     <style>
         :root {
-            --primary: #3a3a3c;
-            --primary-light: #8e8e93;
-            --bg: #f5f4f1;
-            --card-bg: rgba(255,255,255,0.82);
-            --card-bg-solid: #ffffff;
-            --text: #1d1d1f;
-            --text-light: #86868b;
-            --text-muted: #aeaeb2;
-            --border: rgba(0,0,0,0.06);
-            --accent-food: #d4715e;
-            --accent-travel: #5a9bcf;
-            --accent-checklist: #6bae8e;
-            --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
-            --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 32px rgba(0,0,0,0.06);
-            --shadow-lg: 0 2px 8px rgba(0,0,0,0.06), 0 16px 48px rgba(0,0,0,0.1);
+            --primary-blue: #4A90D9;
+            --primary-dark: #357ABD;
+            --bg: #f0f2f5;
+            --card-bg: #ffffff;
+            --text: #1a1a1a;
+            --text-secondary: #666;
+            --text-muted: #999;
+            --border: #e5e7eb;
+            --border-light: #f0f0f0;
+            --radius: 16px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 20px rgba(0,0,0,0.06);
+            --font: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
             --ease: cubic-bezier(0.4, 0, 0.2, 1);
-            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', 'Noto Sans SC', sans-serif;
+            font-family: var(--font);
             background: var(--bg);
             color: var(--text);
-            line-height: 1.7;
+            line-height: 1.6;
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 32px 24px;
         }
 
         /* Header */
-        .header {
-            background: rgba(245,244,241,0.85);
-            backdrop-filter: saturate(180%) blur(20px);
-            -webkit-backdrop-filter: saturate(180%) blur(20px);
-            border-bottom: 1px solid var(--border);
-            padding: 1.2rem 2.5rem;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+        .page-header {
+            margin-bottom: 32px;
         }
 
-        .header-inner {
-            max-width: 960px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .site-title {
-            font-size: 1.35rem;
+        .page-header h1 {
+            font-size: 32px;
             font-weight: 700;
-            letter-spacing: -0.8px;
-            background: linear-gradient(135deg, var(--text) 0%, var(--text-light) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .site-title span {
-            font-weight: 300;
-        }
-
-        /* Navigation Tabs */
-        .nav-tabs {
-            display: flex;
-            gap: 0.35rem;
-            background: rgba(0,0,0,0.03);
-            border-radius: 12px;
-            padding: 0.2rem;
-        }
-
-        .nav-tab {
-            padding: 0.45rem 1.1rem;
-            border: none;
-            background: transparent;
-            color: var(--text-light);
-            font-size: 0.82rem;
-            font-weight: 500;
-            cursor: pointer;
-            border-radius: 10px;
-            transition: all 0.3s var(--ease);
-            font-family: inherit;
-            letter-spacing: -0.1px;
-        }
-
-        .nav-tab:hover {
+            letter-spacing: -0.5px;
             color: var(--text);
-            background: rgba(0,0,0,0.04);
+            margin-bottom: 8px;
         }
 
-        .nav-tab.active {
-            background: var(--card-bg-solid);
-            color: var(--text);
-            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-        }
-
-        .nav-tab.active[data-tab="food"] { color: var(--accent-food); }
-        .nav-tab.active[data-tab="travel"] { color: var(--accent-travel); }
-        .nav-tab.active[data-tab="checklist"] { color: var(--accent-checklist); }
-
-        /* Search & Filter Bar */
-        .filter-bar {
-            max-width: 960px;
-            margin: 2rem auto;
-            padding: 0 2.5rem;
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .search-box {
-            flex: 1;
-            min-width: 200px;
-            padding: 0.7rem 1.2rem;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            font-size: 0.88rem;
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            outline: none;
-            transition: all 0.3s var(--ease);
-            font-family: inherit;
-            color: var(--text);
-        }
-
-        .search-box::placeholder {
+        .page-header p {
+            font-size: 15px;
             color: var(--text-muted);
         }
 
-        .search-box:focus {
-            border-color: rgba(0,0,0,0.12);
-            box-shadow: 0 0 0 4px rgba(58,58,60,0.06);
-            background: var(--card-bg-solid);
-        }
-
-        .tags-container {
+        .stats {
             display: flex;
-            gap: 0.4rem;
-            flex-wrap: wrap;
+            gap: 24px;
+            margin-top: 16px;
         }
 
-        .tag-btn {
-            padding: 0.3rem 0.85rem;
-            border: 1px solid var(--border);
-            background: var(--card-bg);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border-radius: 20px;
-            font-size: 0.78rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s var(--ease);
-            color: var(--text-light);
-            font-family: inherit;
-        }
-
-        .tag-btn:hover {
-            border-color: rgba(0,0,0,0.12);
-            color: var(--text);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .tag-btn.active {
-            background: var(--text);
-            color: white;
-            border-color: var(--text);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-        }
-
-        .view-toggle {
+        .stat-item {
             display: flex;
-            gap: 0.2rem;
-            background: rgba(0,0,0,0.03);
-            border: none;
-            border-radius: 10px;
-            padding: 0.2rem;
+            align-items: center;
+            gap: 8px;
         }
 
-        .view-btn {
-            padding: 0.4rem 0.9rem;
-            border: none;
-            background: transparent;
-            cursor: pointer;
+        .stat-icon {
+            width: 32px;
+            height: 32px;
             border-radius: 8px;
-            font-size: 0.82rem;
-            font-weight: 500;
-            color: var(--text-light);
-            transition: all 0.3s var(--ease);
-            font-family: inherit;
-        }
-
-        .view-btn.active {
-            background: var(--card-bg-solid);
-            color: var(--text);
-            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-        }
-
-        /* Main Content */
-        .main-content {
-            max-width: 960px;
-            margin: 0 auto;
-            padding: 0 2.5rem 5rem;
-        }
-
-        /* Timeline View */
-        .timeline {
-            position: relative;
-            padding-left: 2.5rem;
-        }
-
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 8px;
-            top: 0;
-            bottom: 0;
-            width: 1.5px;
-            background: linear-gradient(180deg, var(--text-muted) 0%, transparent 100%);
-        }
-
-        .timeline-item {
-            position: relative;
-            margin-bottom: 2.5rem;
-            opacity: 0;
-            transform: translateY(24px);
-            transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
-        }
-
-        .timeline-item.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        @keyframes pulse {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(58,58,60,0.2); }
-            50% { box-shadow: 0 0 0 6px rgba(58,58,60,0); }
-        }
-
-        .timeline-dot {
-            position: absolute;
-            left: -2.5rem;
-            top: 1.5rem;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: var(--primary);
-            border: 2px solid var(--bg);
-            box-shadow: 0 0 0 2px var(--primary);
-            animation: pulse 3s var(--ease) infinite;
-        }
-
-        .timeline-item[data-type="food"] .timeline-dot {
-            background: var(--accent-food);
-            box-shadow: 0 0 0 2px var(--accent-food);
-            animation-name: pulse-food;
-        }
-        .timeline-item[data-type="travel"] .timeline-dot {
-            background: var(--accent-travel);
-            box-shadow: 0 0 0 2px var(--accent-travel);
-            animation-name: pulse-travel;
-        }
-        .timeline-item[data-type="checklist"] .timeline-dot {
-            background: var(--accent-checklist);
-            box-shadow: 0 0 0 2px var(--accent-checklist);
-            animation-name: pulse-checklist;
-        }
-
-        @keyframes pulse-food {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(212,113,94,0.25); }
-            50% { box-shadow: 0 0 0 6px rgba(212,113,94,0); }
-        }
-        @keyframes pulse-travel {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(90,155,207,0.25); }
-            50% { box-shadow: 0 0 0 6px rgba(90,155,207,0); }
-        }
-        @keyframes pulse-checklist {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(107,174,142,0.25); }
-            50% { box-shadow: 0 0 0 6px rgba(107,174,142,0); }
-        }
-
-        .timeline-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-radius: 16px;
-            padding: 1.8rem;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
-        }
-
-        .timeline-card:hover {
-            transform: translateY(-6px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .card-header {
+            background: linear-gradient(135deg, #e8f0fb 0%, #d6e4f5 100%);
             display: flex;
             align-items: center;
-            gap: 0.6rem;
-            margin-bottom: 1rem;
+            justify-content: center;
+            font-size: 16px;
         }
 
-        .card-date {
-            font-size: 0.75rem;
-            font-weight: 500;
-            color: var(--text-muted);
-            letter-spacing: 0.3px;
-        }
-
-        .card-category {
-            font-size: 0.7rem;
-            padding: 0.2rem 0.65rem;
-            border-radius: 6px;
+        .stat-value {
+            font-size: 18px;
             font-weight: 600;
-            letter-spacing: 0.2px;
-        }
-
-        .card-category.food { background: rgba(212,113,94,0.1); color: var(--accent-food); }
-        .card-category.travel { background: rgba(90,155,207,0.1); color: var(--accent-travel); }
-        .card-category.checklist { background: rgba(107,174,142,0.1); color: var(--accent-checklist); }
-
-        .card-title {
-            font-size: 1.15rem;
-            font-weight: 650;
-            margin-bottom: 0.6rem;
-            letter-spacing: -0.3px;
             color: var(--text);
         }
 
-        .card-content {
-            color: var(--text-light);
-            font-size: 0.88rem;
-            margin-bottom: 1rem;
-            line-height: 1.75;
-        }
-
-        .card-image {
-            width: 100%;
-            max-height: 320px;
-            object-fit: cover;
-            border-radius: 12px;
-            margin-bottom: 1rem;
-            transition: transform 0.4s var(--ease);
-        }
-
-        .timeline-card:hover .card-image {
-            transform: scale(1.01);
-        }
-
-        .card-tags {
-            display: flex;
-            gap: 0.35rem;
-            flex-wrap: wrap;
-        }
-
-        .card-tag {
-            font-size: 0.72rem;
-            font-weight: 500;
-            padding: 0.2rem 0.6rem;
-            background: rgba(0,0,0,0.03);
-            border-radius: 6px;
-            color: var(--text-light);
-            letter-spacing: 0.1px;
-        }
-
-        .card-location {
-            font-size: 0.78rem;
-            color: var(--text-muted);
-            margin-top: 0.8rem;
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            font-weight: 500;
-        }
-
-        .card-location::before {
-            content: '';
-            display: inline-block;
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-            background: var(--text-muted);
-        }
-
-        /* Checklist specific */
-        .checklist-item {
-            display: flex;
-            align-items: center;
-            gap: 0.7rem;
-            padding: 0.5rem 0;
-            transition: opacity 0.2s var(--ease);
-        }
-
-        .checklist-item input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            accent-color: var(--accent-checklist);
-            border-radius: 4px;
-        }
-
-        .checklist-item.done span {
-            text-decoration: line-through;
+        .stat-label {
+            font-size: 12px;
             color: var(--text-muted);
         }
 
-        /* Map View */
-        .map-container {
-            height: 520px;
-            border-radius: 16px;
-            overflow: hidden;
+        /* Map */
+        .map-section {
+            background: var(--card-bg);
+            border-radius: var(--radius);
             box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            margin-bottom: 2.5rem;
-            display: none;
+            overflow: hidden;
+            margin-bottom: 32px;
         }
 
-        .map-container.visible {
-            display: block;
+        .map-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .map-header span {
+            font-size: 15px;
+            font-weight: 600;
         }
 
         #map {
             width: 100%;
-            height: 100%;
+            height: 400px;
         }
 
-        /* Empty State */
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .travel-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+            cursor: pointer;
+        }
+
+        .travel-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            position: relative;
+        }
+
+        .card-image::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(to top, rgba(0,0,0,0.3), transparent);
+        }
+
+        .card-date-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(255,255,255,0.95);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+            backdrop-filter: blur(8px);
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text);
+            letter-spacing: -0.3px;
+        }
+
+        .card-location {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 13px;
+            color: var(--primary-blue);
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .card-location svg {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
+        }
+
+        .card-content {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+
+        .card-tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            padding: 4px 12px;
+            background: var(--bg);
+            border-radius: 12px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Empty state */
         .empty-state {
             text-align: center;
-            padding: 6rem 2rem;
+            padding: 60px 20px;
             color: var(--text-muted);
         }
 
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            stroke: var(--border);
+            margin-bottom: 16px;
+        }
+
         .empty-state p {
-            font-size: 1rem;
-            margin-top: 0.5rem;
-            font-weight: 400;
+            font-size: 15px;
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .header {
-                padding: 1rem 1.5rem;
-            }
-
-            .header-inner {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .filter-bar {
-                flex-direction: column;
-                align-items: stretch;
-                padding: 0 1.5rem;
-                margin: 1.5rem auto;
-            }
-
-            .main-content {
-                padding: 0 1.5rem 3rem;
-            }
-
-            .timeline {
-                padding-left: 2rem;
-            }
-
-            .timeline-dot {
-                left: -2rem;
-            }
-
-            .timeline-card {
-                padding: 1.3rem;
-            }
+            .container { padding: 20px 16px; }
+            .page-header h1 { font-size: 24px; }
+            .stats { gap: 16px; }
+            #map { height: 280px; }
+            .cards-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <header class="header">
-        <div class="header-inner">
-            <h1 class="site-title">Life Records <span>/ 生活记录</span></h1>
-            <nav class="nav-tabs">
-                <button class="nav-tab active" data-tab="all">全部</button>
-                <button class="nav-tab" data-tab="food">美食</button>
-                <button class="nav-tab" data-tab="travel">旅行</button>
-                <button class="nav-tab" data-tab="checklist">清单</button>
-            </nav>
-        </div>
-    </header>
+    <div class="container">
+        <header class="page-header">
+            <h1>我去过的地方</h1>
+            <p>记录每一次出发，珍藏每一段旅程</p>
+            <div class="stats" id="stats"></div>
+        </header>
 
-    <div class="filter-bar">
-        <input type="text" class="search-box" placeholder="搜索记录..." id="searchInput">
-        <div class="tags-container" id="tagsContainer"></div>
-        <div class="view-toggle">
-            <button class="view-btn active" data-view="timeline">时间线</button>
-            <button class="view-btn" data-view="map">地图</button>
-        </div>
+        <section class="map-section">
+            <div class="map-header">
+                <span>📍</span>
+                <span>足迹地图</span>
+            </div>
+            <div id="map"></div>
+        </section>
+
+        <section class="cards-grid" id="cardsGrid"></section>
     </div>
 
-    <main class="main-content">
-        <div class="map-container" id="mapContainer">
-            <div id="map"></div>
-        </div>
-        <div class="timeline" id="timeline"></div>
-    </main>
-
     <script>
-        // State
-        let allData = [];
-        let currentTab = 'all';
-        let currentView = 'timeline';
-        let searchQuery = '';
-        let activeTags = new Set();
-        let map = null;
-        let markers = [];
+    (function() {
+        var travels = [];
+        var map = null;
 
-        // Load data from JSON files
-        async function loadData() {
-            try {
-                const [foodRes, travelRes, checklistRes] = await Promise.all([
-                    fetch('data/food.json').then(r => r.ok ? r.json() : []),
-                    fetch('data/travel.json').then(r => r.ok ? r.json() : []),
-                    fetch('data/checklist.json').then(r => r.ok ? r.json() : [])
-                ]);
+        // Gradient backgrounds for cards
+        var gradients = [
+            'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+            'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+            'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+            'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+            'linear-gradient(135deg, #30cfd0 0%, #330867 100%)',
+            'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
+            'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)'
+        ];
 
-                allData = [
-                    ...foodRes.map(item => ({ ...item, type: 'food' })),
-                    ...travelRes.map(item => ({ ...item, type: 'travel' })),
-                    ...checklistRes.map(item => ({ ...item, type: 'checklist' }))
-                ].sort((a, b) => new Date(b.date) - new Date(a.date));
+        var emojis = ['🏔️', '🌅', '🏖️', '🗼', '🌸', '🏰', '🎭', '🌊'];
 
-                renderTags();
-                render();
-            } catch (e) {
-                console.error('Failed to load data:', e);
-                document.getElementById('timeline').innerHTML = `
-                    <div class="empty-state">
-                        <p>暂无记录</p>
-                        <p style="font-size: 0.9rem; margin-top: 0.5rem;">在 data/ 目录下添加 JSON 文件开始记录吧</p>
-                    </div>
-                `;
-            }
+        function loadData() {
+            fetch('data/travel.json')
+                .then(function(r) { return r.ok ? r.json() : []; })
+                .then(function(data) {
+                    travels = data;
+                    render();
+                })
+                .catch(function() {
+                    document.getElementById('cardsGrid').innerHTML =
+                        '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg><p>暂无旅行记录</p></div>';
+                });
         }
 
-        // Render tags
-        function renderTags() {
-            const tags = new Set();
-            allData.forEach(item => {
-                if (item.tags) item.tags.forEach(t => tags.add(t));
+        function formatDate(dateStr) {
+            var d = new Date(dateStr);
+            var months = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+            return d.getFullYear() + '年' + months[d.getMonth()] + d.getDate() + '日';
+        }
+
+        function render() {
+            // Stats
+            var cities = new Set();
+            travels.forEach(function(t) {
+                if (t.location) {
+                    var parts = t.location.split(/[省市县区]/);
+                    if (parts[0]) cities.add(parts[0]);
+                }
             });
 
-            const container = document.getElementById('tagsContainer');
-            container.innerHTML = Array.from(tags).map(tag => `
-                <button class="tag-btn ${activeTags.has(tag) ? 'active' : ''}" data-tag="${tag}">${tag}</button>
-            `).join('');
-        }
+            document.getElementById('stats').innerHTML =
+                '<div class="stat-item"><div class="stat-icon">📍</div><div><div class="stat-value">' + travels.length + '</div><div class="stat-label">次旅行</div></div></div>' +
+                '<div class="stat-item"><div class="stat-icon">🏙️</div><div><div class="stat-value">' + cities.size + '</div><div class="stat-label">个城市</div></div></div>' +
+                '<div class="stat-item"><div class="stat-icon">📸</div><div><div class="stat-value">' + travels.length + '</div><div class="stat-label">段回忆</div></div></div>';
 
-        // Filter data
-        function getFilteredData() {
-            return allData.filter(item => {
-                if (currentTab !== 'all' && item.type !== currentTab) return false;
-                if (searchQuery) {
-                    const q = searchQuery.toLowerCase();
-                    const matchTitle = item.title && item.title.toLowerCase().includes(q);
-                    const matchContent = item.content && item.content.toLowerCase().includes(q);
-                    const matchLocation = item.location && item.location.toLowerCase().includes(q);
-                    const matchTags = item.tags && item.tags.some(t => t.toLowerCase().includes(q));
-                    if (!matchTitle && !matchContent && !matchLocation && !matchTags) return false;
-                }
-                if (activeTags.size > 0) {
-                    if (!item.tags || !item.tags.some(t => activeTags.has(t))) return false;
-                }
-                return true;
-            });
-        }
-
-        // Render timeline
-        function renderTimeline(data) {
-            const timeline = document.getElementById('timeline');
-
-            if (data.length === 0) {
-                timeline.innerHTML = `<div class="empty-state"><p>没有找到匹配的记录</p></div>`;
+            // Cards
+            var grid = document.getElementById('cardsGrid');
+            if (travels.length === 0) {
+                grid.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg><p>暂无旅行记录</p></div>';
                 return;
             }
 
-            timeline.innerHTML = data.map(item => {
-                let content = '';
+            grid.innerHTML = travels.map(function(item, i) {
+                var gradient = gradients[i % gradients.length];
+                var emoji = emojis[i % emojis.length];
+                var tags = item.tags ? item.tags.map(function(t) { return '<span class="tag">' + t + '</span>'; }).join('') : '';
 
-                if (item.type === 'checklist' && item.items) {
-                    content = `
-                        <div class="card-content">
-                            ${item.items.map(ci => `
-                                <div class="checklist-item ${ci.done ? 'done' : ''}">
-                                    <input type="checkbox" ${ci.done ? 'checked' : ''} disabled>
-                                    <span>${ci.text}</span>
-                                </div>
-                            `).join('')}
-                        </div>
-                    `;
-                } else {
-                    content = item.content ? `<p class="card-content">${item.content}</p>` : '';
-                }
-
-                const image = item.image ? `<img class="card-image" src="${item.image}" alt="${item.title}" loading="lazy">` : '';
-                const location = item.location ? `<div class="card-location">${item.location}</div>` : '';
-                const tags = item.tags ? `<div class="card-tags">${item.tags.map(t => `<span class="card-tag">${t}</span>`).join('')}</div>` : '';
-
-                return `
-                    <div class="timeline-item" data-type="${item.type}">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-card">
-                            <div class="card-header">
-                                <span class="card-date">${item.date}</span>
-                                <span class="card-category ${item.type}">
-                                    ${item.type === 'food' ? '美食' : item.type === 'travel' ? '旅行' : '清单'}
-                                </span>
-                            </div>
-                            <h3 class="card-title">${item.title}</h3>
-                            ${image}
-                            ${content}
-                            ${location}
-                            ${tags}
-                        </div>
-                    </div>
-                `;
+                return '<div class="travel-card" data-lat="' + (item.lat || '') + '" data-lng="' + (item.lng || '') + '">' +
+                    '<div class="card-image" style="background:' + gradient + '">' +
+                        '<span>' + emoji + '</span>' +
+                        '<div class="card-date-badge">' + formatDate(item.date) + '</div>' +
+                    '</div>' +
+                    '<div class="card-body">' +
+                        '<h3 class="card-title">' + item.title + '</h3>' +
+                        (item.location ? '<div class="card-location"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>' + item.location + '</div>' : '') +
+                        (item.content ? '<p class="card-content">' + item.content + '</p>' : '') +
+                        (tags ? '<div class="card-tags">' + tags + '</div>' : '') +
+                    '</div>' +
+                '</div>';
             }).join('');
-        }
 
-        // Render map (AMap 高德地图)
-        function renderMap(data) {
-            if (!map) {
-                map = new AMap.Map('map', {
-                    zoom: 4,
-                    center: [104.19, 35.86],
-                    mapStyle: 'amap://styles/macaron'
-                });
-            }
-
-            // Clear markers
-            map.clearMap();
-            markers = [];
-
-            const itemsWithCoords = data.filter(item => item.lat && item.lng);
-
-            itemsWithCoords.forEach(item => {
-                const color = item.type === 'food' ? '#e07a5f' : item.type === 'travel' ? '#3d85c6' : '#81b29a';
-
-                const markerContent = document.createElement('div');
-                markerContent.style.cssText = `background:${color};width:14px;height:14px;border-radius:50%;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3)`;
-
-                const marker = new AMap.Marker({
-                    position: [item.lng, item.lat],
-                    content: markerContent,
-                    offset: new AMap.Pixel(-7, -7)
-                });
-
-                const infoContent = `
-                    <div style="padding:8px;max-width:220px">
-                        <strong>${item.title}</strong><br>
-                        <small style="color:#666">${item.date}</small>
-                        ${item.content ? `<p style="margin:6px 0;font-size:13px">${item.content}</p>` : ''}
-                        ${item.location ? `<small>📍 ${item.location}</small>` : ''}
-                    </div>
-                `;
-
-                const infoWindow = new AMap.InfoWindow({
-                    content: infoContent,
-                    offset: new AMap.Pixel(0, -10)
-                });
-
-                marker.on('click', () => {
-                    infoWindow.open(map, marker.getPosition());
-                });
-
-                markers.push(marker);
-            });
-
-            map.add(markers);
-
-            if (itemsWithCoords.length > 0) {
-                map.setFitView(markers, false, [50, 50, 50, 50]);
-            }
-        }
-
-        // Main render
-        function render() {
-            const data = getFilteredData();
-
-            if (currentView === 'timeline') {
-                document.getElementById('mapContainer').classList.remove('visible');
-                renderTimeline(data);
-            } else {
-                document.getElementById('mapContainer').classList.add('visible');
-                renderTimeline(data);
-                setTimeout(() => {
-                    if (map) map.resize();
-                    renderMap(data);
-                }, 100);
-            }
-        }
-
-        // Event Listeners
-        document.querySelectorAll('.nav-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                currentTab = tab.dataset.tab;
-                render();
-            });
-        });
-
-        document.querySelectorAll('.view-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentView = btn.dataset.view;
-                render();
-            });
-        });
-
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            searchQuery = e.target.value;
-            render();
-        });
-
-        document.getElementById('tagsContainer').addEventListener('click', (e) => {
-            if (e.target.classList.contains('tag-btn')) {
-                const tag = e.target.dataset.tag;
-                if (activeTags.has(tag)) {
-                    activeTags.delete(tag);
-                    e.target.classList.remove('active');
-                } else {
-                    activeTags.add(tag);
-                    e.target.classList.add('active');
-                }
-                render();
-            }
-        });
-
-        // Scroll-triggered entrance animations
-        function observeTimeline() {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach((entry, i) => {
-                    if (entry.isIntersecting) {
-                        setTimeout(() => entry.target.classList.add('visible'), i * 60);
-                        observer.unobserve(entry.target);
+            // Card click → fly to location on map
+            document.querySelectorAll('.travel-card').forEach(function(card) {
+                card.addEventListener('click', function() {
+                    var lat = parseFloat(card.dataset.lat);
+                    var lng = parseFloat(card.dataset.lng);
+                    if (lat && lng && map) {
+                        map.setZoomAndCenter(12, [lng, lat]);
+                        document.querySelector('.map-section').scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }
                 });
-            }, { threshold: 0.08 });
+            });
 
-            document.querySelectorAll('.timeline-item').forEach(item => observer.observe(item));
+            renderMap();
         }
 
-        const origRenderTimeline = renderTimeline;
-        renderTimeline = function(data) {
-            origRenderTimeline(data);
-            requestAnimationFrame(() => observeTimeline());
-        };
+        function renderMap() {
+            var points = travels.filter(function(t) { return t.lat && t.lng; });
 
-        // Init
+            setTimeout(function() {
+                if (!map) {
+                    map = new AMap.Map('map', {
+                        zoom: 4,
+                        center: [104.19, 35.86],
+                        mapStyle: 'amap://styles/macaron',
+                        resizeEnable: true
+                    });
+                }
+                map.clearMap();
+
+                if (points.length > 0) {
+                    var markers = [];
+                    points.forEach(function(item, i) {
+                        var markerContent = document.createElement('div');
+                        markerContent.style.cssText = 'background:#4A90D9;width:32px;height:32px;border-radius:50%;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:bold;font-size:14px;cursor:pointer;transition:transform 0.2s;';
+                        markerContent.textContent = (i + 1);
+                        markerContent.onmouseenter = function() { this.style.transform = 'scale(1.15)'; };
+                        markerContent.onmouseleave = function() { this.style.transform = 'scale(1)'; };
+
+                        var marker = new AMap.Marker({
+                            position: [item.lng, item.lat],
+                            content: markerContent,
+                            offset: new AMap.Pixel(-16, -16)
+                        });
+
+                        var infoContent = '<div style="padding:10px;max-width:240px">' +
+                            '<strong style="font-size:15px">' + item.title + '</strong><br>' +
+                            '<small style="color:#4A90D9;font-weight:500">' + formatDate(item.date) + '</small>' +
+                            (item.location ? '<p style="margin:6px 0;font-size:13px;color:#666">📍 ' + item.location + '</p>' : '') +
+                            (item.content ? '<p style="font-size:13px;color:#999;margin-top:6px">' + item.content + '</p>' : '') +
+                            '</div>';
+
+                        var infoWindow = new AMap.InfoWindow({
+                            content: infoContent,
+                            offset: new AMap.Pixel(0, -16)
+                        });
+
+                        marker.on('click', function() {
+                            infoWindow.open(map, marker.getPosition());
+                        });
+
+                        markers.push(marker);
+                    });
+
+                    map.add(markers);
+                    map.setFitView(markers, false, [60, 60, 60, 60]);
+                }
+            }, 200);
+        }
+
         loadData();
+    })();
     </script>
 </body>
 </html>
