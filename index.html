@@ -9,419 +9,557 @@
     <title>我去过的地方</title>
     <script src="https://webapi.amap.com/maps?v=2.0&key=f66cdc07203c3075a2a2ae1ea67eea8e"></script>
     <style>
-        :root {
-            --primary-blue: #4A90D9;
-            --primary-dark: #357ABD;
-            --bg: #f0f2f5;
-            --card-bg: #ffffff;
-            --text: #1a1a1a;
-            --text-secondary: #666;
-            --text-muted: #999;
-            --border: #e5e7eb;
-            --border-light: #f0f0f0;
-            --radius: 16px;
-            --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 20px rgba(0,0,0,0.06);
-            --font: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
-            --ease: cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: var(--font);
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 32px 24px;
-        }
-
-        /* Header */
-        .page-header {
-            margin-bottom: 32px;
-        }
-
-        .page-header h1 {
-            font-size: 32px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            color: var(--text);
-            margin-bottom: 8px;
-        }
-
-        .page-header p {
-            font-size: 15px;
-            color: var(--text-muted);
-        }
-
-        .stats {
-            display: flex;
-            gap: 24px;
-            margin-top: 16px;
-        }
-
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .stat-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            background: linear-gradient(135deg, #e8f0fb 0%, #d6e4f5 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-        }
-
-        .stat-value {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        /* Map */
-        .map-section {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', sans-serif;
+            height: 100vh;
             overflow: hidden;
-            margin-bottom: 32px;
         }
 
-        .map-header {
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border-light);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        #map { width: 100%; height: 100%; }
 
-        .map-header span {
-            font-size: 15px;
-            font-weight: 600;
-        }
-
-        #map {
-            width: 100%;
-            height: 400px;
-        }
-
-        /* Cards Grid */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 20px;
-        }
-
-        .travel-card {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            overflow: hidden;
-            transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
-            cursor: pointer;
-        }
-
-        .travel-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-        }
-
-        .card-image {
-            width: 100%;
-            height: 180px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 48px;
-            position: relative;
-        }
-
-        .card-image::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 60px;
-            background: linear-gradient(to top, rgba(0,0,0,0.3), transparent);
-        }
-
-        .card-date-badge {
-            position: absolute;
-            top: 12px;
-            right: 12px;
+        /* Title */
+        .page-title {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
             background: rgba(255,255,255,0.95);
-            padding: 6px 12px;
-            border-radius: 20px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 10px 28px;
+            border-radius: 24px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-title .dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #4A90D9;
+        }
+
+        .page-title .stats {
             font-size: 12px;
+            font-weight: 400;
+            color: #999;
+        }
+
+        /* Category Legend */
+        .legend {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 10;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(12px);
+            padding: 12px 16px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            max-width: 320px;
+            font-size: 11px;
+            color: #666;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .legend-item:hover {
+            background: rgba(0,0,0,0.04);
+        }
+
+        .legend-item.active {
+            background: rgba(0,0,0,0.06);
             font-weight: 600;
-            color: var(--text);
-            backdrop-filter: blur(8px);
         }
 
-        .card-body {
-            padding: 20px;
+        .legend-item.dimmed {
+            opacity: 0.35;
         }
 
-        .card-title {
+        .legend-icon {
+            width: 20px; height: 20px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+        }
+
+        /* Popup */
+        .popup-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .popup-overlay.show { display: flex; opacity: 1; }
+
+        .popup-card {
+            background: #fff;
+            border-radius: 16px;
+            width: 400px;
+            max-width: 90vw;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            transform: translateY(20px) scale(0.95);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .popup-overlay.show .popup-card { transform: translateY(0) scale(1); }
+
+        .popup-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 20px 20px 14px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .popup-emoji {
+            width: 52px; height: 52px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #eef2ff, #e0eafc);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            flex-shrink: 0;
+        }
+
+        .popup-emoji.wanted {
+            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+        }
+
+        .popup-info { flex: 1; min-width: 0; }
+
+        .popup-title {
             font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--text);
-            letter-spacing: -0.3px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 4px;
         }
 
-        .card-location {
+        .popup-category {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .popup-status {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .popup-status.visited { color: #4A90D9; }
+        .popup-status.wanted { color: #f5a623; }
+
+        .popup-close {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: #f5f5f5;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #999;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        .popup-close:hover { background: #e8e8e8; color: #666; }
+
+        /* Spot content */
+        .popup-content {
+            padding: 16px 20px;
+        }
+
+        .popup-text {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.65;
+            margin-bottom: 12px;
+        }
+
+        .popup-loc {
             display: flex;
             align-items: center;
             gap: 4px;
-            font-size: 13px;
-            color: var(--primary-blue);
-            margin-bottom: 12px;
-            font-weight: 500;
-        }
-
-        .card-location svg {
-            width: 14px;
-            height: 14px;
-            fill: currentColor;
-        }
-
-        .card-content {
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.7;
-            margin-bottom: 16px;
-        }
-
-        .card-tags {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-
-        .tag {
-            padding: 4px 12px;
-            background: var(--bg);
-            border-radius: 12px;
             font-size: 12px;
-            color: var(--text-secondary);
+            color: #4A90D9;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .popup-loc svg {
+            width: 12px; height: 12px;
+            fill: #4A90D9;
+            flex-shrink: 0;
+        }
+
+        .popup-tags {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .popup-tag {
+            padding: 3px 10px;
+            background: #f5f6f8;
+            border-radius: 8px;
+            font-size: 11px;
+            color: #888;
             font-weight: 500;
         }
 
-        /* Empty state */
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--text-muted);
-        }
-
-        .empty-state svg {
-            width: 64px;
-            height: 64px;
-            stroke: var(--border);
-            margin-bottom: 16px;
-        }
-
-        .empty-state p {
-            font-size: 15px;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .container { padding: 20px 16px; }
-            .page-header h1 { font-size: 24px; }
-            .stats { gap: 16px; }
-            #map { height: 280px; }
-            .cards-grid { grid-template-columns: 1fr; }
+        .popup-minimap {
+            height: 120px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #e8eef8;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header class="page-header">
-            <h1>我去过的地方</h1>
-            <p>记录每一次出发，珍藏每一段旅程</p>
-            <div class="stats" id="stats"></div>
-        </header>
+    <div class="page-title">
+        <span class="dot"></span>
+        我去过的地方
+        <span class="stats" id="titleStats"></span>
+    </div>
 
-        <section class="map-section">
-            <div class="map-header">
-                <span>📍</span>
-                <span>足迹地图</span>
+    <div class="legend" id="legend"></div>
+
+    <div id="map"></div>
+
+    <div class="popup-overlay" id="popupOverlay">
+        <div class="popup-card" id="popupCard">
+            <div class="popup-header">
+                <div class="popup-emoji" id="popupEmoji"></div>
+                <div class="popup-info">
+                    <div class="popup-title" id="popupTitle"></div>
+                    <div class="popup-category" id="popupCategory"></div>
+                    <div class="popup-status" id="popupStatus"></div>
+                </div>
+                <button class="popup-close" id="popupClose">✕</button>
             </div>
-            <div id="map"></div>
-        </section>
-
-        <section class="cards-grid" id="cardsGrid"></section>
+            <div class="popup-content" id="popupContent"></div>
+        </div>
     </div>
 
     <script>
     (function() {
-        var travels = [];
+        var data = [];
         var map = null;
+        var miniMap = null;
+        var markers = []; // Store all markers with their category
+        var activeCategory = null; // Currently active filter
 
-        // Gradient backgrounds for cards
-        var gradients = [
-            'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-            'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-            'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-            'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
-            'linear-gradient(135deg, #30cfd0 0%, #330867 100%)',
-            'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
-            'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)'
-        ];
+        var categoryConfig = {
+            '自然景观': { emoji: '🏔️', color: '#4CAF50', bg: '#E8F5E9' },
+            '世界遗产': { emoji: '🏛️', color: '#9C27B0', bg: '#F3E5F5' },
+            '历史文化': { emoji: '🏯', color: '#795548', bg: '#EFEBE9' },
+            '现代都市': { emoji: '🌃', color: '#2196F3', bg: '#E3F2FD' },
+            '美食体验': { emoji: '🍜', color: '#FF5722', bg: '#FBE9E7' },
+            '海岛海滩': { emoji: '🏖️', color: '#00BCD4', bg: '#E0F7FA' },
+            '主题乐园': { emoji: '🎢', color: '#E91E63', bg: '#FCE4EC' },
+            '自驾公路': { emoji: '🚗', color: '#FF9800', bg: '#FFF3E0' },
+            '地质奇观': { emoji: '🌋', color: '#607D8B', bg: '#ECEFF1' }
+        };
 
-        var emojis = ['🏔️', '🌅', '🏖️', '🗼', '🌸', '🏰', '🎭', '🌊'];
-
-        function loadData() {
+        function load() {
             fetch('data/travel.json')
                 .then(function(r) { return r.ok ? r.json() : []; })
-                .then(function(data) {
-                    travels = data;
-                    render();
-                })
-                .catch(function() {
-                    document.getElementById('cardsGrid').innerHTML =
-                        '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg><p>暂无旅行记录</p></div>';
+                .then(function(d) { data = d; init(); })
+                .catch(function() {});
+        }
+
+        function init() {
+            // Flatten all spots
+            var allSpots = [];
+            data.forEach(function(entry) {
+                entry.spots.forEach(function(spot) {
+                    allSpots.push({
+                        city: entry.city,
+                        visited: entry.visited,
+                        spot: spot
+                    });
                 });
-        }
-
-        function formatDate(dateStr) {
-            var d = new Date(dateStr);
-            var months = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
-            return d.getFullYear() + '年' + months[d.getMonth()] + d.getDate() + '日';
-        }
-
-        function render() {
-            // Stats
-            var cities = new Set();
-            travels.forEach(function(t) {
-                if (t.location) {
-                    var parts = t.location.split(/[省市县区]/);
-                    if (parts[0]) cities.add(parts[0]);
-                }
             });
 
-            document.getElementById('stats').innerHTML =
-                '<div class="stat-item"><div class="stat-icon">📍</div><div><div class="stat-value">' + travels.length + '</div><div class="stat-label">次旅行</div></div></div>' +
-                '<div class="stat-item"><div class="stat-icon">🏙️</div><div><div class="stat-value">' + cities.size + '</div><div class="stat-label">个城市</div></div></div>' +
-                '<div class="stat-item"><div class="stat-icon">📸</div><div><div class="stat-value">' + travels.length + '</div><div class="stat-label">段回忆</div></div></div>';
+            var visited = allSpots.filter(function(s) { return s.visited; });
+            var wanted = allSpots.filter(function(s) { return !s.visited; });
 
-            // Cards
-            var grid = document.getElementById('cardsGrid');
-            if (travels.length === 0) {
-                grid.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg><p>暂无旅行记录</p></div>';
-                return;
-            }
+            document.getElementById('titleStats').textContent =
+                visited.length + ' 个景点去过 · ' + wanted.length + ' 个想去';
 
-            grid.innerHTML = travels.map(function(item, i) {
-                var gradient = gradients[i % gradients.length];
-                var emoji = emojis[i % emojis.length];
-                var tags = item.tags ? item.tags.map(function(t) { return '<span class="tag">' + t + '</span>'; }).join('') : '';
+            // Build legend with "全部" option
+            var categories = {};
+            allSpots.forEach(function(s) {
+                var cat = s.spot.category || '自然景观';
+                categories[cat] = (categories[cat] || 0) + 1;
+            });
 
-                return '<div class="travel-card" data-lat="' + (item.lat || '') + '" data-lng="' + (item.lng || '') + '">' +
-                    '<div class="card-image" style="background:' + gradient + '">' +
-                        '<span>' + emoji + '</span>' +
-                        '<div class="card-date-badge">' + formatDate(item.date) + '</div>' +
-                    '</div>' +
-                    '<div class="card-body">' +
-                        '<h3 class="card-title">' + item.title + '</h3>' +
-                        (item.location ? '<div class="card-location"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>' + item.location + '</div>' : '') +
-                        (item.content ? '<p class="card-content">' + item.content + '</p>' : '') +
-                        (tags ? '<div class="card-tags">' + tags + '</div>' : '') +
-                    '</div>' +
+            var legendHtml = '<div class="legend-item active" data-category="全部">' +
+                '<div class="legend-icon" style="background:#666">✓</div>' +
+                '<span>全部</span>' +
                 '</div>';
+
+            legendHtml += Object.keys(categories).map(function(cat) {
+                var cfg = categoryConfig[cat] || categoryConfig['自然景观'];
+                return '<div class="legend-item" data-category="' + cat + '">' +
+                    '<div class="legend-icon" style="background:' + cfg.color + '">' + cfg.emoji + '</div>' +
+                    '<span>' + cat + ' (' + categories[cat] + ')</span>' +
+                    '</div>';
             }).join('');
 
-            // Card click → fly to location on map
-            document.querySelectorAll('.travel-card').forEach(function(card) {
-                card.addEventListener('click', function() {
-                    var lat = parseFloat(card.dataset.lat);
-                    var lng = parseFloat(card.dataset.lng);
-                    if (lat && lng && map) {
-                        map.setZoomAndCenter(12, [lng, lat]);
-                        document.querySelector('.map-section').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            document.getElementById('legend').innerHTML = legendHtml;
+
+            // Add click handler to legend items
+            document.getElementById('legend').addEventListener('click', function(e) {
+                var item = e.target.closest('.legend-item');
+                if (!item) return;
+
+                var category = item.getAttribute('data-category');
+
+                // If clicking the same category, deselect (show all)
+                if (category === activeCategory) {
+                    activeCategory = null;
+                } else if (category === '全部') {
+                    activeCategory = null;
+                } else {
+                    activeCategory = category;
+                }
+
+                // Update legend UI
+                document.querySelectorAll('.legend-item').forEach(function(el) {
+                    var cat = el.getAttribute('data-category');
+                    el.classList.remove('active', 'dimmed');
+
+                    if (activeCategory === null) {
+                        // Show all - only "全部" is active
+                        if (cat === '全部') el.classList.add('active');
+                    } else {
+                        // Filter active
+                        if (cat === activeCategory) {
+                            el.classList.add('active');
+                        } else if (cat !== '全部') {
+                            el.classList.add('dimmed');
+                        }
                     }
+                });
+
+                // Filter markers
+                filterMarkers();
+            });
+
+            // Init map
+            map = new AMap.Map('map', {
+                zoom: 4,
+                center: [104.19, 35.86],
+                mapStyle: 'amap://styles/macaron',
+                resizeEnable: true
+            });
+
+            // Render markers
+            renderMarkers(allSpots);
+        }
+
+        function renderMarkers(allSpots) {
+            // Add markers
+            allSpots.forEach(function(item) {
+                var spot = item.spot;
+                if (!spot.lat || !spot.lng) return;
+
+                var cat = spot.category || '自然景观';
+                var cfg = categoryConfig[cat] || categoryConfig['自然景观'];
+
+                var markerStyle = 'width:36px;height:36px;border-radius:50%;border:3px solid white;' +
+                    'box-shadow:0 3px 10px rgba(0,0,0,0.25);display:flex;align-items:center;justify-content:center;' +
+                    'font-size:18px;cursor:pointer;transition:transform 0.2s,opacity 0.3s;background:' + cfg.color + ';';
+
+                var el = document.createElement('div');
+                el.style.cssText = markerStyle;
+                el.textContent = cfg.emoji;
+
+                el.addEventListener('mouseenter', function() { this.style.transform = 'scale(1.15)'; });
+                el.addEventListener('mouseleave', function() { this.style.transform = 'scale(1)'; });
+
+                var marker = new AMap.Marker({
+                    position: [spot.lng, spot.lat],
+                    content: el,
+                    offset: new AMap.Pixel(-18, -18)
+                });
+
+                marker.on('click', function() {
+                    showPopup(item);
+                });
+
+                // Store marker with its category for filtering
+                markers.push({
+                    marker: marker,
+                    category: cat
+                });
+
+                map.add(marker);
+            });
+
+            var allMarkers = map.getAllOverlays('marker');
+            if (allMarkers.length) {
+                map.setFitView(allMarkers, false, [80, 80, 80, 80]);
+            }
+        }
+
+        function filterMarkers() {
+            markers.forEach(function(item) {
+                if (activeCategory === null || item.category === activeCategory) {
+                    item.marker.show();
+                    item.marker.getContent().style.opacity = '1';
+                } else {
+                    item.marker.hide();
+                }
+            });
+
+            // Re-fit view to visible markers
+            var visibleMarkers = markers
+                .filter(function(item) { return activeCategory === null || item.category === activeCategory; })
+                .map(function(item) { return item.marker; });
+
+            if (visibleMarkers.length > 0) {
+                map.setFitView(visibleMarkers, false, [80, 80, 80, 80]);
+            }
+        }
+
+        function showPopup(item) {
+            if (miniMap) { miniMap.destroy(); miniMap = null; }
+
+            var overlay = document.getElementById('popupOverlay');
+            var spot = item.spot;
+            var cat = spot.category || '自然景观';
+            var cfg = categoryConfig[cat] || categoryConfig['自然景观'];
+            var isVisited = item.visited;
+
+            document.getElementById('popupEmoji').textContent = cfg.emoji;
+            document.getElementById('popupEmoji').className = 'popup-emoji' + (isVisited ? '' : ' wanted');
+            document.getElementById('popupTitle').textContent = spot.title;
+
+            var categoryEl = document.getElementById('popupCategory');
+            categoryEl.textContent = cat;
+            categoryEl.style.background = cfg.bg;
+            categoryEl.style.color = cfg.color;
+
+            var statusEl = document.getElementById('popupStatus');
+            statusEl.textContent = isVisited ? '✓ 已去过' : '☆ 想去';
+            statusEl.className = 'popup-status ' + (isVisited ? 'visited' : 'wanted');
+
+            // Render content
+            var html = '';
+            if (spot.content) {
+                html += '<div class="popup-text">' + spot.content + '</div>';
+            }
+            if (spot.location) {
+                html += '<div class="popup-loc"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>' + spot.location + '</div>';
+            }
+            if (spot.tags && spot.tags.length) {
+                html += '<div class="popup-tags">' + spot.tags.map(function(t) { return '<span class="popup-tag">' + t + '</span>'; }).join('') + '</div>';
+            }
+            if (spot.lat && spot.lng) {
+                html += '<div class="popup-minimap" id="popup-minimap"></div>';
+            }
+
+            document.getElementById('popupContent').innerHTML = html;
+
+            overlay.style.display = 'flex';
+            requestAnimationFrame(function() {
+                requestAnimationFrame(function() {
+                    overlay.classList.add('show');
                 });
             });
 
-            renderMap();
-        }
+            // Render mini map
+            if (spot.lat && spot.lng) {
+                setTimeout(function() {
+                    var el = document.getElementById('popup-minimap');
+                    if (!el) return;
 
-        function renderMap() {
-            var points = travels.filter(function(t) { return t.lat && t.lng; });
-
-            setTimeout(function() {
-                if (!map) {
-                    map = new AMap.Map('map', {
-                        zoom: 4,
-                        center: [104.19, 35.86],
+                    miniMap = new AMap.Map(el, {
+                        zoom: 13,
+                        center: [spot.lng, spot.lat],
                         mapStyle: 'amap://styles/macaron',
-                        resizeEnable: true
-                    });
-                }
-                map.clearMap();
-
-                if (points.length > 0) {
-                    var markers = [];
-                    points.forEach(function(item, i) {
-                        var markerContent = document.createElement('div');
-                        markerContent.style.cssText = 'background:#4A90D9;width:32px;height:32px;border-radius:50%;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:bold;font-size:14px;cursor:pointer;transition:transform 0.2s;';
-                        markerContent.textContent = (i + 1);
-                        markerContent.onmouseenter = function() { this.style.transform = 'scale(1.15)'; };
-                        markerContent.onmouseleave = function() { this.style.transform = 'scale(1)'; };
-
-                        var marker = new AMap.Marker({
-                            position: [item.lng, item.lat],
-                            content: markerContent,
-                            offset: new AMap.Pixel(-16, -16)
-                        });
-
-                        var infoContent = '<div style="padding:10px;max-width:240px">' +
-                            '<strong style="font-size:15px">' + item.title + '</strong><br>' +
-                            '<small style="color:#4A90D9;font-weight:500">' + formatDate(item.date) + '</small>' +
-                            (item.location ? '<p style="margin:6px 0;font-size:13px;color:#666">📍 ' + item.location + '</p>' : '') +
-                            (item.content ? '<p style="font-size:13px;color:#999;margin-top:6px">' + item.content + '</p>' : '') +
-                            '</div>';
-
-                        var infoWindow = new AMap.InfoWindow({
-                            content: infoContent,
-                            offset: new AMap.Pixel(0, -16)
-                        });
-
-                        marker.on('click', function() {
-                            infoWindow.open(map, marker.getPosition());
-                        });
-
-                        markers.push(marker);
+                        resizeEnable: true,
+                        dragEnable: false,
+                        zoomEnable: false,
+                        scrollWheel: false,
+                        doubleClickZoom: false
                     });
 
-                    map.add(markers);
-                    map.setFitView(markers, false, [60, 60, 60, 60]);
-                }
-            }, 200);
+                    var dotStyle = 'width:16px;height:16px;border-radius:50%;border:2px solid white;' +
+                        'box-shadow:0 1px 4px rgba(0,0,0,0.3);background:' + cfg.color + ';';
+
+                    var dot = document.createElement('div');
+                    dot.style.cssText = dotStyle;
+
+                    miniMap.add(new AMap.Marker({
+                        position: [spot.lng, spot.lat],
+                        content: dot,
+                        offset: new AMap.Pixel(-8, -8)
+                    }));
+                }, 150);
+            }
         }
 
-        loadData();
+        function closePopup() {
+            var overlay = document.getElementById('popupOverlay');
+            overlay.classList.remove('show');
+            setTimeout(function() {
+                overlay.style.display = 'none';
+                if (miniMap) { miniMap.destroy(); miniMap = null; }
+            }, 300);
+        }
+
+        document.getElementById('popupClose').addEventListener('click', closePopup);
+        document.getElementById('popupOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closePopup();
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closePopup();
+        });
+
+        load();
     })();
     </script>
 </body>
