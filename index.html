@@ -499,6 +499,90 @@
             font-size: 10px; z-index: 2; line-height: 1;
             box-shadow: 0 0 8px rgba(212,168,90,0.25);
         }
+
+        /* ===== Mobile ===== */
+        @media (max-width: 600px) {
+            .page-title {
+                top: 12px;
+                padding: 8px 18px;
+                gap: 8px;
+                max-width: calc(100vw - 80px);
+            }
+            .title-text { font-size: 14px; letter-spacing: 1px; }
+            .title-divider { display: none; }
+            .title-stats { font-size: 11px; }
+            .title-dot { width: 8px; height: 8px; }
+
+            .heritage-link {
+                top: 12px; right: 12px;
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+            .heritage-link span:not(.heritage-link-icon) {
+                display: none;
+            }
+            .heritage-link-icon { font-size: 18px; margin: 0; }
+
+            .legend {
+                bottom: 12px; left: 12px; right: 12px;
+                width: auto;
+                padding: 12px 14px;
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                gap: 2px 4px;
+                max-height: 40vh;
+                overflow-y: auto;
+            }
+            .legend-item {
+                padding: 5px 6px;
+                font-size: 11px;
+                gap: 6px;
+            }
+            .legend-icon {
+                width: 20px; height: 20px;
+                font-size: 10px;
+            }
+
+            .stats-toggle {
+                bottom: 12px; right: 12px;
+                padding: 7px 12px;
+                font-size: 11px;
+            }
+            .stats-panel {
+                right: 12px; bottom: 50px;
+                width: calc(100vw - 24px);
+                max-width: 300px;
+            }
+
+            .popup-card {
+                max-width: 94vw;
+                max-height: 85vh;
+                border-radius: 14px;
+            }
+            .popup-header {
+                padding: 16px 16px 12px;
+                gap: 10px;
+            }
+            .popup-emoji { width: 44px; height: 44px; font-size: 22px; border-radius: 10px; }
+            .popup-title { font-size: 16px; margin-bottom: 4px; }
+            .popup-content { padding: 14px 16px; }
+            .popup-text { font-size: 13px; line-height: 1.7; }
+            .popup-minimap { height: 110px; }
+            .popup-close {
+                width: 38px; height: 38px;
+                font-size: 18px;
+            }
+            .popup-tag { padding: 3px 8px; font-size: 10px; }
+        }
+
+        @media (max-width: 380px) {
+            .page-title {
+                padding: 6px 12px;
+                gap: 6px;
+            }
+            .title-text { font-size: 13px; }
+            .title-stats { display: none; }
+            .legend { grid-template-columns: repeat(2, 1fr); }
+        }
     </style>
 </head>
 <body>
