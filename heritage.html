@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>世界遗产收集册</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700;900&family=Cinzel:wght@500;600;700&family=Noto+Serif+SC:wght@500;700&display=swap" rel="stylesheet">
     <script src="https://webapi.amap.com/maps?v=2.0&key=f66cdc07203c3075a2a2ae1ea67eea8e"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -471,6 +471,266 @@
             0% { transform: scale(1); opacity: 0.6; }
             70% { transform: scale(2.2); opacity: 0; }
             100% { transform: scale(2.2); opacity: 0; }
+        }
+
+        /* ===== Game Codex UI Layer (Genshin/AC Codex inspired) ===== */
+        :root {
+            --gold: #d4a85a;
+            --gold-bright: #f6c977;
+            --gold-soft: rgba(212,168,90,0.55);
+            --gold-faint: rgba(212,168,90,0.18);
+            --purple-glow: rgba(183,148,244,0.55);
+        }
+
+        /* Layered background: deep base + radial vignette + subtle grid */
+        body {
+            background:
+                radial-gradient(ellipse 80% 50% at 50% 0%, rgba(99,113,189,0.18), transparent 60%),
+                radial-gradient(ellipse 60% 40% at 80% 100%, rgba(183,148,244,0.10), transparent 60%),
+                #141a2e;
+            background-attachment: fixed;
+        }
+        body::before {
+            content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+            background-size: 48px 48px;
+            mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, #000 30%, transparent 90%);
+            -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, #000 30%, transparent 90%);
+        }
+        .content { position: relative; z-index: 1; }
+
+        /* Nav counter → game badge with cut corners */
+        .nav-counter {
+            background: linear-gradient(135deg, rgba(212,168,90,0.18), rgba(159,122,234,0.18));
+            border: 1px solid var(--gold-soft);
+            color: var(--gold-bright);
+            font-family: 'Cinzel', 'Noto Serif SC', serif;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            padding: 5px 14px;
+            border-radius: 0;
+            clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+            box-shadow: 0 0 14px rgba(212,168,90,0.25), inset 0 1px 0 rgba(255,255,255,0.12);
+            text-shadow: 0 0 8px rgba(246,201,119,0.5);
+        }
+
+        /* Progress card → game data panel with corner brackets */
+        .progress-card {
+            position: relative;
+            background:
+                linear-gradient(135deg, rgba(212,168,90,0.04), transparent 40%),
+                rgba(30, 38, 68, 0.85);
+            border: 1px solid var(--gold-faint);
+            box-shadow:
+                0 8px 32px rgba(0,0,0,0.4),
+                0 0 24px rgba(212,168,90,0.06),
+                inset 0 1px 0 rgba(255,255,255,0.08);
+        }
+        .progress-card::before,
+        .progress-card::after {
+            content: ''; position: absolute; width: 22px; height: 22px;
+            border: 1.5px solid var(--gold); pointer-events: none;
+        }
+        .progress-card::before { top: -1px; left: -1px; border-right: 0; border-bottom: 0; }
+        .progress-card::after { bottom: -1px; right: -1px; border-left: 0; border-top: 0; }
+        .progress-title {
+            font-family: 'Cinzel', 'Noto Serif SC', serif;
+            letter-spacing: 2px;
+        }
+        .progress-count {
+            color: var(--gold-bright);
+            font-family: 'Cinzel', serif;
+            text-shadow: 0 0 16px rgba(246,201,119,0.4);
+            font-variant-numeric: tabular-nums;
+        }
+        .progress-count span { color: rgba(255,255,255,0.45); }
+        .progress-bar-track {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--gold-faint);
+            height: 10px;
+            position: relative;
+            overflow: visible;
+        }
+        .progress-bar-fill {
+            background: linear-gradient(90deg, var(--gold), #b794f4 60%, #7cc4f5);
+            box-shadow: 0 0 12px rgba(212,168,90,0.5), inset 0 1px 0 rgba(255,255,255,0.35);
+            position: relative;
+        }
+        .progress-bar-fill::after {
+            content: ''; position: absolute; right: -2px; top: -3px; bottom: -3px; width: 3px;
+            background: var(--gold-bright); box-shadow: 0 0 8px var(--gold-bright);
+            border-radius: 1px;
+        }
+
+        /* Filter group label → small caps codex label */
+        .filter-group-label {
+            font-family: 'Cinzel', serif;
+            color: var(--gold-soft);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            position: relative;
+            padding-left: 14px;
+        }
+        .filter-group-label::before {
+            content: '◆'; position: absolute; left: 0; top: 50%;
+            transform: translateY(-50%); color: var(--gold); font-size: 7px;
+        }
+
+        /* Filter tabs → game-style with cut corner on hover/active */
+        .filter-tab { transition: all 0.25s ease; position: relative; }
+        .filter-tab.active {
+            background: linear-gradient(135deg, rgba(212,168,90,0.22), rgba(159,122,234,0.28));
+            border-color: var(--gold);
+            color: var(--gold-bright);
+            box-shadow: 0 0 12px rgba(212,168,90,0.3), inset 0 0 8px rgba(212,168,90,0.12);
+            text-shadow: 0 0 6px rgba(246,201,119,0.4);
+        }
+        .filter-tab.active::after {
+            content: ''; position: absolute; left: 14px; right: 14px; bottom: -3px; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold-bright), transparent);
+            box-shadow: 0 0 6px var(--gold-bright);
+        }
+
+        /* List count → codex tally */
+        .list-count {
+            font-family: 'Cinzel', serif;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(212,168,90,0.7);
+        }
+
+        /* Heritage item → collectible card */
+        .heritage-item {
+            position: relative;
+            background:
+                linear-gradient(135deg, rgba(212,168,90,0.04), transparent 50%),
+                rgba(255,255,255,0.08);
+            border: 1px solid rgba(212,168,90,0.14);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+            overflow: hidden;
+        }
+        .heritage-item:hover {
+            background:
+                linear-gradient(135deg, rgba(212,168,90,0.08), transparent 50%),
+                rgba(255,255,255,0.13);
+            border-color: var(--gold-soft);
+            box-shadow:
+                0 10px 30px rgba(0,0,0,0.4),
+                0 0 24px rgba(212,168,90,0.15),
+                inset 0 1px 0 rgba(255,255,255,0.1);
+            transform: translateY(-3px);
+        }
+        /* Scan line sweep on hover */
+        .heritage-item::after {
+            content: ''; position: absolute; top: 0; left: -100%; width: 60%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212,168,90,0.12), transparent);
+            transition: left 0.7s ease; pointer-events: none;
+        }
+        .heritage-item:hover::after { left: 130%; }
+
+        /* Visited card → "collected" gold rune frame */
+        .heritage-item.visited {
+            background:
+                linear-gradient(135deg, rgba(212,168,90,0.1), transparent 40%),
+                rgba(255,255,255,0.12);
+            border-color: rgba(212,168,90,0.55);
+            box-shadow:
+                0 0 24px rgba(212,168,90,0.18),
+                inset 0 0 18px rgba(212,168,90,0.06),
+                inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+        .heritage-item.visited::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold-bright), var(--purple-glow), var(--gold-bright), transparent);
+            box-shadow: 0 0 8px var(--gold-bright);
+            z-index: 4;
+        }
+        /* Star badge top-right on visited */
+        .heritage-item-top { position: relative; }
+        .heritage-item.visited .heritage-item-top::before {
+            content: '★';
+            position: absolute; top: 8px; right: 8px;
+            width: 26px; height: 26px;
+            display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+            color: #2a1a08; font-size: 14px; font-weight: 900;
+            border-radius: 50%;
+            box-shadow: 0 0 12px rgba(246,201,119,0.7), inset 0 1px 0 rgba(255,255,255,0.5);
+            z-index: 5;
+        }
+
+        .heritage-cover {
+            box-shadow:
+                inset 0 0 0 1px rgba(0,0,0,0.4),
+                inset 0 -30px 40px -20px rgba(20,26,46,0.65);
+            transition: opacity 0.3s, transform 0.45s cubic-bezier(0.16,1,0.3,1);
+        }
+        .heritage-item:hover .heritage-cover {
+            transform: scale(1.015);
+        }
+
+        /* Type badges → engraved plates */
+        .heritage-type-badge {
+            font-family: 'Cinzel', serif;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-size: 10px;
+            padding: 2px 10px;
+            border: 1px solid currentColor;
+            background: transparent !important;
+        }
+        .heritage-type-badge.cultural { color: #f6ad55; box-shadow: 0 0 8px rgba(246,173,85,0.2), inset 0 0 8px rgba(246,173,85,0.08); }
+        .heritage-type-badge.natural  { color: #68d391; box-shadow: 0 0 8px rgba(104,211,145,0.2), inset 0 0 8px rgba(104,211,145,0.08); }
+        .heritage-type-badge.mixed    { color: #63b3ed; box-shadow: 0 0 8px rgba(99,179,237,0.2), inset 0 0 8px rgba(99,179,237,0.08); }
+
+        /* Criteria tags → ancient roman codex chips */
+        .heritage-criteria-tag {
+            font-family: 'Cinzel', serif;
+            letter-spacing: 1px;
+            padding: 1px 7px;
+        }
+
+        /* Pagination → game-codex pager */
+        .page-btn {
+            border-color: rgba(212,168,90,0.2);
+            background: rgba(30,38,68,0.6);
+        }
+        .page-btn:hover:not(:disabled):not(.active) {
+            background: rgba(212,168,90,0.12);
+            border-color: var(--gold-soft);
+            color: var(--gold-bright);
+            box-shadow: 0 0 10px rgba(212,168,90,0.2);
+        }
+        .page-btn.active {
+            background: linear-gradient(135deg, rgba(212,168,90,0.35), rgba(159,122,234,0.4));
+            border-color: var(--gold);
+            color: #fff;
+            box-shadow: 0 0 14px rgba(212,168,90,0.4), inset 0 1px 0 rgba(255,255,255,0.2);
+            text-shadow: 0 0 6px rgba(246,201,119,0.6);
+        }
+        .page-info {
+            font-family: 'Cinzel', serif;
+            letter-spacing: 1.5px;
+            color: rgba(212,168,90,0.55);
+        }
+
+        /* Nav title — engraved serif */
+        .nav-title {
+            font-family: 'Cinzel', 'Noto Serif SC', serif;
+            letter-spacing: 4px;
+            font-weight: 600;
+            text-shadow: 0 0 18px rgba(212,168,90,0.3);
+        }
+        .nav-bar {
+            border-bottom: 1px solid rgba(212,168,90,0.18);
+            position: relative;
+        }
+        .nav-bar::after {
+            content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold-soft), transparent);
         }
     </style>
 </head>
