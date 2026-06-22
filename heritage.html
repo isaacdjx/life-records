@@ -524,18 +524,6 @@
         </section>
 
         <section class="list-section" id="heritageList"></section>
-
-        <div class="section-divider">
-            <div class="section-divider-line"></div>
-            <span class="section-divider-icon">🏅</span>
-            <span class="section-divider-title">成就徽章</span>
-            <div class="section-divider-line"></div>
-        </div>
-
-        <section class="badges-section">
-            <div class="badge-stats" id="badgeStats"></div>
-            <div class="badge-grid" id="badgeGrid"></div>
-        </section>
     </div>
 
     <!-- Heritage Detail Popup -->
@@ -545,15 +533,6 @@
             <div id="heritagePopupCover"></div>
             <div class="popup-header" id="heritagePopupHeader"></div>
             <div class="popup-body" id="heritagePopupBody"></div>
-        </div>
-    </div>
-
-    <!-- Badge Detail Popup -->
-    <div class="popup-overlay" id="badgePopup">
-        <div class="popup-card" style="position:relative;">
-            <button class="popup-close" id="badgePopupClose">&times;</button>
-            <div class="popup-header" id="badgePopupHeader"></div>
-            <div class="popup-body" id="badgePopupBody"></div>
         </div>
     </div>
 
@@ -620,7 +599,6 @@
             renderMap(matchedResults);
             renderFilters();
             renderList(matchedResults);
-            renderBadges(computedBadges);
 
             document.getElementById('loadingScreen').classList.add('hidden');
         }
@@ -1242,7 +1220,6 @@
         });
 
         document.getElementById('heritagePopupClose').addEventListener('click', function() { closePopup('heritagePopup'); });
-        document.getElementById('badgePopupClose').addEventListener('click', function() { closePopup('badgePopup'); });
     })();
     </script>
 </body>
