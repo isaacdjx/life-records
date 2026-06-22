@@ -1,0 +1,187 @@
+[
+  {
+    "id": "western_frontier",
+    "title": "西域探险家",
+    "icon": "🐪",
+    "description": "探访新疆大地的壮美风光",
+    "category": "geographic",
+    "condition": { "type": "tag_count", "tag": "新疆", "threshold": 5 },
+    "tiers": [
+      { "level": 1, "threshold": 5, "suffix": "" },
+      { "level": 2, "threshold": 10, "suffix": " · 资深" },
+      { "level": 3, "threshold": 15, "suffix": " · 传奇" }
+    ]
+  },
+  {
+    "id": "province_collector",
+    "title": "省份收集家",
+    "icon": "🗺️",
+    "description": "足迹遍布中华大地",
+    "category": "geographic",
+    "condition": { "type": "province_count", "threshold": 10 },
+    "tiers": [
+      { "level": 1, "threshold": 10, "suffix": "" },
+      { "level": 2, "threshold": 20, "suffix": " · 资深" },
+      { "level": 3, "threshold": 30, "suffix": " · 传奇" }
+    ]
+  },
+  {
+    "id": "border_crosser",
+    "title": "跨境旅行家",
+    "icon": "✈️",
+    "description": "走出国门探索世界",
+    "category": "geographic",
+    "condition": { "type": "country_count", "threshold": 2 }
+  },
+  {
+    "id": "extreme_west",
+    "title": "极西先锋",
+    "icon": "🌅",
+    "description": "抵达中国最西端的勇者",
+    "category": "geographic",
+    "condition": { "type": "lng_below", "value": 76, "threshold": 1 }
+  },
+  {
+    "id": "extreme_north",
+    "title": "极北探索者",
+    "icon": "❄️",
+    "description": "探索中国最北方的壮丽风光",
+    "category": "geographic",
+    "condition": { "type": "lat_above", "value": 48, "threshold": 1 }
+  },
+  {
+    "id": "altitude_master",
+    "title": "高原行者",
+    "icon": "🏔️",
+    "description": "征服帕米尔高原的壮阔天地",
+    "category": "special",
+    "condition": { "type": "tag_count", "tag": "帕米尔", "threshold": 3 }
+  },
+  {
+    "id": "heritage_collector",
+    "title": "遗产守护者",
+    "icon": "🏛️",
+    "description": "收集世界遗产的文化使者",
+    "category": "collection",
+    "condition": { "type": "heritage_count", "threshold": 3 },
+    "tiers": [
+      { "level": 1, "threshold": 3, "suffix": "" },
+      { "level": 2, "threshold": 8, "suffix": " · 资深" },
+      { "level": 3, "threshold": 15, "suffix": " · 传奇" }
+    ]
+  },
+  {
+    "id": "foodie_hunter",
+    "title": "美食猎人",
+    "icon": "🍜",
+    "description": "尝遍天下美食的味蕾冒险家",
+    "category": "thematic",
+    "condition": { "type": "category_count", "category": "美食体验", "threshold": 3 },
+    "tiers": [
+      { "level": 1, "threshold": 3, "suffix": "" },
+      { "level": 2, "threshold": 5, "suffix": " · 资深" },
+      { "level": 3, "threshold": 10, "suffix": " · 传奇" }
+    ]
+  },
+  {
+    "id": "ancient_city",
+    "title": "古城收藏家",
+    "icon": "🏯",
+    "description": "穿越时空的古城探访者",
+    "category": "thematic",
+    "condition": { "type": "tag_count", "tag": "古城", "threshold": 3 }
+  },
+  {
+    "id": "road_warrior",
+    "title": "自驾达人",
+    "icon": "🚗",
+    "description": "驰骋在壮美公路上的旅者",
+    "category": "thematic",
+    "condition": { "type": "category_count", "category": "自驾公路", "threshold": 3 }
+  },
+  {
+    "id": "thrill_seeker",
+    "title": "乐园达人",
+    "icon": "🎢",
+    "description": "在欢乐中寻找刺激的玩家",
+    "category": "thematic",
+    "condition": { "type": "category_count", "category": "主题乐园", "threshold": 3 }
+  },
+  {
+    "id": "nature_lover",
+    "title": "自然之子",
+    "icon": "🌿",
+    "description": "拥抱大自然的绿色旅者",
+    "category": "thematic",
+    "condition": { "type": "category_count", "category": "自然景观", "threshold": 5 },
+    "tiers": [
+      { "level": 1, "threshold": 5, "suffix": "" },
+      { "level": 2, "threshold": 10, "suffix": " · 资深" },
+      { "level": 3, "threshold": 20, "suffix": " · 传奇" }
+    ]
+  },
+  {
+    "id": "glacier_touch",
+    "title": "冰川触碰者",
+    "icon": "🧊",
+    "description": "亲手触摸亿万年冰川的勇者",
+    "category": "special",
+    "condition": { "type": "has_spot_with_tag", "tag": "冰川", "threshold": 1 }
+  },
+  {
+    "id": "desert_walker",
+    "title": "沙漠行者",
+    "icon": "🏜️",
+    "description": "穿越无垠沙海的探险家",
+    "category": "special",
+    "condition": { "type": "has_spot_with_tag", "tag": "沙漠", "threshold": 1 }
+  },
+  {
+    "id": "night_view",
+    "title": "夜景猎人",
+    "icon": "🌃",
+    "description": "在城市夜色中发现璀璨之美",
+    "category": "thematic",
+    "condition": { "type": "tag_count", "tag": "夜景", "threshold": 2 }
+  },
+  {
+    "id": "temple_pilgrim",
+    "title": "古寺朝圣者",
+    "icon": "🙏",
+    "description": "在古刹中寻找内心的宁静",
+    "category": "thematic",
+    "condition": { "type": "tag_count", "tag": "寺院", "threshold": 2 }
+  },
+  {
+    "id": "first_step",
+    "title": "初出茅庐",
+    "icon": "👣",
+    "description": "迈出探索世界的第一步",
+    "category": "milestone",
+    "condition": { "type": "total_count", "threshold": 10 }
+  },
+  {
+    "id": "half_century",
+    "title": "半百壮游",
+    "icon": "🎯",
+    "description": "探索 50 个以上目的地的壮举",
+    "category": "milestone",
+    "condition": { "type": "total_count", "threshold": 50 }
+  },
+  {
+    "id": "xinjiang_master",
+    "title": "新疆全境大师",
+    "icon": "🌟",
+    "description": "深度探索新疆的每一个角落",
+    "category": "geographic",
+    "condition": { "type": "tag_count", "tag": "新疆", "threshold": 15 }
+  },
+  {
+    "id": "lake_lover",
+    "title": "湖泊收藏家",
+    "icon": "💧",
+    "description": "收集山川湖泊的旅行诗人",
+    "category": "thematic",
+    "condition": { "type": "tag_count", "tag": "湖泊", "threshold": 3 }
+  }
+]

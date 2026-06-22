@@ -9,155 +9,255 @@
     <title>我去过的地方</title>
     <script src="https://webapi.amap.com/maps?v=2.0&key=f66cdc07203c3075a2a2ae1ea67eea8e"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700;900&display=swap');
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', sans-serif;
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
             height: 100vh;
             overflow: hidden;
+            background: #0a0e1a;
         }
 
         #map { width: 100%; height: 100%; }
 
-        /* Title */
+        /* ===== Loading Screen ===== */
+        .loading-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: #0a0e1a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .loading-globe {
+            width: 60px; height: 60px;
+            border: 3px solid rgba(99, 179, 237, 0.15);
+            border-top-color: #63b3ed;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 24px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-text {
+            font-size: 14px;
+            color: rgba(255,255,255,0.5);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        /* ===== Title Bar ===== */
         .page-title {
             position: fixed;
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 10;
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            padding: 10px 28px;
-            border-radius: 24px;
-            box-shadow: 0 2px 16px rgba(0,0,0,0.08);
-            font-size: 15px;
-            font-weight: 600;
-            color: #333;
+            background: rgba(15, 20, 40, 0.75);
+            backdrop-filter: blur(20px) saturate(1.6);
+            -webkit-backdrop-filter: blur(20px) saturate(1.6);
+            padding: 12px 32px;
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow:
+                0 4px 30px rgba(0,0,0,0.3),
+                0 0 40px rgba(99, 179, 237, 0.06),
+                inset 0 1px 0 rgba(255,255,255,0.05);
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
+            opacity: 0;
+            animation: slideDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
 
-        .page-title .dot {
-            width: 8px; height: 8px;
+        .title-dot {
+            width: 10px; height: 10px;
             border-radius: 50%;
-            background: #4A90D9;
+            background: #63b3ed;
+            box-shadow: 0 0 12px rgba(99, 179, 237, 0.6);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { box-shadow: 0 0 12px rgba(99, 179, 237, 0.6); }
+            50% { box-shadow: 0 0 20px rgba(99, 179, 237, 0.9), 0 0 40px rgba(99, 179, 237, 0.3); }
         }
 
-        .page-title .stats {
+        .title-text {
+            font-size: 16px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #e2e8f0, #fff, #90cdf4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .title-divider {
+            width: 1px;
+            height: 16px;
+            background: rgba(255,255,255,0.12);
+        }
+
+        .title-stats {
             font-size: 12px;
             font-weight: 400;
-            color: #999;
+            color: rgba(255,255,255,0.45);
+            letter-spacing: 0.5px;
         }
 
-        /* Category Legend */
+        /* ===== Category Legend ===== */
         .legend {
             position: fixed;
-            bottom: 20px;
-            left: 20px;
+            bottom: 24px;
+            left: 24px;
             z-index: 10;
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(12px);
-            padding: 12px 16px;
-            border-radius: 12px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            background: rgba(15, 20, 40, 0.7);
+            backdrop-filter: blur(20px) saturate(1.6);
+            -webkit-backdrop-filter: blur(20px) saturate(1.6);
+            padding: 14px 16px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.06);
+            box-shadow:
+                0 4px 30px rgba(0,0,0,0.3),
+                inset 0 1px 0 rgba(255,255,255,0.04);
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            max-width: 320px;
+            gap: 6px;
+            max-width: 340px;
             font-size: 11px;
-            color: #666;
+            opacity: 0;
+            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.7s forwards;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
             cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 8px;
-            transition: all 0.2s;
+            padding: 5px 10px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
             user-select: none;
+            color: rgba(255,255,255,0.6);
+            border: 1px solid transparent;
         }
 
         .legend-item:hover {
-            background: rgba(0,0,0,0.04);
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.9);
+            border-color: rgba(255,255,255,0.08);
         }
 
         .legend-item.active {
-            background: rgba(0,0,0,0.06);
+            background: rgba(99, 179, 237, 0.12);
+            color: #90cdf4;
             font-weight: 600;
+            border-color: rgba(99, 179, 237, 0.2);
         }
 
         .legend-item.dimmed {
-            opacity: 0.35;
+            opacity: 0.25;
         }
 
         .legend-icon {
-            width: 20px; height: 20px;
+            width: 22px; height: 22px;
             border-radius: 50%;
-            border: 2px solid #fff;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            border: 2px solid rgba(255,255,255,0.15);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 11px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
 
-        /* Popup */
+        .legend-item:hover .legend-icon {
+            border-color: rgba(255,255,255,0.3);
+            transform: scale(1.1);
+        }
+
+        /* ===== Popup Overlay ===== */
         .popup-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.3);
+            background: rgba(5, 8, 20, 0.6);
             z-index: 1000;
             display: none;
             align-items: center;
             justify-content: center;
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.4s ease;
         }
-
         .popup-overlay.show { display: flex; opacity: 1; }
 
         .popup-card {
-            background: #fff;
-            border-radius: 16px;
-            width: 400px;
+            background: rgba(20, 26, 50, 0.92);
+            backdrop-filter: blur(30px) saturate(1.8);
+            -webkit-backdrop-filter: blur(30px) saturate(1.8);
+            border-radius: 20px;
+            width: 420px;
             max-width: 90vw;
             max-height: 80vh;
             overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-            transform: translateY(20px) scale(0.95);
-            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow:
+                0 25px 80px rgba(0,0,0,0.5),
+                0 0 60px rgba(99, 179, 237, 0.05),
+                inset 0 1px 0 rgba(255,255,255,0.06);
+            transform: translateY(30px) scale(0.92);
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .popup-overlay.show .popup-card {
+            transform: translateY(0) scale(1);
         }
 
-        .popup-overlay.show .popup-card { transform: translateY(0) scale(1); }
+        .popup-card::-webkit-scrollbar { width: 4px; }
+        .popup-card::-webkit-scrollbar-track { background: transparent; }
+        .popup-card::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
 
         .popup-header {
             display: flex;
             align-items: center;
             gap: 14px;
-            padding: 20px 20px 14px;
-            border-bottom: 1px solid #f0f0f0;
+            padding: 22px 22px 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            position: relative;
         }
 
         .popup-emoji {
-            width: 52px; height: 52px;
-            border-radius: 14px;
-            background: linear-gradient(135deg, #eef2ff, #e0eafc);
+            width: 56px; height: 56px;
+            border-radius: 16px;
+            background: rgba(99, 179, 237, 0.1);
+            border: 1px solid rgba(99, 179, 237, 0.15);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 26px;
+            font-size: 28px;
             flex-shrink: 0;
+            box-shadow: 0 0 20px rgba(99, 179, 237, 0.08);
         }
-
         .popup-emoji.wanted {
-            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+            background: rgba(237, 137, 54, 0.1);
+            border-color: rgba(237, 137, 54, 0.15);
+            box-shadow: 0 0 20px rgba(237, 137, 54, 0.08);
         }
 
         .popup-info { flex: 1; min-width: 0; }
@@ -165,8 +265,8 @@
         .popup-title {
             font-size: 18px;
             font-weight: 700;
-            color: #1a1a1a;
-            margin-bottom: 4px;
+            color: #fff;
+            margin-bottom: 6px;
         }
 
         .popup-category {
@@ -182,87 +282,196 @@
             font-size: 12px;
             font-weight: 500;
         }
-
-        .popup-status.visited { color: #4A90D9; }
-        .popup-status.wanted { color: #f5a623; }
+        .popup-status.visited { color: #63b3ed; }
+        .popup-status.wanted { color: #ed8936; }
 
         .popup-close {
-            width: 32px; height: 32px;
+            width: 34px; height: 34px;
             border-radius: 50%;
-            border: none;
-            background: #f5f5f5;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.04);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
-            color: #999;
+            font-size: 13px;
+            color: rgba(255,255,255,0.4);
             flex-shrink: 0;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
+        }
+        .popup-close:hover {
+            background: rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.8);
+            border-color: rgba(255,255,255,0.15);
         }
 
-        .popup-close:hover { background: #e8e8e8; color: #666; }
-
-        /* Spot content */
-        .popup-content {
-            padding: 16px 20px;
-        }
+        .popup-content { padding: 18px 22px; }
 
         .popup-text {
             font-size: 13px;
-            color: #666;
-            line-height: 1.65;
-            margin-bottom: 12px;
+            color: rgba(255,255,255,0.6);
+            line-height: 1.75;
+            margin-bottom: 14px;
         }
 
         .popup-loc {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
             font-size: 12px;
-            color: #4A90D9;
+            color: #63b3ed;
             font-weight: 500;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
-
         .popup-loc svg {
-            width: 12px; height: 12px;
-            fill: #4A90D9;
+            width: 13px; height: 13px;
+            fill: #63b3ed;
             flex-shrink: 0;
         }
 
         .popup-tags {
             display: flex;
-            gap: 5px;
+            gap: 6px;
             flex-wrap: wrap;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
         }
-
         .popup-tag {
-            padding: 3px 10px;
-            background: #f5f6f8;
-            border-radius: 8px;
+            padding: 4px 12px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 20px;
             font-size: 11px;
-            color: #888;
+            color: rgba(255,255,255,0.5);
             font-weight: 500;
+            transition: all 0.2s;
+        }
+        .popup-tag:hover {
+            background: rgba(99, 179, 237, 0.1);
+            border-color: rgba(99, 179, 237, 0.15);
+            color: #90cdf4;
         }
 
         .popup-minimap {
-            height: 120px;
-            border-radius: 10px;
+            height: 130px;
+            border-radius: 12px;
             overflow: hidden;
-            background: #e8eef8;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        /* ===== Marker Pulse Ring ===== */
+        @keyframes marker-pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 var(--pulse-color); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px transparent; }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 transparent; }
+        }
+
+        /* ===== Wanted marker style ===== */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        /* ===== Heritage Link ===== */
+        .heritage-link {
+            position: fixed; top: 20px; right: 24px; z-index: 50;
+            display: flex; align-items: center; gap: 6px;
+            padding: 8px 16px; border-radius: 20px;
+            background: rgba(15, 20, 40, 0.75);
+            backdrop-filter: blur(20px) saturate(1.6);
+            border: 1px solid rgba(159,122,234,0.15);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04);
+            text-decoration: none; color: rgba(255,255,255,0.7);
+            font-size: 13px; font-weight: 600;
+            transition: all 0.3s;
+            animation: slideDown 0.5s 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        .heritage-link:hover {
+            border-color: rgba(159,122,234,0.35);
+            color: #b794f4;
+            box-shadow: 0 4px 20px rgba(159,122,234,0.15), inset 0 1px 0 rgba(255,255,255,0.06);
+        }
+        .heritage-link-icon { font-size: 15px; }
+
+        /* ===== Stats Panel ===== */
+        .stats-toggle {
+            position: fixed; bottom: 24px; right: 24px; z-index: 50;
+            display: flex; align-items: center; gap: 6px;
+            padding: 8px 14px; border-radius: 20px;
+            background: rgba(15, 20, 40, 0.75);
+            backdrop-filter: blur(20px) saturate(1.6);
+            border: 1px solid rgba(255,255,255,0.06);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04);
+            color: rgba(255,255,255,0.6); cursor: pointer;
+            font-size: 13px; font-weight: 500; font-family: inherit;
+            transition: all 0.3s;
+            animation: slideUp 0.5s 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        .stats-toggle:hover {
+            background: rgba(15, 20, 40, 0.85);
+            border-color: rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.8);
+        }
+        .stats-panel {
+            position: fixed; bottom: 60px; right: 24px; z-index: 49;
+            width: 240px; padding: 18px;
+            background: rgba(15, 20, 40, 0.85);
+            backdrop-filter: blur(20px) saturate(1.6);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04);
+            opacity: 0; visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .stats-panel.show {
+            opacity: 1; visibility: visible; transform: translateY(0);
+        }
+        .stats-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 5px 0; font-size: 12px; color: rgba(255,255,255,0.45);
+        }
+        .stats-row-label { display: flex; align-items: center; gap: 6px; }
+        .stats-row-value { font-weight: 700; color: rgba(255,255,255,0.7); }
+        .stats-bar-row { margin: 3px 0; }
+        .stats-bar-label { font-size: 11px; color: rgba(255,255,255,0.35); margin-bottom: 3px;
+            display: flex; justify-content: space-between; }
+        .stats-bar-track { height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+        .stats-bar-fill { height: 100%; border-radius: 2px; transition: width 0.6s; }
+        .stats-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 8px 0; }
+
+        /* ===== Sub-icon on markers ===== */
+        .marker-sub-icon {
+            position: absolute; bottom: -2px; right: -2px;
+            width: 18px; height: 18px; border-radius: 50%;
+            background: rgba(10, 14, 26, 0.9);
+            border: 1px solid rgba(255,255,255,0.15);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 10px; z-index: 2; line-height: 1;
         }
     </style>
 </head>
 <body>
-    <div class="page-title">
-        <span class="dot"></span>
-        我去过的地方
-        <span class="stats" id="titleStats"></span>
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-globe"></div>
+        <div class="loading-text">Loading Map</div>
     </div>
 
+    <div class="page-title">
+        <span class="title-dot"></span>
+        <span class="title-text">我去过的地方</span>
+        <span class="title-divider"></span>
+        <span class="title-stats" id="titleStats"></span>
+    </div>
+
+    <a href="heritage.html" class="heritage-link">
+        <span class="heritage-link-icon">🏛️</span>
+        <span>遗产册</span>
+    </a>
+
     <div class="legend" id="legend"></div>
+
+    <button class="stats-toggle" id="statsToggle">📊 数据</button>
+    <div class="stats-panel" id="statsPanel"></div>
 
     <div id="map"></div>
 
@@ -286,19 +495,19 @@
         var data = [];
         var map = null;
         var miniMap = null;
-        var markers = []; // Store all markers with their category
-        var activeCategory = null; // Currently active filter
+        var markers = [];
+        var activeCategory = null;
 
         var categoryConfig = {
-            '自然景观': { emoji: '🏔️', color: '#4CAF50', bg: '#E8F5E9' },
-            '世界遗产': { emoji: '🏛️', color: '#9C27B0', bg: '#F3E5F5' },
-            '历史文化': { emoji: '🏯', color: '#795548', bg: '#EFEBE9' },
-            '现代都市': { emoji: '🌃', color: '#2196F3', bg: '#E3F2FD' },
-            '美食体验': { emoji: '🍜', color: '#FF5722', bg: '#FBE9E7' },
-            '海岛海滩': { emoji: '🏖️', color: '#00BCD4', bg: '#E0F7FA' },
-            '主题乐园': { emoji: '🎢', color: '#E91E63', bg: '#FCE4EC' },
-            '自驾公路': { emoji: '🚗', color: '#FF9800', bg: '#FFF3E0' },
-            '地质奇观': { emoji: '🌋', color: '#607D8B', bg: '#ECEFF1' }
+            '自然景观': { emoji: '🏔️', color: '#48bb78', glow: 'rgba(72,187,120,0.4)', bg: 'rgba(72,187,120,0.15)', text: '#48bb78' },
+            '世界遗产': { emoji: '🏛️', color: '#9f7aea', glow: 'rgba(159,122,234,0.4)', bg: 'rgba(159,122,234,0.15)', text: '#9f7aea' },
+            '历史文化': { emoji: '🏯', color: '#ed8936', glow: 'rgba(237,137,54,0.4)', bg: 'rgba(237,137,54,0.15)', text: '#ed8936' },
+            '现代都市': { emoji: '🌃', color: '#4299e1', glow: 'rgba(66,153,225,0.4)', bg: 'rgba(66,153,225,0.15)', text: '#4299e1' },
+            '美食体验': { emoji: '🍜', color: '#fc8181', glow: 'rgba(252,129,129,0.4)', bg: 'rgba(252,129,129,0.15)', text: '#fc8181' },
+            '海岛海滩': { emoji: '🏖️', color: '#38b2ac', glow: 'rgba(56,178,172,0.4)', bg: 'rgba(56,178,172,0.15)', text: '#38b2ac' },
+            '主题乐园': { emoji: '🎢', color: '#ed64a6', glow: 'rgba(237,100,166,0.4)', bg: 'rgba(237,100,166,0.15)', text: '#ed64a6' },
+            '自驾公路': { emoji: '🚗', color: '#ecc94b', glow: 'rgba(236,201,75,0.4)', bg: 'rgba(236,201,75,0.15)', text: '#ecc94b' },
+            '地质奇观': { emoji: '🌋', color: '#a0aec0', glow: 'rgba(160,174,192,0.4)', bg: 'rgba(160,174,192,0.15)', text: '#a0aec0' }
         };
 
         function load() {
@@ -309,15 +518,10 @@
         }
 
         function init() {
-            // Flatten all spots
             var allSpots = [];
             data.forEach(function(entry) {
                 entry.spots.forEach(function(spot) {
-                    allSpots.push({
-                        city: entry.city,
-                        visited: entry.visited,
-                        spot: spot
-                    });
+                    allSpots.push({ city: entry.city, visited: entry.visited, spot: spot });
                 });
             });
 
@@ -325,9 +529,8 @@
             var wanted = allSpots.filter(function(s) { return !s.visited; });
 
             document.getElementById('titleStats').textContent =
-                visited.length + ' 个景点去过 · ' + wanted.length + ' 个想去';
+                visited.length + ' 已探索 · ' + wanted.length + ' 待解锁';
 
-            // Build legend with "全部" option
             var categories = {};
             allSpots.forEach(function(s) {
                 var cat = s.spot.category || '自然景观';
@@ -335,106 +538,190 @@
             });
 
             var legendHtml = '<div class="legend-item active" data-category="全部">' +
-                '<div class="legend-icon" style="background:#666">✓</div>' +
-                '<span>全部</span>' +
-                '</div>';
+                '<div class="legend-icon" style="background:rgba(99,179,237,0.2);border-color:rgba(99,179,237,0.3)">✦</div>' +
+                '<span>全部</span></div>';
 
             legendHtml += Object.keys(categories).map(function(cat) {
                 var cfg = categoryConfig[cat] || categoryConfig['自然景观'];
                 return '<div class="legend-item" data-category="' + cat + '">' +
-                    '<div class="legend-icon" style="background:' + cfg.color + '">' + cfg.emoji + '</div>' +
-                    '<span>' + cat + ' (' + categories[cat] + ')</span>' +
-                    '</div>';
+                    '<div class="legend-icon" style="background:' + cfg.bg + ';border-color:' + cfg.color + '">' + cfg.emoji + '</div>' +
+                    '<span>' + cat + ' ' + categories[cat] + '</span></div>';
             }).join('');
 
             document.getElementById('legend').innerHTML = legendHtml;
 
-            // Add click handler to legend items
             document.getElementById('legend').addEventListener('click', function(e) {
                 var item = e.target.closest('.legend-item');
                 if (!item) return;
-
                 var category = item.getAttribute('data-category');
 
-                // If clicking the same category, deselect (show all)
-                if (category === activeCategory) {
-                    activeCategory = null;
-                } else if (category === '全部') {
+                if (category === activeCategory || category === '全部') {
                     activeCategory = null;
                 } else {
                     activeCategory = category;
                 }
 
-                // Update legend UI
                 document.querySelectorAll('.legend-item').forEach(function(el) {
                     var cat = el.getAttribute('data-category');
                     el.classList.remove('active', 'dimmed');
-
                     if (activeCategory === null) {
-                        // Show all - only "全部" is active
                         if (cat === '全部') el.classList.add('active');
                     } else {
-                        // Filter active
-                        if (cat === activeCategory) {
-                            el.classList.add('active');
-                        } else if (cat !== '全部') {
-                            el.classList.add('dimmed');
-                        }
+                        if (cat === activeCategory) el.classList.add('active');
+                        else if (cat !== '全部') el.classList.add('dimmed');
                     }
                 });
 
-                // Filter markers
                 filterMarkers();
             });
 
-            // Init map
             map = new AMap.Map('map', {
                 zoom: 4,
                 center: [104.19, 35.86],
-                mapStyle: 'amap://styles/macaron',
+                mapStyle: 'amap://styles/darkblue',
                 resizeEnable: true
             });
 
-            // Render markers
+            map.on('complete', function() {
+                setTimeout(function() {
+                    document.getElementById('loadingScreen').classList.add('hidden');
+                }, 400);
+            });
+
             renderMarkers(allSpots);
+            renderStats(allSpots);
+
+            document.getElementById('statsToggle').addEventListener('click', function() {
+                document.getElementById('statsPanel').classList.toggle('show');
+            });
+        }
+
+        function renderStats(allSpots) {
+            var visitedSpots = allSpots.filter(function(s) { return s.visited; });
+            var wantedSpots = allSpots.filter(function(s) { return !s.visited; });
+
+            var provinces = {};
+            var countries = { '中国': true };
+            visitedSpots.forEach(function(s) {
+                var loc = s.spot.location || '';
+                var m = loc.match(/^([\u4e00-\u9fa5]{2,3}(?:省|自治区|市))/);
+                if (m) provinces[m[1]] = true;
+                if (loc.indexOf('台湾') !== -1) { provinces['台湾'] = true; countries['台湾'] = true; }
+                if (loc.indexOf('日本') !== -1) countries['日本'] = true;
+                if (loc.indexOf('越南') !== -1) countries['越南'] = true;
+                if (loc.indexOf('冰岛') !== -1) countries['冰岛'] = true;
+            });
+
+            var categories = {};
+            allSpots.forEach(function(s) {
+                var cat = s.spot.category || '自然景观';
+                categories[cat] = (categories[cat] || 0) + 1;
+            });
+            var maxCat = Math.max.apply(null, Object.keys(categories).map(function(k) { return categories[k]; }));
+
+            var html = '<div class="stats-row"><span class="stats-row-label">🗺️ 省份</span><span class="stats-row-value">' + Object.keys(provinces).length + '</span></div>' +
+                '<div class="stats-row"><span class="stats-row-label">🌍 国家/地区</span><span class="stats-row-value">' + Object.keys(countries).length + '</span></div>' +
+                '<div class="stats-row"><span class="stats-row-label">✦ 已探索</span><span class="stats-row-value">' + visitedSpots.length + '</span></div>' +
+                '<div class="stats-row"><span class="stats-row-label">◇ 待解锁</span><span class="stats-row-value">' + wantedSpots.length + '</span></div>' +
+                '<div class="stats-divider"></div>';
+
+            Object.keys(categories).forEach(function(cat) {
+                var cfg = categoryConfig[cat] || categoryConfig['自然景观'];
+                var pct = (categories[cat] / maxCat * 100);
+                html += '<div class="stats-bar-row">' +
+                    '<div class="stats-bar-label"><span>' + cfg.emoji + ' ' + cat + '</span><span>' + categories[cat] + '</span></div>' +
+                    '<div class="stats-bar-track"><div class="stats-bar-fill" style="width:' + pct + '%;background:' + cfg.color + '"></div></div>' +
+                '</div>';
+            });
+
+            document.getElementById('statsPanel').innerHTML = html;
         }
 
         function renderMarkers(allSpots) {
-            // Add markers
-            allSpots.forEach(function(item) {
+            allSpots.forEach(function(item, idx) {
                 var spot = item.spot;
                 if (!spot.lat || !spot.lng) return;
 
                 var cat = spot.category || '自然景观';
                 var cfg = categoryConfig[cat] || categoryConfig['自然景观'];
+                var isVisited = item.visited;
 
-                var markerStyle = 'width:36px;height:36px;border-radius:50%;border:3px solid white;' +
-                    'box-shadow:0 3px 10px rgba(0,0,0,0.25);display:flex;align-items:center;justify-content:center;' +
-                    'font-size:18px;cursor:pointer;transition:transform 0.2s,opacity 0.3s;background:' + cfg.color + ';';
+                var wrapper = document.createElement('div');
+                wrapper.style.cssText = 'position:relative;width:44px;height:44px;display:flex;align-items:center;justify-content:center;';
+
+                if (isVisited) {
+                    // Pulse ring
+                    var ring = document.createElement('div');
+                    ring.style.cssText = 'position:absolute;inset:0;border-radius:50%;' +
+                        'animation:marker-pulse 2.5s ease-out infinite;' +
+                        'animation-delay:' + (idx * 0.15 % 2.5) + 's;' +
+                        '--pulse-color:' + cfg.glow + ';';
+                    wrapper.appendChild(ring);
+                }
 
                 var el = document.createElement('div');
-                el.style.cssText = markerStyle;
+                if (isVisited) {
+                    el.style.cssText = 'width:38px;height:38px;border-radius:50%;' +
+                        'border:2.5px solid rgba(255,255,255,0.25);' +
+                        'box-shadow:0 4px 15px rgba(0,0,0,0.4), 0 0 20px ' + cfg.glow + ';' +
+                        'display:flex;align-items:center;justify-content:center;' +
+                        'font-size:18px;cursor:pointer;transition:all 0.3s cubic-bezier(0.16,1,0.3,1);' +
+                        'background:linear-gradient(145deg, ' + cfg.color + ', ' + cfg.color + 'cc);' +
+                        'position:relative;z-index:1;';
+                } else {
+                    el.style.cssText = 'width:34px;height:34px;border-radius:50%;' +
+                        'border:2px dashed rgba(255,255,255,0.3);' +
+                        'box-shadow:0 4px 15px rgba(0,0,0,0.3);' +
+                        'display:flex;align-items:center;justify-content:center;' +
+                        'font-size:16px;cursor:pointer;transition:all 0.3s cubic-bezier(0.16,1,0.3,1);' +
+                        'background:rgba(30,40,70,0.8);' +
+                        'animation:float 3s ease-in-out infinite;' +
+                        'animation-delay:' + (idx * 0.3 % 3) + 's;' +
+                        'position:relative;z-index:1;';
+                }
                 el.textContent = cfg.emoji;
 
-                el.addEventListener('mouseenter', function() { this.style.transform = 'scale(1.15)'; });
-                el.addEventListener('mouseleave', function() { this.style.transform = 'scale(1)'; });
+                el.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.25)';
+                    this.style.boxShadow = '0 6px 25px rgba(0,0,0,0.5), 0 0 35px ' + cfg.glow;
+                    this.style.borderColor = 'rgba(255,255,255,0.5)';
+                });
+                el.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                    this.style.boxShadow = isVisited
+                        ? '0 4px 15px rgba(0,0,0,0.4), 0 0 20px ' + cfg.glow
+                        : '0 4px 15px rgba(0,0,0,0.3)';
+                    this.style.borderColor = isVisited ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.3)';
+                });
+
+                wrapper.appendChild(el);
+
+                var subIconMap = {
+                    '湖泊': '💧', '冰川': '🧊', '雪山': '❄️', '草原': '🌾',
+                    '沙漠': '🏜️', '峡谷': '⛰️', '盐湖': '✨', '花海': '🌸',
+                    '天池': '💎', '温泉': '♨️', '古城': '🏰', '寺院': '🙏',
+                    '夜景': '🌙', '海滩': '🏖️', '日落': '🌅', '红叶': '🍁',
+                    '极光': '🌌', '湿地': '🦆', '帕米尔': '⛰️', '边境': '🛂'
+                };
+                var tags = spot.tags || [];
+                for (var t = 0; t < tags.length; t++) {
+                    if (subIconMap[tags[t]]) {
+                        var subIcon = document.createElement('div');
+                        subIcon.className = 'marker-sub-icon';
+                        subIcon.textContent = subIconMap[tags[t]];
+                        wrapper.appendChild(subIcon);
+                        break;
+                    }
+                }
 
                 var marker = new AMap.Marker({
                     position: [spot.lng, spot.lat],
-                    content: el,
-                    offset: new AMap.Pixel(-18, -18)
+                    content: wrapper,
+                    offset: new AMap.Pixel(-22, -22)
                 });
 
-                marker.on('click', function() {
-                    showPopup(item);
-                });
-
-                // Store marker with its category for filtering
-                markers.push({
-                    marker: marker,
-                    category: cat
-                });
-
+                marker.on('click', function() { showPopup(item); });
+                markers.push({ marker: marker, category: cat });
                 map.add(marker);
             });
 
@@ -448,13 +735,11 @@
             markers.forEach(function(item) {
                 if (activeCategory === null || item.category === activeCategory) {
                     item.marker.show();
-                    item.marker.getContent().style.opacity = '1';
                 } else {
                     item.marker.hide();
                 }
             });
 
-            // Re-fit view to visible markers
             var visibleMarkers = markers
                 .filter(function(item) { return activeCategory === null || item.category === activeCategory; })
                 .map(function(item) { return item.marker; });
@@ -480,13 +765,13 @@
             var categoryEl = document.getElementById('popupCategory');
             categoryEl.textContent = cat;
             categoryEl.style.background = cfg.bg;
-            categoryEl.style.color = cfg.color;
+            categoryEl.style.color = cfg.text;
+            categoryEl.style.border = '1px solid ' + cfg.color + '33';
 
             var statusEl = document.getElementById('popupStatus');
-            statusEl.textContent = isVisited ? '✓ 已去过' : '☆ 想去';
+            statusEl.textContent = isVisited ? '✦ 已探索' : '◇ 待解锁';
             statusEl.className = 'popup-status ' + (isVisited ? 'visited' : 'wanted');
 
-            // Render content
             var html = '';
             if (spot.content) {
                 html += '<div class="popup-text">' + spot.content + '</div>';
@@ -498,7 +783,12 @@
                 html += '<div class="popup-tags">' + spot.tags.map(function(t) { return '<span class="popup-tag">' + t + '</span>'; }).join('') + '</div>';
             }
             if (spot.lat && spot.lng) {
-                html += '<div class="popup-minimap" id="popup-minimap"></div>';
+                var isOverseasFar = (spot.lng < 0 || spot.lat > 55);
+                if (!isOverseasFar) {
+                    html += '<div class="popup-minimap" id="popup-minimap"></div>';
+                } else {
+                    html += '<div class="popup-loc" style="margin-top:8px;opacity:0.6;">坐标: ' + spot.lat + ', ' + spot.lng + '</div>';
+                }
             }
 
             document.getElementById('popupContent').innerHTML = html;
@@ -510,16 +800,17 @@
                 });
             });
 
-            // Render mini map
-            if (spot.lat && spot.lng) {
+            if (spot.lat && spot.lng && !(spot.lng < 0 || spot.lat > 55)) {
                 setTimeout(function() {
                     var el = document.getElementById('popup-minimap');
                     if (!el) return;
 
+                    var isRemote = spot.lng < 76 || spot.lng > 135;
+                    var miniZoom = isRemote ? 8 : 13;
                     miniMap = new AMap.Map(el, {
-                        zoom: 13,
+                        zoom: miniZoom,
                         center: [spot.lng, spot.lat],
-                        mapStyle: 'amap://styles/macaron',
+                        mapStyle: isRemote ? 'amap://styles/normal' : 'amap://styles/darkblue',
                         resizeEnable: true,
                         dragEnable: false,
                         zoomEnable: false,
@@ -527,18 +818,16 @@
                         doubleClickZoom: false
                     });
 
-                    var dotStyle = 'width:16px;height:16px;border-radius:50%;border:2px solid white;' +
-                        'box-shadow:0 1px 4px rgba(0,0,0,0.3);background:' + cfg.color + ';';
-
                     var dot = document.createElement('div');
-                    dot.style.cssText = dotStyle;
+                    dot.style.cssText = 'width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,0.5);' +
+                        'box-shadow:0 0 15px ' + cfg.glow + ', 0 2px 6px rgba(0,0,0,0.4);background:' + cfg.color + ';';
 
                     miniMap.add(new AMap.Marker({
                         position: [spot.lng, spot.lat],
                         content: dot,
-                        offset: new AMap.Pixel(-8, -8)
+                        offset: new AMap.Pixel(-7, -7)
                     }));
-                }, 150);
+                }, 200);
             }
         }
 
@@ -548,7 +837,7 @@
             setTimeout(function() {
                 overlay.style.display = 'none';
                 if (miniMap) { miniMap.destroy(); miniMap = null; }
-            }, 300);
+            }, 400);
         }
 
         document.getElementById('popupClose').addEventListener('click', closePopup);

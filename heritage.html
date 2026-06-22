@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>世界遗产收集册</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://webapi.amap.com/maps?v=2.0&key=f66cdc07203c3075a2a2ae1ea67eea8e"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+            background: #0a0e1a;
+            color: #fff;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* ===== Loading Screen ===== */
+        #loadingScreen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #0a0e1a; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; z-index: 9999;
+            transition: opacity 0.6s, visibility 0.6s;
+        }
+        #loadingScreen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        .loading-spinner {
+            width: 48px; height: 48px; border-radius: 50%;
+            border: 3px solid rgba(159,122,234,0.15);
+            border-top-color: #9f7aea;
+            animation: spin 1s linear infinite;
+        }
+        .loading-text { margin-top: 16px; color: rgba(255,255,255,0.5); font-size: 14px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ===== Nav Bar ===== */
+        .nav-bar {
+            position: fixed; top: 0; left: 0; right: 0; height: 56px;
+            background: rgba(15, 20, 40, 0.85);
+            backdrop-filter: blur(20px) saturate(1.6);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 24px; z-index: 100;
+            animation: slideDown 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        .nav-back {
+            color: #9f7aea; text-decoration: none; font-size: 14px; font-weight: 500;
+            display: flex; align-items: center; gap: 6px;
+            transition: color 0.2s;
+        }
+        .nav-back:hover { color: #b794f4; }
+        .nav-back svg { width: 16px; height: 16px; fill: currentColor; }
+        .nav-title { font-size: 16px; font-weight: 700; letter-spacing: 1px; }
+        .nav-counter {
+            font-size: 13px; color: #9f7aea; font-weight: 600;
+            background: rgba(159,122,234,0.12); padding: 4px 12px;
+            border-radius: 20px; border: 1px solid rgba(159,122,234,0.2);
+        }
+
+        /* ===== Content ===== */
+        .content { padding-top: 56px; }
+
+        /* ===== Map Section ===== */
+        .map-section { width: 100%; height: 40vh; min-height: 280px; position: relative; }
+        #heritageMap { width: 100%; height: 100%; }
+        .map-overlay-gradient {
+            position: absolute; bottom: 0; left: 0; right: 0; height: 60px;
+            background: linear-gradient(transparent, #0a0e1a);
+            pointer-events: none; z-index: 1;
+        }
+
+        /* ===== Progress Section ===== */
+        .progress-section {
+            padding: 32px 24px; max-width: 900px; margin: 0 auto;
+            animation: fadeUp 0.6s 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .progress-card {
+            background: rgba(15, 20, 40, 0.75);
+            backdrop-filter: blur(20px) saturate(1.6);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px; padding: 28px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04);
+        }
+        .progress-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; }
+        .progress-title { font-size: 20px; font-weight: 700; }
+        .progress-count { font-size: 28px; font-weight: 900; color: #9f7aea; }
+        .progress-count span { font-size: 14px; color: rgba(255,255,255,0.4); font-weight: 500; }
+        .progress-bar-track {
+            width: 100%; height: 8px; background: rgba(255,255,255,0.06);
+            border-radius: 4px; overflow: hidden; margin-bottom: 20px;
+        }
+        .progress-bar-fill {
+            height: 100%; border-radius: 4px; width: 0;
+            background: linear-gradient(90deg, #9f7aea, #63b3ed);
+            transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .progress-types { display: flex; gap: 20px; flex-wrap: wrap; }
+        .progress-type {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 13px; color: rgba(255,255,255,0.5);
+        }
+        .progress-type-dot {
+            width: 10px; height: 10px; border-radius: 50%;
+        }
+        .progress-type-dot.cultural { background: #ed8936; }
+        .progress-type-dot.natural { background: #48bb78; }
+        .progress-type-dot.mixed { background: #4299e1; }
+
+        /* ===== Filter Tabs ===== */
+        .filter-section { padding: 0 24px 16px; max-width: 900px; margin: 0 auto; }
+        .filter-group {
+            margin-bottom: 10px;
+            animation: fadeUp 0.6s 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        .filter-group-label {
+            font-size: 11px; color: rgba(255,255,255,0.25); margin-bottom: 6px;
+            font-weight: 600; letter-spacing: 1px;
+        }
+        .filter-tabs {
+            display: flex; gap: 8px; flex-wrap: wrap;
+        }
+        .filter-tab {
+            padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 500;
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.5); cursor: pointer;
+            transition: all 0.2s;
+        }
+        .filter-tab:hover { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7); }
+        .filter-tab.active {
+            background: rgba(159,122,234,0.15); border-color: rgba(159,122,234,0.3);
+            color: #b794f4;
+        }
+
+        /* ===== Heritage List ===== */
+        .list-section {
+            padding: 0 24px 40px; max-width: 1100px; margin: 0 auto;
+            animation: fadeUp 0.6s 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+            columns: 2; column-gap: 12px;
+        }
+        .list-count {
+            font-size: 12px; color: rgba(255,255,255,0.3); margin-bottom: 12px;
+            padding: 0 4px; column-span: all;
+        }
+        .heritage-item {
+            break-inside: avoid; display: flex; flex-direction: column;
+            padding: 16px; border-radius: 14px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.15);
+            margin-bottom: 12px; cursor: pointer;
+            transition: all 0.3s; position: relative; overflow: hidden;
+        }
+        .heritage-item:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.13);
+            border-color: rgba(255,255,255,0.22);
+            box-shadow: 0 8px 28px rgba(0,0,0,0.2);
+        }
+        .heritage-item.visited {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(159,122,234,0.3);
+            box-shadow: 0 0 16px rgba(159,122,234,0.08);
+        }
+        .heritage-item.visited::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, #9f7aea, #63b3ed);
+        }
+        .heritage-item.unvisited { opacity: 0.6; }
+        .heritage-item.unvisited:hover { opacity: 0.85; }
+        .heritage-item-top {
+            display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px;
+        }
+        .heritage-cover {
+            width: 100%; border-radius: 10px; margin-bottom: 10px;
+            aspect-ratio: 5/3; object-fit: cover;
+            opacity: 0.85; transition: opacity 0.3s;
+        }
+        .heritage-item:hover .heritage-cover { opacity: 1; }
+        .heritage-name-link {
+            color: rgba(255,255,255,0.95); text-decoration: none; transition: color 0.2s;
+        }
+        .heritage-name-link:hover { color: #b794f4; }
+        .heritage-dot {
+            width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0;
+        }
+        .heritage-dot.visited {
+            background: #b794f4;
+            box-shadow: 0 0 10px rgba(159,122,234,0.5);
+        }
+        .heritage-dot.unvisited {
+            background: transparent;
+            border: 1.5px dashed rgba(255,255,255,0.3);
+        }
+        .heritage-info { flex: 1; min-width: 0; }
+        .heritage-name { font-size: 14px; font-weight: 600; margin-bottom: 6px; line-height: 1.4; }
+        .heritage-meta {
+            font-size: 12px; color: rgba(255,255,255,0.6);
+            display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+        }
+        .heritage-criteria-tags {
+            display: flex; gap: 4px; flex-wrap: wrap; margin-top: 8px;
+        }
+        .heritage-criteria-tag {
+            font-size: 10px; padding: 1px 6px; border-radius: 8px; font-weight: 600;
+        }
+        .heritage-criteria-tag.cultural-c { background: rgba(237,137,54,0.15); color: rgba(237,137,54,0.85); }
+        .heritage-criteria-tag.natural-c { background: rgba(72,187,120,0.15); color: rgba(72,187,120,0.85); }
+        .heritage-type-badge {
+            font-size: 11px; padding: 1px 8px; border-radius: 10px; font-weight: 500;
+        }
+        .heritage-type-badge.cultural { background: rgba(237,137,54,0.2); color: #ed8936; }
+        .heritage-type-badge.natural { background: rgba(72,187,120,0.2); color: #48bb78; }
+        .heritage-type-badge.mixed { background: rgba(66,153,225,0.2); color: #4299e1; }
+
+        /* ===== Section Divider ===== */
+        .section-divider {
+            max-width: 900px; margin: 0 auto; padding: 40px 24px 24px;
+            display: flex; align-items: center; gap: 16px;
+            animation: fadeUp 0.6s 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        .section-divider-line { flex: 1; height: 1px; background: rgba(255,255,255,0.06); }
+        .section-divider-title { font-size: 18px; font-weight: 700; color: rgba(255,255,255,0.9); }
+        .section-divider-icon { font-size: 22px; }
+
+        /* ===== Badge Grid ===== */
+        .badges-section {
+            padding: 0 24px 60px; max-width: 900px; margin: 0 auto;
+            animation: fadeUp 0.6s 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        .badge-stats {
+            display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap;
+        }
+        .badge-stat {
+            font-size: 13px; color: rgba(255,255,255,0.4);
+        }
+        .badge-stat strong { color: #9f7aea; font-weight: 700; }
+        .badge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 12px;
+        }
+        .badge-card {
+            background: rgba(15, 20, 40, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px; padding: 20px 16px; text-align: center;
+            cursor: pointer; transition: all 0.3s;
+            position: relative; overflow: hidden;
+        }
+        .badge-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255,255,255,0.12);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+        .badge-card.unlocked {
+            border-color: rgba(159,122,234,0.2);
+            box-shadow: 0 0 20px rgba(159,122,234,0.08);
+        }
+        .badge-card.locked {
+            opacity: 0.35; filter: grayscale(0.7);
+        }
+        .badge-card.locked:hover { opacity: 0.55; }
+        .badge-icon { font-size: 36px; margin-bottom: 8px; display: block; }
+        .badge-title { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+        .badge-tier {
+            font-size: 11px; color: #9f7aea; font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .badge-desc { font-size: 11px; color: rgba(255,255,255,0.35); line-height: 1.4; }
+        .badge-progress-track {
+            width: 100%; height: 3px; background: rgba(255,255,255,0.06);
+            border-radius: 2px; margin-top: 12px; overflow: hidden;
+        }
+        .badge-progress-fill {
+            height: 100%; border-radius: 2px;
+            background: linear-gradient(90deg, #9f7aea, #63b3ed);
+            transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* ===== Popup Overlay ===== */
+        .popup-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 8, 18, 0.7);
+            backdrop-filter: blur(8px);
+            display: none; align-items: center; justify-content: center;
+            z-index: 200; opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .popup-overlay.show { opacity: 1; display: flex; }
+        body:has(.popup-overlay.show) { overflow: hidden; }
+        html:has(.popup-overlay.show) { overflow: hidden; }
+        .popup-card {
+            background: rgba(15, 20, 40, 0.95);
+            backdrop-filter: blur(24px) saturate(1.8);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px; padding: 0;
+            max-width: 540px; width: 92%;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+            transform: translateY(30px) scale(0.92);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            max-height: 95vh; overflow-y: auto; overflow-x: hidden;
+        }
+        .popup-overlay.show .popup-card { transform: translateY(0) scale(1); }
+        .popup-close {
+            position: absolute; top: 12px; right: 12px;
+            width: 32px; height: 32px; border-radius: 50%;
+            background: rgba(0,0,0,0.45); border: none;
+            backdrop-filter: blur(8px);
+            color: rgba(255,255,255,0.85); cursor: pointer;
+            font-size: 16px; display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s; z-index: 5;
+        }
+        .popup-close:hover { background: rgba(0,0,0,0.65); color: #fff; }
+        /* Hero cover image */
+        .popup-cover-wrap {
+            position: relative; width: 100%; aspect-ratio: 16/9;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(159,122,234,0.12), rgba(99,179,237,0.08));
+        }
+        .popup-cover {
+            width: 100%; height: 100%; object-fit: cover; display: block;
+        }
+        .popup-cover-fade {
+            position: absolute; inset: 0; pointer-events: none;
+            background: linear-gradient(180deg,
+                transparent 0%,
+                transparent 45%,
+                rgba(15,20,40,0.55) 80%,
+                rgba(15,20,40,0.95) 100%);
+        }
+        .popup-cover-fallback {
+            position: absolute; inset: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 72px;
+        }
+        .popup-header {
+            text-align: center; margin-bottom: 12px; position: relative;
+            padding: 24px 28px 0;
+        }
+        .popup-card:has(.popup-cover-wrap) .popup-header {
+            padding-top: 0; margin-top: -56px; z-index: 2;
+        }
+        .popup-emoji { font-size: 48px; margin-bottom: 8px; display: block; }
+        .popup-name { font-size: 22px; font-weight: 700; margin-bottom: 2px; }
+        .popup-name-en { font-size: 12px; color: rgba(255,255,255,0.3); margin-bottom: 8px; }
+        .popup-badges {
+            display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+        .popup-badge {
+            font-size: 11px; padding: 3px 10px; border-radius: 10px; font-weight: 500;
+        }
+        .popup-status-badge {
+            font-size: 12px; font-weight: 600; padding: 4px 14px; border-radius: 20px;
+        }
+        .popup-status-badge.visited {
+            background: rgba(159,122,234,0.15); color: #b794f4;
+            border: 1px solid rgba(159,122,234,0.25);
+        }
+        .popup-status-badge.unvisited {
+            background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.4);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .popup-body { margin-top: 12px; padding: 0 28px 24px; }
+        .popup-desc {
+            font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.7;
+            margin-bottom: 12px;
+        }
+        .popup-matched {
+            background: rgba(159,122,234,0.08); border: 1px solid rgba(159,122,234,0.15);
+            border-radius: 12px; padding: 10px 12px; margin-top: 8px;
+        }
+        .popup-matched-label {
+            font-size: 11px; color: #9f7aea; font-weight: 600; margin-bottom: 6px;
+            display: flex; align-items: center; gap: 4px;
+        }
+        .popup-matched-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+        .popup-matched-text { font-size: 12px; color: rgba(255,255,255,0.4); line-height: 1.5; }
+        .popup-minimap { width: 100%; height: 100px; border-radius: 10px; margin-top: 10px; overflow: hidden; }
+
+        /* Badge popup */
+        .badge-popup-icon { font-size: 56px; display: block; margin-bottom: 12px; }
+        .badge-popup-title { font-size: 22px; font-weight: 900; margin-bottom: 4px; }
+        .badge-popup-tier { font-size: 13px; color: #9f7aea; font-weight: 600; margin-bottom: 8px; }
+        .badge-popup-desc { font-size: 14px; color: rgba(255,255,255,0.5); margin-bottom: 16px; line-height: 1.6; }
+        .badge-popup-progress {
+            background: rgba(255,255,255,0.04); border-radius: 12px; padding: 16px;
+        }
+        .badge-popup-progress-label {
+            font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 8px;
+            display: flex; justify-content: space-between;
+        }
+        .badge-popup-progress-track {
+            width: 100%; height: 6px; background: rgba(255,255,255,0.06);
+            border-radius: 3px; overflow: hidden;
+        }
+        .badge-popup-progress-fill {
+            height: 100%; border-radius: 3px;
+            background: linear-gradient(90deg, #9f7aea, #63b3ed);
+        }
+        .badge-popup-locked-hint {
+            font-size: 12px; color: rgba(255,255,255,0.3); margin-top: 12px; text-align: center;
+        }
+
+        /* ===== Scrollbar ===== */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+        /* ===== Responsive ===== */
+        @media (min-width: 700px) {
+            .list-section { columns: 3; }
+        }
+        @media (max-width: 600px) {
+            .map-section { height: 30vh; min-height: 200px; }
+            .progress-section, .filter-section, .list-section, .badges-section, .section-divider { padding-left: 16px; padding-right: 16px; }
+            .list-section { columns: 1; }
+            .badge-grid { grid-template-columns: repeat(2, 1fr); }
+            .nav-title { font-size: 14px; }
+            .popup-card { padding: 0; }
+            .popup-header { padding: 20px 20px 0; margin-bottom: 14px; }
+            .popup-card:has(.popup-cover-wrap) .popup-header { padding-top: 0; margin-top: -48px; }
+            .popup-body { padding: 0 20px 20px; }
+        }
+
+        /* ===== Marker Pulse ===== */
+        @keyframes marker-pulse {
+            0% { transform: scale(1); opacity: 0.6; }
+            70% { transform: scale(2.2); opacity: 0; }
+            100% { transform: scale(2.2); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div id="loadingScreen">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading Heritage</div>
+    </div>
+
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-back">
+            <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            返回地图
+        </a>
+        <div class="nav-title">世界遗产收集册</div>
+        <div class="nav-counter" id="navCounter">-/-</div>
+    </nav>
+
+    <div class="content">
+        <div class="map-section">
+            <div id="heritageMap"></div>
+            <div class="map-overlay-gradient"></div>
+        </div>
+
+        <section class="progress-section">
+            <div class="progress-card">
+                <div class="progress-header">
+                    <div class="progress-title">🏛️ 收集进度</div>
+                    <div class="progress-count" id="progressCount">0 <span>/ 59</span></div>
+                </div>
+                <div class="progress-bar-track">
+                    <div class="progress-bar-fill" id="progressBar"></div>
+                </div>
+                <div class="progress-types" id="progressTypes"></div>
+            </div>
+        </section>
+
+        <section class="filter-section">
+            <div class="filter-group">
+                <div class="filter-group-label">类型</div>
+                <div class="filter-tabs" id="filterType"></div>
+            </div>
+            <div class="filter-group">
+                <div class="filter-group-label">入选标准</div>
+                <div class="filter-tabs" id="filterCriteria"></div>
+            </div>
+            <div class="filter-group">
+                <div class="filter-group-label">地区</div>
+                <div class="filter-tabs" id="filterRegion"></div>
+            </div>
+        </section>
+
+        <section class="list-section" id="heritageList"></section>
+
+        <div class="section-divider">
+            <div class="section-divider-line"></div>
+            <span class="section-divider-icon">🏅</span>
+            <span class="section-divider-title">成就徽章</span>
+            <div class="section-divider-line"></div>
+        </div>
+
+        <section class="badges-section">
+            <div class="badge-stats" id="badgeStats"></div>
+            <div class="badge-grid" id="badgeGrid"></div>
+        </section>
+    </div>
+
+    <!-- Heritage Detail Popup -->
+    <div class="popup-overlay" id="heritagePopup">
+        <div class="popup-card" style="position:relative;">
+            <button class="popup-close" id="heritagePopupClose">&times;</button>
+            <div id="heritagePopupCover"></div>
+            <div class="popup-header" id="heritagePopupHeader"></div>
+            <div class="popup-body" id="heritagePopupBody"></div>
+        </div>
+    </div>
+
+    <!-- Badge Detail Popup -->
+    <div class="popup-overlay" id="badgePopup">
+        <div class="popup-card" style="position:relative;">
+            <button class="popup-close" id="badgePopupClose">&times;</button>
+            <div class="popup-header" id="badgePopupHeader"></div>
+            <div class="popup-body" id="badgePopupBody"></div>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        var heritageMap = null;
+        var heritagePopupMap = null;
+        var travelData = [];
+        var heritageData = { china: [], overseas: [] };
+        var badgeDefs = [];
+        var matchedResults = [];
+        var computedBadges = [];
+        var activeFilter = 'all';
+        var activeTypeFilter = 'all';
+        var activeRegionFilter = 'all';
+        var activeCriteriaFilter = 'all';
+
+        var typeLabels = { cultural: '文化遗产', natural: '自然遗产', mixed: '双重遗产' };
+        var typeColors = {
+            cultural: { bg: 'rgba(237,137,54,0.15)', color: '#ed8936' },
+            natural: { bg: 'rgba(72,187,120,0.15)', color: '#48bb78' },
+            mixed: { bg: 'rgba(66,153,225,0.15)', color: '#4299e1' }
+        };
+
+        load();
+
+        function load() {
+            Promise.all([
+                fetch('data/travel.json').then(function(r) { return r.json(); }),
+                fetch('data/heritage_global.json').then(function(r) { return r.json(); }),
+                fetch('data/badges.json').then(function(r) { return r.json(); })
+            ]).then(function(results) {
+                travelData = results[0];
+                heritageData = results[1];
+                badgeDefs = results[2];
+                init();
+            });
+        }
+
+        function init() {
+            var allVisitedSpots = [];
+            travelData.forEach(function(entry) {
+                if (!entry.visited) return;
+                entry.spots.forEach(function(spot) {
+                    allVisitedSpots.push({
+                        city: entry.city, title: spot.title, content: spot.content,
+                        location: spot.location, lat: spot.lat, lng: spot.lng,
+                        category: spot.category, tags: spot.tags || []
+                    });
+                });
+            });
+
+            matchedResults = matchHeritage(heritageData, allVisitedSpots);
+            computedBadges = computeBadges(badgeDefs, allVisitedSpots, matchedResults);
+
+            var totalVisited = matchedResults.filter(function(h) { return h.visited; }).length;
+            document.getElementById('navCounter').textContent = totalVisited + '/' + matchedResults.length;
+
+            renderProgress(matchedResults);
+            renderMap(matchedResults);
+            renderFilters();
+            renderList(matchedResults);
+            renderBadges(computedBadges);
+
+            document.getElementById('loadingScreen').classList.add('hidden');
+        }
+
+        function matchHeritage(heritageSites, visitedSpots) {
+            var heritageSpots = visitedSpots.filter(function(s) {
+                return s.category === '世界遗产';
+            });
+            return heritageSites.map(function(site) {
+                var matched = null;
+                for (var i = 0; i < heritageSpots.length; i++) {
+                    var spot = heritageSpots[i];
+                    var text = (spot.title || '') + '|' + (spot.location || '') + '|' + (spot.city || '');
+                    for (var j = 0; j < site.matchKeys.length; j++) {
+                        if (text.indexOf(site.matchKeys[j]) !== -1) {
+                            matched = spot;
+                            break;
+                        }
+                    }
+                    if (matched) break;
+                }
+                var result = {};
+                for (var k in site) { result[k] = site[k]; }
+                result.visited = !!matched;
+                result.matchedSpot = matched;
+                return result;
+            });
+        }
+
+        function computeBadges(defs, visitedSpots, heritageResults) {
+            return defs.map(function(badge) {
+                var cond = badge.condition;
+                var current = evaluateCondition(cond, visitedSpots, heritageResults);
+                var unlocked = current >= cond.threshold;
+                var currentTier = 0;
+                var maxThreshold = cond.threshold;
+                if (badge.tiers) {
+                    badge.tiers.forEach(function(tier) {
+                        if (current >= tier.threshold) currentTier = tier.level;
+                        if (tier.threshold > maxThreshold) maxThreshold = tier.threshold;
+                    });
+                }
+                var result = {};
+                for (var k in badge) { result[k] = badge[k]; }
+                result.current = current;
+                result.unlocked = unlocked;
+                result.currentTier = currentTier;
+                result.maxThreshold = maxThreshold;
+                return result;
+            });
+        }
+
+        function evaluateCondition(cond, visitedSpots, heritageResults) {
+            switch (cond.type) {
+                case 'tag_count':
+                    return visitedSpots.filter(function(s) {
+                        return s.tags && s.tags.indexOf(cond.tag) !== -1;
+                    }).length;
+                case 'category_count':
+                    return visitedSpots.filter(function(s) {
+                        return s.category === cond.category;
+                    }).length;
+                case 'province_count':
+                    var provinces = {};
+                    visitedSpots.forEach(function(s) {
+                        var loc = s.location || '';
+                        var m = loc.match(/^([\u4e00-\u9fa5]{2,3}(?:省|自治区|市))/);
+                        if (m) provinces[m[1]] = true;
+                        else {
+                            var m2 = loc.match(/^(台湾|日本|越南|冰岛|[\u4e00-\u9fa5]{2,3}(?:省|自治区|市))/);
+                            if (m2) provinces[m2[1]] = true;
+                        }
+                    });
+                    return Object.keys(provinces).length;
+                case 'heritage_count':
+                    return heritageResults.filter(function(h) { return h.visited; }).length;
+                case 'total_count':
+                    return visitedSpots.length;
+                case 'country_count':
+                    var countries = { '中国': true };
+                    visitedSpots.forEach(function(s) {
+                        var loc = s.location || '';
+                        if (loc.indexOf('日本') !== -1) countries['日本'] = true;
+                        if (loc.indexOf('越南') !== -1) countries['越南'] = true;
+                        if (loc.indexOf('台湾') !== -1) countries['台湾'] = true;
+                        if (loc.indexOf('冰岛') !== -1) countries['冰岛'] = true;
+                    });
+                    return Object.keys(countries).length;
+                case 'has_spot_with_tag':
+                    return visitedSpots.some(function(s) {
+                        return s.tags && s.tags.indexOf(cond.tag) !== -1;
+                    }) ? 1 : 0;
+                case 'lng_below':
+                    return visitedSpots.some(function(s) {
+                        return s.lng && s.lng < cond.value;
+                    }) ? 1 : 0;
+                case 'lat_above':
+                    return visitedSpots.some(function(s) {
+                        return s.lat && s.lat > cond.value;
+                    }) ? 1 : 0;
+                default:
+                    return 0;
+            }
+        }
+
+        function renderProgress(results) {
+            var visited = results.filter(function(h) { return h.visited; }).length;
+            var total = results.length;
+
+            document.getElementById('progressCount').innerHTML = visited + ' <span>/ ' + total + '</span>';
+
+            setTimeout(function() {
+                document.getElementById('progressBar').style.width = (visited / total * 100) + '%';
+            }, 300);
+
+            var regions = {};
+            results.forEach(function(h) {
+                var r = h.region || '其他';
+                if (!regions[r]) regions[r] = { visited: 0, total: 0 };
+                regions[r].total++;
+                if (h.visited) regions[r].visited++;
+            });
+
+            var regionEmojis = { '亚洲': '🌏', '欧洲': '🌍', '非洲': '🌍', '美洲': '🌎', '大洋洲': '🌊', '其他': '🌐' };
+            var regionColors = { '亚洲': '#ed8936', '欧洲': '#4299e1', '非洲': '#48bb78', '美洲': '#e53e3e', '大洋洲': '#38b2ac', '其他': '#a0aec0' };
+
+            var types = { cultural: 0, natural: 0, mixed: 0 };
+            results.forEach(function(h) { if (h.type) types[h.type]++; });
+
+            var html = '<div class="progress-type"><div class="progress-type-dot cultural"></div>文化 ' + types.cultural + '</div>' +
+                '<div class="progress-type"><div class="progress-type-dot natural"></div>自然 ' + types.natural + '</div>' +
+                '<div class="progress-type"><div class="progress-type-dot mixed"></div>双重 ' + types.mixed + '</div>' +
+                '<div style="width:1px;height:14px;background:rgba(255,255,255,0.08);margin:0 4px;"></div>';
+
+            ['亚洲', '欧洲', '非洲', '美洲', '大洋洲'].forEach(function(r) {
+                if (regions[r]) {
+                    html += '<div class="progress-type"><div class="progress-type-dot" style="background:' + regionColors[r] + '"></div>' +
+                        regionEmojis[r] + ' ' + r + ' ' + regions[r].visited + '/' + regions[r].total + '</div>';
+                }
+            });
+
+            document.getElementById('progressTypes').innerHTML = html;
+        }
+
+        function renderMap(results) {
+            heritageMap = new AMap.Map('heritageMap', {
+                zoom: 2,
+                center: [30, 20],
+                mapStyle: 'amap://styles/darkblue',
+                resizeEnable: true
+            });
+
+            var markers = [];
+            results.forEach(function(site) {
+                if (!site.lat || !site.lng) return;
+
+                var wrapper = document.createElement('div');
+                if (site.visited) {
+                    wrapper.style.cssText = 'position:relative;width:28px;height:28px;display:flex;align-items:center;justify-content:center;';
+                    var pulse = document.createElement('div');
+                    pulse.style.cssText = 'position:absolute;width:100%;height:100%;border-radius:50%;border:2px solid rgba(159,122,234,0.4);animation:marker-pulse 2.5s ease-out infinite;';
+                    wrapper.appendChild(pulse);
+                    var dot = document.createElement('div');
+                    dot.style.cssText = 'width:14px;height:14px;border-radius:50%;background:linear-gradient(145deg,#9f7aea,#b794f4);border:2px solid rgba(255,255,255,0.3);box-shadow:0 0 12px rgba(159,122,234,0.5);position:relative;z-index:1;';
+                    wrapper.appendChild(dot);
+                } else {
+                    wrapper.style.cssText = 'width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.12);';
+                }
+
+                var marker = new AMap.Marker({
+                    position: [site.lng, site.lat],
+                    content: wrapper,
+                    offset: site.visited ? new AMap.Pixel(-14, -14) : new AMap.Pixel(-3, -3)
+                });
+                (function(s) {
+                    marker.on('click', function() { showHeritagePopup(s); });
+                })(site);
+                markers.push(marker);
+                heritageMap.add(marker);
+            });
+        }
+
+        function renderFilters() {
+            var typeTabs = [
+                { key: 'all', label: '全部' },
+                { key: 'visited', label: '✦ 已收集' },
+                { key: 'unvisited', label: '◇ 待收集' },
+                { key: 'cultural', label: '🏛 文化' },
+                { key: 'natural', label: '🌿 自然' },
+                { key: 'mixed', label: '💎 双重' }
+            ];
+
+            var countries = {};
+            matchedResults.forEach(function(h) {
+                if (!countries[h.country]) countries[h.country] = 0;
+                countries[h.country]++;
+            });
+            var topCountries = Object.keys(countries).sort(function(a, b) {
+                return countries[b] - countries[a];
+            }).slice(0, 12);
+
+            var regionTabs = [
+                { key: 'all', label: '全部' },
+                { key: 'r_亚洲', label: '🌏 亚洲' },
+                { key: 'r_欧洲', label: '🌍 欧洲' },
+                { key: 'r_非洲', label: '🌍 非洲' },
+                { key: 'r_美洲', label: '🌎 美洲' },
+                { key: 'r_大洋洲', label: '🌊 大洋洲' }
+            ];
+            topCountries.forEach(function(c) {
+                regionTabs.push({ key: 'c_' + c, label: c });
+            });
+
+            var typeHtml = typeTabs.map(function(tab) {
+                return '<div class="filter-tab' + (tab.key === 'all' ? ' active' : '') + '" data-filter="' + tab.key + '">' + tab.label + '</div>';
+            }).join('');
+            document.getElementById('filterType').innerHTML = typeHtml;
+
+            var criteriaTabs = [{ key: 'all', label: '全部' }];
+            var criteriaLabels = {
+                '(i)': '(i) 创造性天才', '(ii)': '(ii) 价值观交流', '(iii)': '(iii) 文明见证',
+                '(iv)': '(iv) 建筑典范', '(v)': '(v) 传统聚落', '(vi)': '(vi) 重大事件',
+                '(vii)': '(vii) 自然美景', '(viii)': '(viii) 地球演化', '(ix)': '(ix) 生态进程', '(x)': '(x) 生物多样性'
+            };
+            ['(i)','(ii)','(iii)','(iv)','(v)','(vi)','(vii)','(viii)','(ix)','(x)'].forEach(function(c) {
+                criteriaTabs.push({ key: c, label: criteriaLabels[c] || c });
+            });
+            var criteriaHtml = criteriaTabs.map(function(tab) {
+                var isCultural = ['(i)','(ii)','(iii)','(iv)','(v)','(vi)'].indexOf(tab.key) !== -1;
+                var extraStyle = tab.key !== 'all' ? ' style="border-color:' + (isCultural ? 'rgba(237,137,54,0.2)' : 'rgba(72,187,120,0.2)') + '"' : '';
+                return '<div class="filter-tab' + (tab.key === 'all' ? ' active' : '') + '" data-filter="' + tab.key + '"' + extraStyle + '>' + tab.label + '</div>';
+            }).join('');
+            document.getElementById('filterCriteria').innerHTML = criteriaHtml;
+
+            var regionHtml = regionTabs.map(function(tab) {
+                return '<div class="filter-tab' + (tab.key === 'all' ? ' active' : '') + '" data-filter="' + tab.key + '">' + tab.label + '</div>';
+            }).join('');
+            document.getElementById('filterRegion').innerHTML = regionHtml;
+
+            document.getElementById('filterType').addEventListener('click', function(e) {
+                var tab = e.target.closest('.filter-tab');
+                if (!tab) return;
+                activeTypeFilter = tab.getAttribute('data-filter');
+                document.getElementById('filterType').querySelectorAll('.filter-tab').forEach(function(t) { t.classList.remove('active'); });
+                tab.classList.add('active');
+                renderList(matchedResults);
+            });
+
+            document.getElementById('filterCriteria').addEventListener('click', function(e) {
+                var tab = e.target.closest('.filter-tab');
+                if (!tab) return;
+                activeCriteriaFilter = tab.getAttribute('data-filter');
+                document.getElementById('filterCriteria').querySelectorAll('.filter-tab').forEach(function(t) { t.classList.remove('active'); });
+                tab.classList.add('active');
+                renderList(matchedResults);
+            });
+
+            document.getElementById('filterRegion').addEventListener('click', function(e) {
+                var tab = e.target.closest('.filter-tab');
+                if (!tab) return;
+                activeRegionFilter = tab.getAttribute('data-filter');
+                document.getElementById('filterRegion').querySelectorAll('.filter-tab').forEach(function(t) { t.classList.remove('active'); });
+                tab.classList.add('active');
+                renderList(matchedResults);
+            });
+        }
+
+        function renderList(results) {
+            var filtered = results;
+
+            if (activeTypeFilter === 'visited') {
+                filtered = filtered.filter(function(h) { return h.visited; });
+            } else if (activeTypeFilter === 'unvisited') {
+                filtered = filtered.filter(function(h) { return !h.visited; });
+            } else if (activeTypeFilter !== 'all') {
+                var type = activeTypeFilter;
+                filtered = filtered.filter(function(h) { return h.type === type; });
+            }
+
+            if (activeCriteriaFilter !== 'all') {
+                var crit = activeCriteriaFilter;
+                filtered = filtered.filter(function(h) {
+                    return h.criteria && h.criteria.indexOf(crit) !== -1;
+                });
+            }
+
+            if (activeRegionFilter.indexOf('r_') === 0) {
+                var region = activeRegionFilter.substring(2);
+                filtered = filtered.filter(function(h) { return h.region === region; });
+            } else if (activeRegionFilter.indexOf('c_') === 0) {
+                var country = activeRegionFilter.substring(2);
+                filtered = filtered.filter(function(h) { return h.country === country; });
+            }
+
+            var visitedInFilter = filtered.filter(function(h) { return h.visited; }).length;
+            var countHtml = '<div class="list-count">' +
+                '共 ' + filtered.length + ' 项' +
+                (visitedInFilter > 0 ? '，已收集 ' + visitedInFilter : '') +
+                '</div>';
+
+            var html = countHtml + filtered.map(function(site) {
+                var typeCls = site.type || 'cultural';
+                var typeLabel = typeLabels[typeCls] || '';
+
+                var criteriaHtml = '';
+                if (site.criteria && site.criteria.length > 0) {
+                    criteriaHtml = '<div class="heritage-criteria-tags">';
+                    site.criteria.forEach(function(c) {
+                        var cc = ['(i)','(ii)','(iii)','(iv)','(v)','(vi)'].indexOf(c) !== -1 ? 'cultural-c' : 'natural-c';
+                        criteriaHtml += '<span class="heritage-criteria-tag ' + cc + '">' + c + '</span>';
+                    });
+                    criteriaHtml += '</div>';
+                }
+
+                return '<div class="heritage-item ' + (site.visited ? 'visited' : 'unvisited') + '" data-id="' + site.id + '">' +
+                    '<img class="heritage-cover" src="data/heritage_images/' + site.id + '.png" onerror="this.onerror=function(){this.style.display=\'none\'};this.src=\'data/heritage_images/' + site.id + '.webp\'" loading="lazy">' +
+                    '<div class="heritage-item-top">' +
+                        '<div class="heritage-dot ' + (site.visited ? 'visited' : 'unvisited') + '"></div>' +
+                        '<div class="heritage-info">' +
+                            '<div class="heritage-name"><a href="https://whc.unesco.org/en/list/' + site.id + '" target="_blank" rel="noopener" class="heritage-name-link" onclick="event.stopPropagation()">' + site.name + '</a></div>' +
+                            '<div class="heritage-meta">' +
+                                (site.type ? '<span class="heritage-type-badge ' + typeCls + '">' + typeLabel + '</span>' : '') +
+                                '<span>' + (site.country || '') + '</span>' +
+                                (site.year ? '<span>' + site.year + '</span>' : '') +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+                    criteriaHtml +
+                '</div>';
+            }).join('');
+
+            document.getElementById('heritageList').innerHTML = html;
+
+            document.getElementById('heritageList').addEventListener('click', function(e) {
+                var item = e.target.closest('.heritage-item');
+                if (!item) return;
+                var id = parseInt(item.getAttribute('data-id'));
+                var site = matchedResults.find(function(h) { return h.id === id; });
+                if (site) showHeritagePopup(site);
+            });
+        }
+
+        function renderBadges(badges) {
+            var unlocked = badges.filter(function(b) { return b.unlocked; }).length;
+            document.getElementById('badgeStats').innerHTML =
+                '<div class="badge-stat">已解锁 <strong>' + unlocked + '</strong> / ' + badges.length + '</div>';
+
+            var html = badges.map(function(badge) {
+                var tierSuffix = '';
+                if (badge.tiers && badge.currentTier > 0) {
+                    var tier = badge.tiers.find(function(t) { return t.level === badge.currentTier; });
+                    if (tier) tierSuffix = tier.suffix;
+                }
+                var progressPct = Math.min(100, (badge.current / badge.maxThreshold) * 100);
+                return '<div class="badge-card ' + (badge.unlocked ? 'unlocked' : 'locked') + '" data-badge="' + badge.id + '">' +
+                    '<span class="badge-icon">' + badge.icon + '</span>' +
+                    '<div class="badge-title">' + badge.title + (tierSuffix ? tierSuffix : '') + '</div>' +
+                    (badge.tiers && badge.currentTier > 0 ? '<div class="badge-tier">Lv.' + badge.currentTier + '</div>' : '') +
+                    '<div class="badge-desc">' + badge.description + '</div>' +
+                    '<div class="badge-progress-track"><div class="badge-progress-fill" style="width:' + progressPct + '%"></div></div>' +
+                '</div>';
+            }).join('');
+
+            document.getElementById('badgeGrid').innerHTML = html;
+
+            document.getElementById('badgeGrid').addEventListener('click', function(e) {
+                var card = e.target.closest('.badge-card');
+                if (!card) return;
+                var id = card.getAttribute('data-badge');
+                var badge = computedBadges.find(function(b) { return b.id === id; });
+                if (badge) showBadgePopup(badge);
+            });
+        }
+
+        function showHeritagePopup(site) {
+            if (heritagePopupMap) { heritagePopupMap.destroy(); heritagePopupMap = null; }
+
+            var typeCls = site.type || 'cultural';
+            var typeLabel = typeLabels[typeCls] || '';
+            var typeStyle = typeColors[typeCls] || typeColors.cultural;
+
+            var coverHtml = '<div class="popup-cover-wrap">' +
+                '<img class="popup-cover" src="data/heritage_images/' + site.id + '_hero.png" ' +
+                'onerror="var s=parseInt(this.dataset.step||\'0\',10)+1;this.dataset.step=s;' +
+                'if(s===1){this.src=\'data/heritage_images/' + site.id + '.png\';return;}' +
+                'if(s===2){this.src=\'data/heritage_images/' + site.id + '.webp\';return;}' +
+                'this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';">' +
+                '<div class="popup-cover-fallback" style="display:none;">' + (site.type === 'natural' ? '🏞️' : (site.type === 'mixed' ? '🌄' : '🏛️')) + '</div>' +
+                '<div class="popup-cover-fade"></div>' +
+            '</div>';
+
+            var headerHtml = '<div class="popup-name"><a href="https://whc.unesco.org/en/list/' + site.id + '" target="_blank" rel="noopener" class="heritage-name-link" style="font-size:inherit;font-weight:inherit;">' + site.name + '</a></div>' +
+                '<div class="popup-name-en">' + (site.nameEn || '') + '</div>' +
+                '<div class="popup-badges">' +
+                    (site.type ? '<span class="popup-badge" style="background:' + typeStyle.bg + ';color:' + typeStyle.color + '">' + typeLabel + '</span>' : '') +
+                    '<span class="popup-badge" style="background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.5)">' + (site.country || '') + '</span>' +
+                    (site.year ? '<span class="popup-badge" style="background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.5)">' + site.year + '年列入</span>' : '') +
+                '</div>' +
+                '<span class="popup-status-badge ' + (site.visited ? 'visited' : 'unvisited') + '">' +
+                    (site.visited ? '✦ 已收集' : '◇ 待收集') +
+                '</span>';
+
+            var bodyHtml = '';
+
+            if (site.criteria && site.criteria.length > 0) {
+                bodyHtml += '<div style="margin-bottom:10px;">' +
+                    '<div style="font-size:11px;color:rgba(255,255,255,0.35);margin-bottom:6px;font-weight:600;">入选标准</div>' +
+                    '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">';
+                site.criteria.forEach(function(c) {
+                    var isCultural = ['(i)','(ii)','(iii)','(iv)','(v)','(vi)'].indexOf(c) !== -1;
+                    var bg = isCultural ? 'rgba(237,137,54,0.12)' : 'rgba(72,187,120,0.12)';
+                    var color = isCultural ? '#ed8936' : '#48bb78';
+                    bodyHtml += '<span style="font-size:12px;padding:2px 10px;border-radius:10px;background:' + bg + ';color:' + color + ';font-weight:600;">' + c + '</span>';
+                });
+                bodyHtml += '</div>';
+                if (site.criteriaText) {
+                    bodyHtml += '<div style="font-size:12px;color:rgba(255,255,255,0.4);line-height:1.7;">' + site.criteriaText + '</div>';
+                }
+                bodyHtml += '</div>';
+            }
+
+            bodyHtml += '<div class="popup-desc">' + (site.description || '') + '</div>';
+
+            if (site.visited && site.matchedSpot) {
+                var sp = site.matchedSpot;
+                var excerpt = sp.content || '';
+                if (excerpt.length > 60) excerpt = excerpt.substring(0, 60) + '...';
+                bodyHtml += '<div class="popup-matched">' +
+                    '<div class="popup-matched-label">📍 关联足迹</div>' +
+                    '<div class="popup-matched-title">' + sp.title + '</div>' +
+                    '<div class="popup-matched-text">' + excerpt + '</div>' +
+                '</div>';
+            }
+
+            if (site.lat && site.lng && !(site.lng < 0 || site.lat > 55)) {
+                bodyHtml += '<div class="popup-minimap" id="heritage-popup-minimap"></div>';
+            }
+
+            document.getElementById('heritagePopupCover').innerHTML = coverHtml;
+            document.getElementById('heritagePopupHeader').innerHTML = headerHtml;
+            document.getElementById('heritagePopupBody').innerHTML = bodyHtml;
+
+            var overlay = document.getElementById('heritagePopup');
+            overlay.style.display = 'flex';
+            requestAnimationFrame(function() {
+                requestAnimationFrame(function() { overlay.classList.add('show'); });
+            });
+
+            if (site.lat && site.lng && !(site.lng < 0 || site.lat > 55)) {
+                setTimeout(function() {
+                    var el = document.getElementById('heritage-popup-minimap');
+                    if (!el) return;
+                    var isRemote = site.lng < 76 || site.lng > 135;
+                    heritagePopupMap = new AMap.Map(el, {
+                        zoom: isRemote ? 8 : 12,
+                        center: [site.lng, site.lat],
+                        mapStyle: isRemote ? 'amap://styles/normal' : 'amap://styles/darkblue',
+                        resizeEnable: true, dragEnable: false, zoomEnable: false,
+                        scrollWheel: false, doubleClickZoom: false
+                    });
+                    var dot = document.createElement('div');
+                    dot.style.cssText = 'width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,0.5);box-shadow:0 0 15px rgba(159,122,234,0.5);background:#9f7aea;';
+                    heritagePopupMap.add(new AMap.Marker({
+                        position: [site.lng, site.lat], content: dot, offset: new AMap.Pixel(-7, -7)
+                    }));
+                }, 200);
+            }
+        }
+
+        function showBadgePopup(badge) {
+            var tierSuffix = '';
+            if (badge.tiers && badge.currentTier > 0) {
+                var tier = badge.tiers.find(function(t) { return t.level === badge.currentTier; });
+                if (tier) tierSuffix = tier.suffix;
+            }
+
+            var headerHtml = '<span class="badge-popup-icon">' + badge.icon + '</span>' +
+                '<div class="badge-popup-title">' + badge.title + tierSuffix + '</div>' +
+                (badge.tiers && badge.currentTier > 0 ? '<div class="badge-popup-tier">Lv.' + badge.currentTier + '</div>' : '') +
+                '<span class="popup-status-badge ' + (badge.unlocked ? 'visited' : 'unvisited') + '">' +
+                    (badge.unlocked ? '✦ 已解锁' : '◇ 未解锁') +
+                '</span>';
+
+            var bodyHtml = '<div class="badge-popup-desc">' + badge.description + '</div>';
+
+            var nextThreshold = badge.maxThreshold;
+            if (badge.tiers) {
+                for (var i = 0; i < badge.tiers.length; i++) {
+                    if (badge.current < badge.tiers[i].threshold) {
+                        nextThreshold = badge.tiers[i].threshold;
+                        break;
+                    }
+                }
+            }
+            var pct = Math.min(100, (badge.current / nextThreshold) * 100);
+
+            bodyHtml += '<div class="badge-popup-progress">' +
+                '<div class="badge-popup-progress-label">' +
+                    '<span>当前进度</span>' +
+                    '<span>' + badge.current + ' / ' + nextThreshold + '</span>' +
+                '</div>' +
+                '<div class="badge-popup-progress-track"><div class="badge-popup-progress-fill" style="width:' + pct + '%"></div></div>' +
+            '</div>';
+
+            if (!badge.unlocked) {
+                bodyHtml += '<div class="badge-popup-locked-hint">继续探索以解锁此成就</div>';
+            }
+
+            if (badge.tiers && badge.tiers.length > 0) {
+                bodyHtml += '<div style="margin-top:16px;">';
+                badge.tiers.forEach(function(tier) {
+                    var reached = badge.current >= tier.threshold;
+                    bodyHtml += '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;' +
+                        (reached ? 'opacity:1' : 'opacity:0.35') + '">' +
+                        '<span style="font-size:12px;">' + (reached ? '✦' : '◇') + '</span>' +
+                        '<span style="font-size:12px;flex:1;">Lv.' + tier.level + (tier.suffix || '') + '</span>' +
+                        '<span style="font-size:11px;color:rgba(255,255,255,0.4);">需要 ' + tier.threshold + '</span>' +
+                    '</div>';
+                });
+                bodyHtml += '</div>';
+            }
+
+            document.getElementById('badgePopupHeader').innerHTML = headerHtml;
+            document.getElementById('badgePopupBody').innerHTML = bodyHtml;
+
+            var overlay = document.getElementById('badgePopup');
+            overlay.style.display = 'flex';
+            requestAnimationFrame(function() {
+                requestAnimationFrame(function() { overlay.classList.add('show'); });
+            });
+        }
+
+        function closePopup(id) {
+            var overlay = document.getElementById(id);
+            overlay.classList.remove('show');
+            setTimeout(function() { overlay.style.display = 'none'; }, 300);
+            if (id === 'heritagePopup' && heritagePopupMap) {
+                heritagePopupMap.destroy();
+                heritagePopupMap = null;
+            }
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closePopup('heritagePopup');
+                closePopup('badgePopup');
+            }
+        });
+
+        document.querySelectorAll('.popup-overlay').forEach(function(overlay) {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === overlay) closePopup(overlay.id);
+            });
+        });
+
+        document.getElementById('heritagePopupClose').addEventListener('click', function() { closePopup('heritagePopup'); });
+        document.getElementById('badgePopupClose').addEventListener('click', function() { closePopup('badgePopup'); });
+    })();
+    </script>
+</body>
+</html>
