@@ -143,6 +143,47 @@
             font-size: 12px; color: rgba(255,255,255,0.3); margin-bottom: 12px;
             padding: 0 4px; column-span: all;
         }
+        .pagination {
+            column-span: all;
+            display: flex; justify-content: center; align-items: center;
+            gap: 6px; margin: 28px 0 8px; flex-wrap: wrap;
+        }
+        .page-btn {
+            min-width: 34px; height: 34px; padding: 0 12px;
+            border-radius: 9px; border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.04);
+            color: rgba(255,255,255,0.78);
+            font-size: 13px; cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex; align-items: center; justify-content: center;
+            backdrop-filter: blur(8px);
+        }
+        .page-btn:hover:not(:disabled):not(.active) {
+            background: rgba(159,122,234,0.15);
+            border-color: rgba(159,122,234,0.45);
+            color: #fff;
+        }
+        .page-btn.active {
+            background: linear-gradient(135deg, rgba(159,122,234,0.45), rgba(99,179,237,0.4));
+            border-color: rgba(159,122,234,0.65);
+            color: #fff; cursor: default;
+            box-shadow: 0 4px 14px rgba(159,122,234,0.3);
+        }
+        .page-btn:disabled { opacity: 0.28; cursor: not-allowed; }
+        .page-ellipsis {
+            color: rgba(255,255,255,0.35);
+            padding: 0 2px; font-size: 13px;
+            min-width: 24px; text-align: center;
+        }
+        .page-info {
+            margin-left: 10px;
+            color: rgba(255,255,255,0.4);
+            font-size: 12px;
+        }
+        @media (max-width: 600px) {
+            .page-btn { min-width: 30px; height: 30px; padding: 0 8px; font-size: 12px; }
+            .page-info { width: 100%; text-align: center; margin: 8px 0 0; }
+        }
         .heritage-item {
             break-inside: avoid; display: flex; flex-direction: column;
             padding: 16px; border-radius: 14px;
@@ -529,6 +570,10 @@
         var activeTypeFilter = 'all';
         var activeRegionFilter = 'all';
         var activeCriteriaFilter = 'all';
+        var currentPage = 1;
+        var pageSize = 24;
+        var currentFiltered = [];
+        var listClickBound = false;
 
         var typeLabels = { cultural: '文化遗产', natural: '自然遗产', mixed: '双重遗产' };
         var typeColors = {
@@ -870,13 +915,59 @@
                 filtered = filtered.filter(function(h) { return h.country === country; });
             }
 
+            currentFiltered = filtered;
+            currentPage = 1;
+            renderPage();
+        }
+
+        function buildPaginationHtml(total, page, size) {
+            var totalPages = Math.max(1, Math.ceil(total / size));
+            if (totalPages <= 1) {
+                return '<div class="pagination"><span class="page-info">共 ' + total + ' 项</span></div>';
+            }
+            var pages = [];
+            var add = function(p) { pages.push(p); };
+            // always first
+            add(1);
+            var start = Math.max(2, page - 1);
+            var end = Math.min(totalPages - 1, page + 1);
+            if (start > 2) add('...');
+            for (var i = start; i <= end; i++) add(i);
+            if (end < totalPages - 1) add('...');
+            if (totalPages > 1) add(totalPages);
+
+            var btns = pages.map(function(p) {
+                if (p === '...') return '<span class="page-ellipsis">…</span>';
+                return '<button class="page-btn' + (p === page ? ' active' : '') + '" data-page="' + p + '">' + p + '</button>';
+            }).join('');
+
+            var startIdx = (page - 1) * size + 1;
+            var endIdx = Math.min(total, page * size);
+
+            return '<div class="pagination">' +
+                '<button class="page-btn" data-page="prev"' + (page === 1 ? ' disabled' : '') + '>‹</button>' +
+                btns +
+                '<button class="page-btn" data-page="next"' + (page === totalPages ? ' disabled' : '') + '>›</button>' +
+                '<span class="page-info">第 ' + startIdx + '–' + endIdx + ' 项 / 共 ' + total + '</span>' +
+                '</div>';
+        }
+
+        function renderPage() {
+            var filtered = currentFiltered;
+            var totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+
             var visitedInFilter = filtered.filter(function(h) { return h.visited; }).length;
             var countHtml = '<div class="list-count">' +
                 '共 ' + filtered.length + ' 项' +
                 (visitedInFilter > 0 ? '，已收集 ' + visitedInFilter : '') +
+                (totalPages > 1 ? '，第 ' + currentPage + ' / ' + totalPages + ' 页' : '') +
                 '</div>';
 
-            var html = countHtml + filtered.map(function(site) {
+            var pageItems = filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
+            var html = countHtml + pageItems.map(function(site) {
                 var typeCls = site.type || 'cultural';
                 var typeLabel = typeLabels[typeCls] || '';
 
@@ -907,15 +998,34 @@
                 '</div>';
             }).join('');
 
-            document.getElementById('heritageList').innerHTML = html;
+            html += buildPaginationHtml(filtered.length, currentPage, pageSize);
 
-            document.getElementById('heritageList').addEventListener('click', function(e) {
-                var item = e.target.closest('.heritage-item');
-                if (!item) return;
-                var id = parseInt(item.getAttribute('data-id'));
-                var site = matchedResults.find(function(h) { return h.id === id; });
-                if (site) showHeritagePopup(site);
-            });
+            var listEl = document.getElementById('heritageList');
+            listEl.innerHTML = html;
+
+            if (!listClickBound) {
+                listEl.addEventListener('click', function(e) {
+                    var pageBtn = e.target.closest('.page-btn');
+                    if (pageBtn) {
+                        if (pageBtn.disabled) return;
+                        var p = pageBtn.getAttribute('data-page');
+                        var totalP = Math.max(1, Math.ceil(currentFiltered.length / pageSize));
+                        if (p === 'prev') currentPage = Math.max(1, currentPage - 1);
+                        else if (p === 'next') currentPage = Math.min(totalP, currentPage + 1);
+                        else currentPage = parseInt(p, 10) || 1;
+                        renderPage();
+                        var section = document.getElementById('heritageList');
+                        if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        return;
+                    }
+                    var item = e.target.closest('.heritage-item');
+                    if (!item) return;
+                    var id = parseInt(item.getAttribute('data-id'));
+                    var site = matchedResults.find(function(h) { return h.id === id; });
+                    if (site) showHeritagePopup(site);
+                });
+                listClickBound = true;
+            }
         }
 
         function renderBadges(badges) {
