@@ -185,7 +185,15 @@
             .page-info { width: 100%; text-align: center; margin: 8px 0 0; }
         }
         .heritage-item {
-            break-inside: avoid; display: flex; flex-direction: column;
+            break-inside: avoid;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            grid-template-rows: auto auto;
+            grid-template-areas:
+                "top cover"
+                "criteria cover";
+            gap: 8px 12px;
+            align-items: start;
             padding: 16px; border-radius: 14px;
             background: rgba(255, 255, 255, 0.11);
             backdrop-filter: blur(12px);
@@ -211,12 +219,19 @@
         .heritage-item.unvisited { opacity: 0.78; }
         .heritage-item.unvisited:hover { opacity: 1; }
         .heritage-item-top {
-            display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px;
+            grid-area: top;
+            display: flex; align-items: flex-start; gap: 10px;
         }
         .heritage-cover {
-            width: 100%; border-radius: 10px; margin-bottom: 10px;
-            aspect-ratio: 5/3; object-fit: cover;
+            grid-area: cover;
+            width: 110px; height: 100%; border-radius: 10px;
+            object-fit: cover;
             opacity: 0.92; transition: opacity 0.3s;
+        }
+        .heritage-criteria-tags {
+            grid-area: criteria;
+            align-self: end;
+            display: flex; gap: 4px; flex-wrap: wrap;
         }
         .heritage-item:hover .heritage-cover { opacity: 1; }
         .heritage-name-link {
@@ -239,9 +254,6 @@
         .heritage-meta {
             font-size: 12px; color: rgba(255,255,255,0.72);
             display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
-        }
-        .heritage-criteria-tags {
-            display: flex; gap: 4px; flex-wrap: wrap; margin-top: 8px;
         }
         .heritage-criteria-tag {
             font-size: 10px; padding: 1px 6px; border-radius: 8px; font-weight: 600;
@@ -320,11 +332,11 @@
             transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* ===== Popup Overlay ===== */
+        /* ===== Popup Overlay (Game Codex Golden/Purple) ===== */
         .popup-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5, 8, 18, 0.7);
-            backdrop-filter: blur(8px);
+            background: rgba(5, 8, 18, 0.78);
+            backdrop-filter: blur(10px);
             display: none; align-items: center; justify-content: center;
             z-index: 200; opacity: 0;
             transition: opacity 0.3s;
@@ -333,48 +345,70 @@
         body:has(.popup-overlay.show) { overflow: hidden; }
         html:has(.popup-overlay.show) { overflow: hidden; }
         .popup-card {
-            background: rgba(15, 20, 40, 0.95);
-            backdrop-filter: blur(24px) saturate(1.8);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 20px; padding: 0;
+            background:
+                /* golden corner brackets */
+                linear-gradient(var(--gold-bright), var(--gold-bright)) top    left  / 26px 2px no-repeat,
+                linear-gradient(var(--gold-bright), var(--gold-bright)) top    left  / 2px 26px no-repeat,
+                linear-gradient(var(--gold-bright), var(--gold-bright)) top    right / 26px 2px no-repeat,
+                linear-gradient(var(--gold-bright), var(--gold-bright)) top    right / 2px 26px no-repeat,
+                linear-gradient(var(--gold-bright), var(--gold-bright)) bottom left  / 26px 2px no-repeat,
+                linear-gradient(var(--gold-bright), var(--gold-bright)) bottom left  / 2px 26px no-repeat,
+                linear-gradient(var(--gold-bright), var(--gold-bright)) bottom right / 26px 2px no-repeat,
+                linear-gradient(var(--gold-bright), var(--gold-bright)) bottom right / 2px 26px no-repeat,
+                linear-gradient(135deg, rgba(212,168,90,0.06), transparent 40%),
+                rgba(20, 26, 46, 0.96);
+            border: 1px solid rgba(212,168,90,0.24);
+            border-radius: 16px; padding: 0;
             max-width: 540px; width: 92%;
-            box-shadow: 0 24px 64px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+            box-shadow:
+                0 24px 64px rgba(0,0,0,0.55),
+                0 0 32px rgba(212,168,90,0.12),
+                inset 0 1px 0 rgba(255,255,255,0.06);
             transform: translateY(30px) scale(0.92);
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
             max-height: 95vh; overflow-y: auto; overflow-x: hidden;
         }
         .popup-overlay.show .popup-card { transform: translateY(0) scale(1); }
         .popup-close {
             position: absolute; top: 12px; right: 12px;
             width: 32px; height: 32px; border-radius: 50%;
-            background: rgba(0,0,0,0.45); border: none;
+            background: rgba(13,23,38,0.72); border: 1px solid rgba(212,168,90,0.35);
             backdrop-filter: blur(8px);
-            color: rgba(255,255,255,0.85); cursor: pointer;
-            font-size: 16px; display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s; z-index: 5;
+            color: var(--gold-bright); cursor: pointer;
+            font-size: 18px; display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s; z-index: 10;
+            box-shadow: 0 0 10px rgba(212,168,90,0.25);
         }
-        .popup-close:hover { background: rgba(0,0,0,0.65); color: #fff; }
+        .popup-close:hover {
+            background: rgba(212,168,90,0.18); color: #fff;
+            box-shadow: 0 0 14px rgba(212,168,90,0.45);
+        }
         /* Hero cover image */
         .popup-cover-wrap {
             position: relative; width: 100%; aspect-ratio: 16/9;
             overflow: hidden;
-            background: linear-gradient(135deg, rgba(159,122,234,0.12), rgba(99,179,237,0.08));
+            background:
+                linear-gradient(135deg, rgba(212,168,90,0.12), rgba(183,148,244,0.10));
+            border-bottom: 1px solid rgba(212,168,90,0.24);
         }
         .popup-cover {
             width: 100%; height: 100%; object-fit: cover; display: block;
+            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
+        .popup-card:hover .popup-cover { transform: scale(1.05); }
         .popup-cover-fade {
             position: absolute; inset: 0; pointer-events: none;
             background: linear-gradient(180deg,
                 transparent 0%,
                 transparent 45%,
-                rgba(15,20,40,0.55) 80%,
-                rgba(15,20,40,0.95) 100%);
+                rgba(20,26,46,0.60) 80%,
+                rgba(20,26,46,0.96) 100%);
         }
         .popup-cover-fallback {
             position: absolute; inset: 0;
             display: flex; align-items: center; justify-content: center;
             font-size: 72px;
+            color: var(--gold-soft);
         }
         .popup-header {
             text-align: center; margin-bottom: 12px; position: relative;
@@ -384,42 +418,67 @@
             padding-top: 0; margin-top: -56px; z-index: 2;
         }
         .popup-emoji { font-size: 48px; margin-bottom: 8px; display: block; }
-        .popup-name { font-size: 22px; font-weight: 700; margin-bottom: 2px; }
-        .popup-name-en { font-size: 12px; color: rgba(255,255,255,0.3); margin-bottom: 8px; }
+        .popup-name {
+            font-family: 'Cinzel', 'Noto Serif SC', serif;
+            font-size: 23px; font-weight: 700; margin-bottom: 4px;
+            letter-spacing: 1px;
+            text-shadow: 0 0 14px rgba(212,168,90,0.35);
+        }
+        .popup-name a { color: inherit; }
+        .popup-name-en {
+            font-family: 'Cinzel', serif;
+            font-size: 12px; color: var(--gold-soft); margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
         .popup-badges {
             display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
             margin-bottom: 8px;
         }
         .popup-badge {
-            font-size: 11px; padding: 3px 10px; border-radius: 10px; font-weight: 500;
+            font-family: 'Cinzel', serif;
+            font-size: 10px; padding: 3px 10px; border-radius: 4px; font-weight: 600;
+            letter-spacing: 1px; text-transform: uppercase;
+            background: transparent !important;
+            border: 1px solid currentColor;
         }
         .popup-status-badge {
-            font-size: 12px; font-weight: 600; padding: 4px 14px; border-radius: 20px;
+            font-family: 'Cinzel', serif;
+            font-size: 11px; font-weight: 700; padding: 4px 16px; border-radius: 0;
+            letter-spacing: 2px; text-transform: uppercase;
+            clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
         }
         .popup-status-badge.visited {
-            background: rgba(159,122,234,0.15); color: #b794f4;
-            border: 1px solid rgba(159,122,234,0.25);
+            background: linear-gradient(135deg, rgba(212,168,90,0.22), rgba(183,148,244,0.22));
+            color: var(--gold-bright);
+            border: 1px solid var(--gold);
+            box-shadow: 0 0 12px rgba(212,168,90,0.25);
+            text-shadow: 0 0 6px rgba(246,201,119,0.4);
         }
         .popup-status-badge.unvisited {
-            background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.4);
-            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.5);
+            border: 1px solid rgba(255,255,255,0.12);
         }
         .popup-body { margin-top: 12px; padding: 0 28px 24px; }
         .popup-desc {
-            font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.7;
+            font-size: 13px; color: rgba(220,232,248,0.72); line-height: 1.75;
             margin-bottom: 12px;
         }
         .popup-matched {
-            background: rgba(159,122,234,0.08); border: 1px solid rgba(159,122,234,0.15);
+            background: rgba(212,168,90,0.08); border: 1px solid rgba(212,168,90,0.18);
             border-radius: 12px; padding: 10px 12px; margin-top: 8px;
         }
         .popup-matched-label {
-            font-size: 11px; color: #9f7aea; font-weight: 600; margin-bottom: 6px;
+            font-family: 'Cinzel', serif;
+            font-size: 10px; color: var(--gold); font-weight: 700; margin-bottom: 6px;
+            letter-spacing: 2px; text-transform: uppercase;
             display: flex; align-items: center; gap: 4px;
         }
         .popup-matched-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
-        .popup-matched-text { font-size: 12px; color: rgba(255,255,255,0.4); line-height: 1.5; }
-        .popup-minimap { width: 100%; height: 100px; border-radius: 10px; margin-top: 10px; overflow: hidden; }
+        .popup-matched-text { font-size: 12px; color: rgba(220,232,248,0.55); line-height: 1.5; }
+        .popup-minimap {
+            width: 100%; height: 100px; border-radius: 10px; margin-top: 10px; overflow: hidden;
+            border: 1px solid rgba(212,168,90,0.18);
+        }
 
         /* Badge popup */
         .badge-popup-icon { font-size: 56px; display: block; margin-bottom: 12px; }
@@ -724,15 +783,14 @@
             0%   { background-position: 100% 0; }
             100% { background-position: -100% 0; }
         }
-        /* Star badge top-right on visited */
+        /* Star badge bottom-right on collected cards */
         .heritage-item-top { position: relative; }
-        .heritage-item.visited .heritage-item-top::before {
-            content: '★';
-            position: absolute; top: 8px; right: 8px;
-            width: 28px; height: 28px;
+        .star-badge {
+            position: absolute; bottom: 10px; right: 10px;
+            width: 26px; height: 26px;
             display: flex; align-items: center; justify-content: center;
             background: linear-gradient(135deg, var(--gold-bright), var(--gold));
-            color: #2a1a08; font-size: 15px; font-weight: 900;
+            color: #2a1a08; font-size: 14px; font-weight: 900;
             border-radius: 50%;
             box-shadow:
                 0 0 14px rgba(246,201,119,0.8),
@@ -747,12 +805,61 @@
                 inset 0 -30px 40px -20px rgba(20,26,46,0.65);
             transition: opacity 0.3s, transform 0.45s cubic-bezier(0.16,1,0.3,1);
         }
-        /* visited featured card cover: cinematic 16:7 */
-        .heritage-item.visited .heritage-cover {
+        /* Featured big card: vertical layout with name above the cover */
+        .heritage-item.visited.has-cover {
+            grid-template-columns: 1fr;
+            grid-template-rows: auto auto auto;
+            grid-template-areas:
+                "top"
+                "cover"
+                "criteria";
+        }
+        .heritage-item.visited.has-cover .heritage-cover {
+            width: 100%; height: auto;
             aspect-ratio: 16/7;
         }
         .heritage-item:hover .heritage-cover {
-            transform: scale(1.02);
+            transform: scale(1.03);
+        }
+
+        /* ===== Featured big-card Genshin gacha hover ===== */
+        .heritage-item.visited.has-cover {
+            transform: scale(1);
+            transition:
+                transform 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.35s ease;
+        }
+        .heritage-item.visited.has-cover:hover {
+            transform: scale(1.02) translateY(-6px);
+            box-shadow:
+                0 22px 50px rgba(0,0,0,0.55),
+                0 0 36px rgba(212,168,90,0.28),
+                inset 0 1px 0 rgba(255,255,255,0.12);
+        }
+        .heritage-item.visited.has-cover:hover .heritage-cover {
+            transform: scale(1.10);
+        }
+        /* cinematic lens-vignette sweep on hover */
+        .heritage-item.visited.has-cover::after {
+            content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 3;
+            background: radial-gradient(circle at 50% 50%, transparent 60%, rgba(212,168,90,0.12) 100%);
+            opacity: 0; transition: opacity 0.6s ease;
+        }
+        .heritage-item.visited.has-cover:hover::after { opacity: 1; }
+        /* title reveal lift */
+        .heritage-item.visited.has-cover .heritage-info {
+            transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), text-shadow 0.35s ease;
+        }
+        .heritage-item.visited.has-cover:hover .heritage-info {
+            transform: translateY(-6px);
+        }
+        .heritage-item.visited.has-cover .heritage-name a {
+            transition: color 0.35s ease, text-shadow 0.35s ease;
+        }
+        .heritage-item.visited.has-cover:hover .heritage-name a {
+            color: var(--gold-bright);
+            text-shadow: 0 0 14px rgba(246,201,119,0.6);
         }
 
         /* Type badges → engraved plates */
@@ -1308,7 +1415,6 @@
                 }
 
                 return '<div class="heritage-item ' + (site.visited ? 'visited' : 'unvisited') + '" data-id="' + site.id + '">' +
-                    '<img class="heritage-cover" src="data/heritage_images/' + site.id + '.png" onload="this.parentElement.classList.add(\'has-cover\')" onerror="this.onerror=function(){this.style.display=\'none\'};this.src=\'data/heritage_images/' + site.id + '.webp\'" loading="lazy">' +
                     '<div class="heritage-item-top">' +
                         '<div class="heritage-dot ' + (site.visited ? 'visited' : 'unvisited') + '"></div>' +
                         '<div class="heritage-info">' +
@@ -1320,7 +1426,9 @@
                             '</div>' +
                         '</div>' +
                     '</div>' +
+                    '<img class="heritage-cover" src="data/heritage_images/' + site.id + '.webp" onload="this.parentElement.classList.add(\'has-cover\')" onerror="this.style.display=\'none\'" loading="lazy">' +
                     criteriaHtml +
+                    (site.visited ? '<span class="star-badge">★</span>' : '') +
                 '</div>';
             }).join('');
 
@@ -1394,11 +1502,8 @@
             var typeStyle = typeColors[typeCls] || typeColors.cultural;
 
             var coverHtml = '<div class="popup-cover-wrap">' +
-                '<img class="popup-cover" src="data/heritage_images/' + site.id + '_hero.png" ' +
-                'onerror="var s=parseInt(this.dataset.step||\'0\',10)+1;this.dataset.step=s;' +
-                'if(s===1){this.src=\'data/heritage_images/' + site.id + '.png\';return;}' +
-                'if(s===2){this.src=\'data/heritage_images/' + site.id + '.webp\';return;}' +
-                'this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';">' +
+                '<img class="popup-cover" src="data/heritage_images/' + site.id + '.webp" ' +
+                'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';">' +
                 '<div class="popup-cover-fallback" style="display:none;">' + (site.type === 'natural' ? '🏞️' : (site.type === 'mixed' ? '🌄' : '🏛️')) + '</div>' +
                 '<div class="popup-cover-fade"></div>' +
             '</div>';
@@ -1422,9 +1527,9 @@
                     '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">';
                 site.criteria.forEach(function(c) {
                     var isCultural = ['(i)','(ii)','(iii)','(iv)','(v)','(vi)'].indexOf(c) !== -1;
-                    var bg = isCultural ? 'rgba(237,137,54,0.12)' : 'rgba(72,187,120,0.12)';
-                    var color = isCultural ? '#ed8936' : '#48bb78';
-                    bodyHtml += '<span style="font-size:12px;padding:2px 10px;border-radius:10px;background:' + bg + ';color:' + color + ';font-weight:600;">' + c + '</span>';
+                    var bg = isCultural ? 'rgba(212,168,90,0.12)' : 'rgba(183,148,244,0.12)';
+                    var color = isCultural ? 'var(--gold-bright)' : '#d6bcfa';
+                    bodyHtml += '<span style="font-family:Cinzel,serif;letter-spacing:1px;font-size:11px;padding:2px 10px;border-radius:4px;background:' + bg + ';color:' + color + ';font-weight:600;border:1px solid ' + (isCultural ? 'rgba(212,168,90,0.35)' : 'rgba(183,148,244,0.35)') + ';">' + c + '</span>';
                 });
                 bodyHtml += '</div>';
                 if (site.criteriaText) {
