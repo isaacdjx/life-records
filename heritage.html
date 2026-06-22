@@ -601,64 +601,143 @@
             color: rgba(212,168,90,0.7);
         }
 
-        /* Heritage item → collectible card */
+        /* === Genshin codex layout: 4-col grid, visited featured 2x === */
+        .list-section {
+            columns: unset !important;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-auto-flow: dense;
+            grid-auto-rows: 92px;
+            gap: 14px;
+        }
+        .list-count { grid-column: 1 / -1; }
+        .pagination { grid-column: 1 / -1; }
+        @media (max-width: 1080px) {
+            .list-section { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 760px) {
+            .list-section { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 88px; }
+        }
+        @media (max-width: 520px) {
+            .list-section { grid-template-columns: 1fr; }
+        }
+        /* Visited + 有 hero = featured big card: span 2 cols × 4 rows */
+        .heritage-item.visited.has-cover {
+            grid-column: span 2 !important;
+            grid-row: span 4 !important;
+        }
+        @media (max-width: 520px) {
+            .heritage-item.visited.has-cover { grid-column: span 1 !important; grid-row: span 4 !important; }
+        }
+        .heritage-item { margin-bottom: 0 !important; }
+
+        /* Heritage item → collectible card with gold corner brackets baked in */
         .heritage-item {
             position: relative;
             background:
-                linear-gradient(135deg, rgba(212,168,90,0.04), transparent 50%),
-                rgba(255,255,255,0.08);
-            border: 1px solid rgba(212,168,90,0.14);
+                /* 4 corner brackets via 8 stacked layered linear-gradients */
+                linear-gradient(var(--gold-soft), var(--gold-soft)) top    left  / 16px 2px no-repeat,
+                linear-gradient(var(--gold-soft), var(--gold-soft)) top    left  / 2px 16px no-repeat,
+                linear-gradient(var(--gold-soft), var(--gold-soft)) top    right / 16px 2px no-repeat,
+                linear-gradient(var(--gold-soft), var(--gold-soft)) top    right / 2px 16px no-repeat,
+                linear-gradient(var(--gold-soft), var(--gold-soft)) bottom left  / 16px 2px no-repeat,
+                linear-gradient(var(--gold-soft), var(--gold-soft)) bottom left  / 2px 16px no-repeat,
+                linear-gradient(var(--gold-soft), var(--gold-soft)) bottom right / 16px 2px no-repeat,
+                linear-gradient(var(--gold-soft), var(--gold-soft)) bottom right / 2px 16px no-repeat,
+                linear-gradient(135deg, rgba(212,168,90,0.05), transparent 55%),
+                rgba(255,255,255,0.07);
+            border: 1px solid rgba(212,168,90,0.16);
+            border-radius: 12px;
             transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.06),
+                inset 0 -1px 0 rgba(0,0,0,0.25);
             overflow: hidden;
         }
         .heritage-item:hover {
             background:
-                linear-gradient(135deg, rgba(212,168,90,0.08), transparent 50%),
+                linear-gradient(var(--gold-bright), var(--gold-bright)) top    left  / 18px 2px no-repeat,
+                linear-gradient(var(--gold-bright), var(--gold-bright)) top    left  / 2px 18px no-repeat,
+                linear-gradient(var(--gold-bright), var(--gold-bright)) top    right / 18px 2px no-repeat,
+                linear-gradient(var(--gold-bright), var(--gold-bright)) top    right / 2px 18px no-repeat,
+                linear-gradient(var(--gold-bright), var(--gold-bright)) bottom left  / 18px 2px no-repeat,
+                linear-gradient(var(--gold-bright), var(--gold-bright)) bottom left  / 2px 18px no-repeat,
+                linear-gradient(var(--gold-bright), var(--gold-bright)) bottom right / 18px 2px no-repeat,
+                linear-gradient(var(--gold-bright), var(--gold-bright)) bottom right / 2px 18px no-repeat,
+                linear-gradient(135deg, rgba(212,168,90,0.10), transparent 50%),
                 rgba(255,255,255,0.13);
             border-color: var(--gold-soft);
             box-shadow:
-                0 10px 30px rgba(0,0,0,0.4),
-                0 0 24px rgba(212,168,90,0.15),
-                inset 0 1px 0 rgba(255,255,255,0.1);
+                0 12px 30px rgba(0,0,0,0.5),
+                0 0 28px rgba(212,168,90,0.22),
+                inset 0 1px 0 rgba(255,255,255,0.1),
+                inset 0 -1px 0 rgba(0,0,0,0.25);
             transform: translateY(-3px);
         }
         /* Scan line sweep on hover */
         .heritage-item::after {
-            content: ''; position: absolute; top: 0; left: -100%; width: 60%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(212,168,90,0.12), transparent);
-            transition: left 0.7s ease; pointer-events: none;
+            content: ''; position: absolute; top: 0; left: -110%; width: 65%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(246,201,119,0.18), transparent);
+            transition: left 0.75s ease; pointer-events: none; z-index: 3;
         }
-        .heritage-item:hover::after { left: 130%; }
+        .heritage-item:hover::after { left: 140%; }
 
-        /* Visited card → "collected" gold rune frame */
+        /* Visited card → "collected" gold rune frame with brighter bracket corners */
         .heritage-item.visited {
             background:
-                linear-gradient(135deg, rgba(212,168,90,0.1), transparent 40%),
+                /* brighter gold corner brackets */
+                linear-gradient(var(--gold-bright), var(--gold-bright)) top    left  / 22px 2.5px no-repeat,
+                linear-gradient(var(--gold-bright), var(--gold-bright)) top    left  / 2.5px 22px no-repeat,
+                linear-gradient(var(--gold-bright), var(--gold-bright)) top    right / 22px 2.5px no-repeat,
+                linear-gradient(var(--gold-bright), var(--gold-bright)) top    right / 2.5px 22px no-repeat,
+                linear-gradient(var(--gold-bright), var(--gold-bright)) bottom left  / 22px 2.5px no-repeat,
+                linear-gradient(var(--gold-bright), var(--gold-bright)) bottom left  / 2.5px 22px no-repeat,
+                linear-gradient(var(--gold-bright), var(--gold-bright)) bottom right / 22px 2.5px no-repeat,
+                linear-gradient(var(--gold-bright), var(--gold-bright)) bottom right / 2.5px 22px no-repeat,
+                linear-gradient(135deg, rgba(212,168,90,0.12), transparent 40%),
                 rgba(255,255,255,0.12);
-            border-color: rgba(212,168,90,0.55);
+            border-color: rgba(212,168,90,0.6);
             box-shadow:
-                0 0 24px rgba(212,168,90,0.18),
-                inset 0 0 18px rgba(212,168,90,0.06),
-                inset 0 1px 0 rgba(255,255,255,0.1);
+                0 0 28px rgba(212,168,90,0.28),
+                inset 0 0 24px rgba(212,168,90,0.08),
+                inset 0 1px 0 rgba(255,255,255,0.12);
         }
+        /* Top rune line — thicker, brighter, animated shimmer */
         .heritage-item.visited::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-            background: linear-gradient(90deg, transparent, var(--gold-bright), var(--purple-glow), var(--gold-bright), transparent);
-            box-shadow: 0 0 8px var(--gold-bright);
+            content: ''; position: absolute;
+            top: 0; left: 14px; right: 14px; height: 3px;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                var(--gold-bright) 25%,
+                var(--purple-glow) 50%,
+                var(--gold-bright) 75%,
+                transparent 100%);
+            background-size: 200% 100%;
+            box-shadow:
+                0 0 14px var(--gold-bright),
+                0 0 6px var(--gold-bright);
+            animation: rune-shimmer 3.6s linear infinite;
             z-index: 4;
+            border-radius: 0 0 4px 4px;
+        }
+        @keyframes rune-shimmer {
+            0%   { background-position: 100% 0; }
+            100% { background-position: -100% 0; }
         }
         /* Star badge top-right on visited */
         .heritage-item-top { position: relative; }
         .heritage-item.visited .heritage-item-top::before {
             content: '★';
             position: absolute; top: 8px; right: 8px;
-            width: 26px; height: 26px;
+            width: 28px; height: 28px;
             display: flex; align-items: center; justify-content: center;
             background: linear-gradient(135deg, var(--gold-bright), var(--gold));
-            color: #2a1a08; font-size: 14px; font-weight: 900;
+            color: #2a1a08; font-size: 15px; font-weight: 900;
             border-radius: 50%;
-            box-shadow: 0 0 12px rgba(246,201,119,0.7), inset 0 1px 0 rgba(255,255,255,0.5);
+            box-shadow:
+                0 0 14px rgba(246,201,119,0.8),
+                0 0 4px rgba(246,201,119,0.6),
+                inset 0 1px 0 rgba(255,255,255,0.6);
             z-index: 5;
         }
 
@@ -668,8 +747,12 @@
                 inset 0 -30px 40px -20px rgba(20,26,46,0.65);
             transition: opacity 0.3s, transform 0.45s cubic-bezier(0.16,1,0.3,1);
         }
+        /* visited featured card cover: cinematic 16:7 */
+        .heritage-item.visited .heritage-cover {
+            aspect-ratio: 16/7;
+        }
         .heritage-item:hover .heritage-cover {
-            transform: scale(1.015);
+            transform: scale(1.02);
         }
 
         /* Type badges → engraved plates */
@@ -1153,6 +1236,11 @@
                 filtered = filtered.filter(function(h) { return h.country === country; });
             }
 
+            // 图鉴风：已收集优先（保留原顺序作为 tiebreaker）
+            filtered = filtered.slice().sort(function(a, b) {
+                return (b.visited ? 1 : 0) - (a.visited ? 1 : 0);
+            });
+
             currentFiltered = filtered;
             currentPage = 1;
             renderPage();
@@ -1220,7 +1308,7 @@
                 }
 
                 return '<div class="heritage-item ' + (site.visited ? 'visited' : 'unvisited') + '" data-id="' + site.id + '">' +
-                    '<img class="heritage-cover" src="data/heritage_images/' + site.id + '.png" onerror="this.onerror=function(){this.style.display=\'none\'};this.src=\'data/heritage_images/' + site.id + '.webp\'" loading="lazy">' +
+                    '<img class="heritage-cover" src="data/heritage_images/' + site.id + '.png" onload="this.parentElement.classList.add(\'has-cover\')" onerror="this.onerror=function(){this.style.display=\'none\'};this.src=\'data/heritage_images/' + site.id + '.webp\'" loading="lazy">' +
                     '<div class="heritage-item-top">' +
                         '<div class="heritage-dot ' + (site.visited ? 'visited' : 'unvisited') + '"></div>' +
                         '<div class="heritage-info">' +
