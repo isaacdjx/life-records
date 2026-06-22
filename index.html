@@ -138,16 +138,16 @@
             background: rgba(20, 26, 46, 0.72);
             backdrop-filter: blur(20px) saturate(1.6);
             -webkit-backdrop-filter: blur(20px) saturate(1.6);
-            padding: 14px 16px;
+            padding: 16px 18px;
             border-radius: 16px;
             border: 1px solid rgba(212,168,90,0.16);
             box-shadow:
                 0 4px 30px rgba(0,0,0,0.35),
                 inset 0 1px 0 rgba(255,255,255,0.05);
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            max-width: 340px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 4px 8px;
+            width: min(420px, calc(100vw - 48px));
             font-size: 11px;
             opacity: 0;
             animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.7s forwards;
@@ -160,14 +160,16 @@
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             cursor: pointer;
-            padding: 5px 10px;
+            padding: 6px 10px;
             border-radius: 10px;
             transition: all 0.3s ease;
             user-select: none;
             color: rgba(255,255,255,0.6);
             border: 1px solid transparent;
+            white-space: nowrap;
+            font-size: 12px;
         }
 
         .legend-item:hover {
