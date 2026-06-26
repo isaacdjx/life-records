@@ -465,9 +465,10 @@
             filtered.forEach(function(m,i){
                 var color=getDiffColor(m.difficulty);
                 var glowColor=m.visited?'rgba(212,168,90,0.15)':(m.seen?'rgba(72,187,120,0.12)':color+'22');
+                var mtHasImg={1:1,2:1,19:1,30:1,42:1,50:1,76:1,78:1,85:1,91:1};
                 html+='<div class="card" data-id="'+m.id+'" style="animation-delay:'+(i*0.03)+'s;--glow:'+glowColor+';">';
                 html+='<div class="card-cover">';
-                html+='<img src="data/mountain_images/'+m.id+'.webp" onerror="this.style.display=\'none\'" loading="lazy">';
+                if(mtHasImg[m.id]) html+='<img src="data/mountain_images/'+m.id+'.webp" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;" loading="lazy">';
                 html+='<div class="card-cover-ph"><svg viewBox="0 0 60 60"><polygon points="30,6 6,52 54,52" fill="none" stroke="rgba(124,196,245,0.1)" stroke-width="1.5" stroke-linejoin="round"/></svg></div>';
                 html+='<div class="card-cover-grad"></div>';
                 html+='<div class="card-elev">'+m.elevation+'<small>m</small></div>';
@@ -500,7 +501,8 @@
             var html='';
             html+='<button class="modal-close" id="modalClose">&times;</button>';
             html+='<div class="modal-cover">';
-            html+='<img src="data/mountain_images/'+m.id+'.webp" onerror="this.style.display=\'none\'">';
+            var mtHasImg2={1:1,2:1,19:1,30:1,42:1,50:1,76:1,78:1,85:1,91:1};
+            if(mtHasImg2[m.id]) html+='<img src="data/mountain_images/'+m.id+'.webp" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;">';
             html+='<div class="modal-cover-ph"><svg viewBox="0 0 80 80"><polygon points="40,8 8,68 72,68" fill="none" stroke="rgba(124,196,245,0.12)" stroke-width="2" stroke-linejoin="round"/></svg></div>';
             html+='<div class="modal-cover-grad"></div>';
             html+='<div class="modal-cover-elev">'+m.elevation+'<small>m</small></div>';

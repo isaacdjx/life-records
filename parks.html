@@ -377,9 +377,10 @@
             filtered.forEach(function(p,i){
                 var tc = typeColor(p.type);
                 var glowColor = p.visited ? 'rgba(212,168,90,0.15)' : 'rgba(34,197,94,0.12)';
+                var parkHasImg={1:1,3:1,6:1,12:1,13:1,18:1,26:1,30:1,42:1,43:1};
                 html += '<div class="card" data-id="'+p.id+'" style="animation-delay:'+(i*0.03)+'s;--glow:'+glowColor+';">';
                 html += '<div class="card-cover">';
-                html += '<img src="data/park_images/'+p.id+'.webp" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;" onerror="this.style.display=\'none\'">';
+                if(parkHasImg[p.id]) html += '<img src="data/park_images/'+p.id+'.webp" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;">';
                 html += '<div class="card-cover-ph">'+leafSvg+'</div>';
                 html += '<div class="card-cover-grad"></div>';
                 if(p.visited) html += '<div class="card-badge">★ 到过</div>';
@@ -410,8 +411,9 @@
             var tc = typeColor(p.type);
             var html = '';
             html += '<button class="modal-close" id="modalClose">&times;</button>';
+            var parkHasImg2={1:1,3:1,6:1,12:1,13:1,18:1,26:1,30:1,42:1,43:1};
             html += '<div class="modal-cover">';
-            html += '<img src="data/park_images/'+p.id+'.webp" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;" onerror="this.style.display=\'none\'">';
+            if(parkHasImg2[p.id]) html += '<img src="data/park_images/'+p.id+'.webp" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;">';
             html += '<div class="modal-cover-ph">'+treeSvg+'</div>';
             html += '<div class="modal-cover-grad"></div>';
             html += '</div>';
