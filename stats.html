@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>旅行统计</title>
+    <link href="data/fonts/fonts_local.css" rel="stylesheet">
+    <style>
+        :root{
+            --ice:#7cc4f5;--ice-bright:#a8dcfa;--ice-faint:rgba(124,196,245,0.18);
+            --gold:#d4a85a;--gold-bright:#f6c977;--gold-faint:rgba(212,168,90,0.18);
+            --green:#48bb78;--green-faint:rgba(72,187,120,0.15);
+            --dark:#080c18;--card:rgba(14,18,32,0.85);
+        }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Noto Sans SC',-apple-system,'PingFang SC',sans-serif;
+            background:var(--dark);color:rgba(255,255,255,0.88);min-height:100vh;overflow-x:hidden;}
+
+        /* scrollbar */
+        ::-webkit-scrollbar{width:4px;}
+        ::-webkit-scrollbar-track{background:transparent;}
+        ::-webkit-scrollbar-thumb{background:rgba(124,196,245,0.15);border-radius:2px;}
+        ::-webkit-scrollbar-thumb:hover{background:rgba(124,196,245,0.3);}
+        html{scrollbar-width:thin;scrollbar-color:rgba(124,196,245,0.15) transparent;}
+
+        /* ===== Loading ===== */
+        .loading{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;
+            align-items:center;justify-content:center;background:var(--dark);transition:opacity .6s;}
+        .loading.hide{opacity:0;pointer-events:none;}
+        .load-mount svg{width:64px;height:64px;filter:drop-shadow(0 0 16px rgba(124,196,245,0.3));}
+        .load-mount svg path{stroke:var(--ice);stroke-width:2;fill:none;
+            stroke-dasharray:200;stroke-dashoffset:200;animation:draw 1.5s ease forwards;}
+        .load-text{margin-top:10px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:4px;
+            color:rgba(124,196,245,0.4);animation:breathe 2s ease-in-out infinite;}
+
+        @keyframes draw{to{stroke-dashoffset:0}}
+        @keyframes breathe{0%,100%{opacity:.4}50%{opacity:1}}
+        @keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+        @keyframes glowPulse{0%,100%{box-shadow:0 0 8px rgba(124,196,245,0.15)}50%{box-shadow:0 0 20px rgba(124,196,245,0.3)}}
+        @keyframes countUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+        /* ===== Nav ===== */
+        .nav{position:fixed;top:0;left:0;right:0;height:52px;z-index:100;
+            background:linear-gradient(180deg,rgba(8,12,24,0.96),rgba(8,12,24,0.75));
+            backdrop-filter:blur(24px) saturate(1.8);
+            display:flex;align-items:center;justify-content:center;padding:0 20px;}
+        .nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+            background:linear-gradient(90deg,transparent,rgba(124,196,245,0.12) 30%,rgba(124,196,245,0.12) 70%,transparent);}
+        .nav-back{position:absolute;left:20px;color:rgba(255,255,255,0.45);text-decoration:none;
+            font-size:13px;display:flex;align-items:center;gap:4px;transition:color .2s;}
+        .nav-back:hover{color:var(--ice);}
+        .nav-title{font-family:'Cinzel','Noto Sans SC',serif;font-size:15px;font-weight:700;letter-spacing:4px;
+            background:linear-gradient(135deg,#fff 0%,var(--ice-bright) 40%,var(--ice) 60%,#fff 100%);
+            background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+            background-clip:text;animation:shimmer 4s linear infinite;}
+
+        /* ===== Main Content ===== */
+        .main{padding-top:72px;padding-bottom:60px;max-width:1100px;margin:0 auto;padding-left:20px;padding-right:20px;}
+
+        /* Section titles */
+        .section-title{font-size:18px;font-weight:700;margin-bottom:20px;padding-left:4px;
+            display:flex;align-items:center;gap:10px;animation:fadeUp .5s ease both;}
+        .section-title .accent{width:3px;height:20px;border-radius:2px;background:var(--ice);
+            box-shadow:0 0 8px rgba(124,196,245,0.3);}
+        .section-title .accent.gold{background:var(--gold);box-shadow:0 0 8px rgba(212,168,90,0.3);}
+        .section-title .accent.green{background:var(--green);box-shadow:0 0 8px rgba(72,187,120,0.3);}
+        .section{margin-bottom:48px;}
+
+        /* ===== Core Stats Grid ===== */
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;}
+        .stat-card{background:var(--card);border:1px solid rgba(124,196,245,0.05);border-radius:16px;
+            padding:20px 18px;text-align:center;transition:all .35s cubic-bezier(0.16,1,0.3,1);
+            animation:fadeUp .5s ease both;position:relative;overflow:hidden;}
+        .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+            background:linear-gradient(90deg,transparent,var(--stat-color,var(--ice)),transparent);opacity:0;transition:opacity .3s;}
+        .stat-card:hover{transform:translateY(-4px);border-color:rgba(124,196,245,0.12);
+            box-shadow:0 12px 40px rgba(0,0,0,0.25),0 0 20px rgba(124,196,245,0.06);}
+        .stat-card:hover::before{opacity:1;}
+        .stat-num{font-family:'Cinzel',serif;font-size:36px;font-weight:700;line-height:1;
+            background:linear-gradient(180deg,#fff,var(--stat-color,var(--ice)));
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+            filter:drop-shadow(0 2px 8px rgba(124,196,245,0.15));animation:countUp .6s ease both;}
+        .stat-num.gold{background:linear-gradient(180deg,#fff,var(--gold));
+            -webkit-background-clip:text;background-clip:text;
+            filter:drop-shadow(0 2px 8px rgba(212,168,90,0.15));}
+        .stat-num.green{background:linear-gradient(180deg,#fff,var(--green));
+            -webkit-background-clip:text;background-clip:text;
+            filter:drop-shadow(0 2px 8px rgba(72,187,120,0.15));}
+        .stat-num.purple{background:linear-gradient(180deg,#fff,#9f7aea);
+            -webkit-background-clip:text;background-clip:text;
+            filter:drop-shadow(0 2px 8px rgba(159,122,234,0.15));}
+        .stat-num.red{background:linear-gradient(180deg,#fff,#ef4444);
+            -webkit-background-clip:text;background-clip:text;
+            filter:drop-shadow(0 2px 8px rgba(239,68,68,0.15));}
+        .stat-label{font-size:12px;color:rgba(255,255,255,0.35);margin-top:8px;letter-spacing:1px;}
+        .stat-sub{font-size:10px;color:rgba(255,255,255,0.2);margin-top:4px;}
+
+        /* ===== Category Distribution ===== */
+        .cat-chart{display:flex;flex-direction:column;gap:10px;}
+        .cat-row{display:flex;align-items:center;gap:12px;animation:fadeUp .4s ease both;
+            padding:8px 14px;border-radius:12px;transition:background .2s;}
+        .cat-row:hover{background:rgba(255,255,255,0.02);}
+        .cat-emoji{font-size:20px;width:28px;text-align:center;flex-shrink:0;}
+        .cat-name{font-size:13px;width:72px;flex-shrink:0;color:rgba(255,255,255,0.65);}
+        .cat-bar-wrap{flex:1;height:24px;background:rgba(255,255,255,0.03);border-radius:8px;overflow:hidden;position:relative;}
+        .cat-bar{height:100%;border-radius:8px;transition:width 1s cubic-bezier(0.16,1,0.3,1);
+            position:relative;min-width:2px;}
+        .cat-bar::after{content:'';position:absolute;inset:0;border-radius:8px;
+            background:linear-gradient(90deg,transparent 60%,rgba(255,255,255,0.15));}
+        .cat-count{font-family:'Cinzel',serif;font-size:13px;font-weight:600;width:32px;
+            text-align:right;flex-shrink:0;color:rgba(255,255,255,0.5);}
+
+        /* ===== Mountain Stats ===== */
+        .mtn-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+        @media(max-width:700px){.mtn-grid{grid-template-columns:1fr;}}
+        .mtn-panel{background:var(--card);border:1px solid rgba(124,196,245,0.05);border-radius:16px;
+            padding:20px;animation:fadeUp .5s ease both;transition:all .35s;}
+        .mtn-panel:hover{border-color:rgba(124,196,245,0.1);box-shadow:0 8px 32px rgba(0,0,0,0.2);}
+        .mtn-panel-title{font-size:14px;font-weight:600;margin-bottom:16px;color:rgba(255,255,255,0.6);
+            display:flex;align-items:center;gap:8px;}
+        .mtn-panel-title .dot{width:6px;height:6px;border-radius:50%;background:var(--ice);}
+
+        /* Elevation bars */
+        .elev-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+        .elev-label{font-size:11px;width:68px;text-align:right;color:rgba(255,255,255,0.4);flex-shrink:0;}
+        .elev-bar-wrap{flex:1;height:20px;background:rgba(255,255,255,0.03);border-radius:6px;overflow:hidden;}
+        .elev-bar{height:100%;border-radius:6px;transition:width 1s cubic-bezier(0.16,1,0.3,1);
+            display:flex;align-items:center;justify-content:flex-end;padding-right:6px;min-width:2px;}
+        .elev-bar-num{font-size:10px;font-weight:600;color:rgba(255,255,255,0.8);}
+        .elev-count{font-size:11px;width:28px;text-align:right;color:rgba(255,255,255,0.35);flex-shrink:0;}
+
+        /* Range bars */
+        .range-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+        .range-label{font-size:11px;width:100px;text-align:right;color:rgba(255,255,255,0.4);
+            flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+        .range-bar-wrap{flex:1;height:18px;background:rgba(255,255,255,0.03);border-radius:6px;overflow:hidden;}
+        .range-bar{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--ice),var(--ice-bright));
+            transition:width 1s cubic-bezier(0.16,1,0.3,1);min-width:2px;}
+        .range-count{font-size:11px;width:28px;text-align:right;color:rgba(255,255,255,0.35);flex-shrink:0;}
+
+        /* Type distribution - donut */
+        .type-wrap{display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;}
+        .type-canvas-wrap{position:relative;width:140px;height:140px;flex-shrink:0;}
+        .type-canvas-wrap canvas{width:140px;height:140px;}
+        .type-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+            justify-content:center;pointer-events:none;}
+        .type-center-num{font-family:'Cinzel',serif;font-size:28px;font-weight:700;color:var(--ice);}
+        .type-center-label{font-size:9px;color:rgba(255,255,255,0.25);letter-spacing:1px;}
+        .type-legend{display:flex;flex-direction:column;gap:6px;}
+        .type-legend-item{display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,0.55);}
+        .type-legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0;}
+        .type-legend-num{font-family:'Cinzel',serif;font-weight:600;margin-left:auto;padding-left:12px;color:rgba(255,255,255,0.7);}
+
+        /* ===== Badges ===== */
+        .badge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;}
+        .badge-card{background:var(--card);border:1px solid rgba(124,196,245,0.05);border-radius:16px;
+            padding:18px;display:flex;gap:14px;align-items:flex-start;transition:all .35s cubic-bezier(0.16,1,0.3,1);
+            animation:fadeUp .4s ease both;position:relative;overflow:hidden;}
+        .badge-card.unlocked{border-color:rgba(212,168,90,0.15);}
+        .badge-card.unlocked:hover{transform:translateY(-4px);
+            box-shadow:0 12px 40px rgba(0,0,0,0.25),0 0 24px rgba(212,168,90,0.1);
+            border-color:rgba(212,168,90,0.3);}
+        .badge-card.locked{opacity:0.45;filter:grayscale(0.5);}
+        .badge-card.locked:hover{opacity:0.6;transform:translateY(-2px);}
+        .badge-icon{font-size:32px;line-height:1;flex-shrink:0;width:42px;height:42px;
+            display:flex;align-items:center;justify-content:center;border-radius:12px;
+            background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.04);}
+        .badge-card.unlocked .badge-icon{background:rgba(212,168,90,0.08);
+            border-color:rgba(212,168,90,0.15);box-shadow:0 0 16px rgba(212,168,90,0.1);
+            animation:glowPulse 3s ease-in-out infinite;}
+        .badge-info{flex:1;min-width:0;}
+        .badge-title{font-size:14px;font-weight:700;line-height:1.3;}
+        .badge-card.unlocked .badge-title{color:var(--gold-bright);}
+        .badge-card.locked .badge-title{color:rgba(255,255,255,0.4);}
+        .badge-desc{font-size:11px;color:rgba(255,255,255,0.3);margin-top:3px;line-height:1.4;}
+        .badge-progress{margin-top:8px;}
+        .badge-progress-bar{height:4px;background:rgba(255,255,255,0.05);border-radius:2px;overflow:hidden;}
+        .badge-progress-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--gold),var(--gold-bright));
+            transition:width 1s cubic-bezier(0.16,1,0.3,1);}
+        .badge-progress-text{font-size:10px;color:rgba(255,255,255,0.25);margin-top:4px;display:flex;
+            justify-content:space-between;align-items:center;}
+        .badge-tier{font-size:9px;padding:1px 6px;border-radius:4px;background:rgba(212,168,90,0.12);
+            color:var(--gold);font-weight:600;}
+        .badge-status{position:absolute;top:10px;right:10px;font-size:9px;padding:2px 8px;
+            border-radius:6px;font-weight:600;}
+        .badge-status.unlocked{background:rgba(72,187,120,0.12);color:var(--green);border:1px solid rgba(72,187,120,0.15);}
+        .badge-status.locked{background:rgba(255,255,255,0.03);color:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.04);}
+
+        /* ===== Tag Cloud ===== */
+        .tag-cloud{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;
+            padding:24px;background:var(--card);border:1px solid rgba(124,196,245,0.05);
+            border-radius:16px;animation:fadeUp .5s ease both;}
+        .tag-cloud-item{padding:4px 14px;border-radius:20px;
+            border:1px solid rgba(124,196,245,0.08);color:var(--ice);
+            transition:all .25s;cursor:default;white-space:nowrap;}
+        .tag-cloud-item:hover{background:rgba(124,196,245,0.08);border-color:rgba(124,196,245,0.2);
+            transform:translateY(-2px);box-shadow:0 4px 12px rgba(124,196,245,0.1);}
+
+        /* ===== Responsive ===== */
+        @media(max-width:600px){
+            .stats-grid{grid-template-columns:repeat(2,1fr);gap:10px;}
+            .stat-num{font-size:28px;}
+            .stat-card{padding:16px 12px;}
+            .badge-grid{grid-template-columns:1fr;}
+            .cat-name{width:56px;font-size:11px;}
+            .cat-emoji{font-size:16px;width:22px;}
+            .range-label{width:72px;font-size:10px;}
+        }
+    </style>
+</head>
+<body>
+
+<!-- Loading -->
+<div class="loading" id="loadingScreen">
+    <div class="load-mount">
+        <svg viewBox="0 0 64 64"><path d="M4 56 L20 20 L28 32 L36 14 L44 28 L52 8 L60 56 Z"/></svg>
+    </div>
+    <div class="load-text">LOADING</div>
+</div>
+
+<!-- Nav -->
+<div class="nav">
+    <a class="nav-back" href="index.html">&larr; 首页</a>
+    <span class="nav-title">旅行统计</span>
+</div>
+
+<!-- Main -->
+<div class="main" id="mainContent" style="opacity:0;">
+
+    <!-- Core Stats -->
+    <div class="section" id="coreSection">
+        <div class="section-title"><span class="accent"></span>核心数据</div>
+        <div class="stats-grid" id="coreStats"></div>
+    </div>
+
+    <!-- Category Distribution -->
+    <div class="section" id="catSection">
+        <div class="section-title"><span class="accent gold"></span>景点分类</div>
+        <div class="cat-chart" id="catChart"></div>
+    </div>
+
+    <!-- Mountain Stats -->
+    <div class="section" id="mtnSection">
+        <div class="section-title"><span class="accent"></span>雪山数据</div>
+        <div class="mtn-grid" id="mtnGrid">
+            <div class="mtn-panel" id="elevPanel">
+                <div class="mtn-panel-title"><span class="dot"></span>海拔分布</div>
+                <div id="elevChart"></div>
+            </div>
+            <div class="mtn-panel" id="rangePanel">
+                <div class="mtn-panel-title"><span class="dot"></span>山脉 TOP 8</div>
+                <div id="rangeChart"></div>
+            </div>
+            <div class="mtn-panel" id="typePanel" style="grid-column:1/-1;">
+                <div class="mtn-panel-title"><span class="dot"></span>类型分布</div>
+                <div class="type-wrap" id="typeWrap"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Badges -->
+    <div class="section" id="badgeSection">
+        <div class="section-title"><span class="accent gold"></span>成就徽章</div>
+        <div class="badge-grid" id="badgeGrid"></div>
+    </div>
+
+    <!-- Tag Cloud -->
+    <div class="section" id="tagSection">
+        <div class="section-title"><span class="accent green"></span>标签云</div>
+        <div class="tag-cloud" id="tagCloud"></div>
+    </div>
+</div>
+
+<script>
+(function(){
+    "use strict";
+
+    /* ===== Helpers ===== */
+    function fetchJSON(url, cb){
+        var xhr=new XMLHttpRequest();
+        xhr.open('GET',url,true);
+        xhr.onreadystatechange=function(){
+            if(xhr.readyState===4){
+                if(xhr.status===200){
+                    try{cb(null,JSON.parse(xhr.responseText));}catch(e){cb(e,null);}
+                }else{cb(new Error('HTTP '+xhr.status),null);}
+            }
+        };
+        xhr.send();
+    }
+
+    function loadAll(cb){
+        var results={};var done=0;var total=3;var err=null;
+        function check(){done++;if(done===total)cb(err,results);}
+        fetchJSON('data/travel.json',function(e,d){if(e)err=e;results.travel=d||[];check();});
+        fetchJSON('data/mountains_global.json',function(e,d){if(e)err=e;results.mountains=d||[];check();});
+        fetchJSON('data/badges.json',function(e,d){if(e)err=e;results.badges=d||[];check();});
+    }
+
+    /* ===== Province extraction ===== */
+    function extractProvince(location){
+        if(!location)return '';
+        /* Direct municipality/province names */
+        var municipalities=['北京','天津','上海','重庆'];
+        for(var i=0;i<municipalities.length;i++){
+            if(location.indexOf(municipalities[i])!==-1)return municipalities[i];
+        }
+        /* Autonomous regions */
+        var arPatterns=[
+            {k:'广西',n:'广西'},{k:'内蒙古',n:'内蒙古'},{k:'西藏',n:'西藏'},
+            {k:'宁夏',n:'宁夏'},{k:'新疆',n:'新疆'}
+        ];
+        for(var i=0;i<arPatterns.length;i++){
+            if(location.indexOf(arPatterns[i].k)!==-1)return arPatterns[i].n;
+        }
+        /* Province with 省 */
+        var m=location.match(/^(.{2,3}?)省/);
+        if(m)return m[1];
+        /* Taiwan / HK / Macau */
+        if(location.indexOf('台湾')!==-1)return '台湾';
+        if(location.indexOf('香港')!==-1)return '香港';
+        if(location.indexOf('澳门')!==-1)return '澳门';
+        return '';
+    }
+
+    /* ===== Country extraction ===== */
+    function extractCountry(location, city){
+        if(!location)return '';
+        var foreign=[
+            {k:'日本',n:'日本'},{k:'越南',n:'越南'},{k:'泰国',n:'泰国'},
+            {k:'韩国',n:'韩国'},{k:'新加坡',n:'新加坡'},{k:'马来西亚',n:'马来西亚'},
+            {k:'印度尼西亚',n:'印度尼西亚'},{k:'菲律宾',n:'菲律宾'},
+            {k:'冰岛',n:'冰岛'},{k:'法国',n:'法国'},{k:'意大利',n:'意大利'},
+            {k:'美国',n:'美国'},{k:'英国',n:'英国'},{k:'德国',n:'德国'},
+            {k:'瑞士',n:'瑞士'},{k:'尼泊尔',n:'尼泊尔'}
+        ];
+        var hay=location+'|'+city;
+        for(var i=0;i<foreign.length;i++){
+            if(hay.indexOf(foreign[i].k)!==-1)return foreign[i].n;
+        }
+        /* Check if it's Chinese */
+        var provinces=['北京','天津','上海','重庆','广西','内蒙古','西藏','宁夏','新疆',
+            '台湾','香港','澳门','河北','山西','辽宁','吉林','黑龙江','江苏','浙江',
+            '安徽','福建','江西','山东','河南','湖北','湖南','广东','海南','四川',
+            '贵州','云南','陕西','甘肃','青海'];
+        for(var i=0;i<provinces.length;i++){
+            if(location.indexOf(provinces[i])!==-1)return '中国';
+        }
+        if(location.match(/省|市|区|县|州/))return '中国';
+        return '其他';
+    }
+
+    /* ===== matchVisited logic ===== */
+    function matchMountains(travelData, allMountains){
+        var spots=[];
+        travelData.forEach(function(c){
+            if(!c.visited)return;
+            (c.spots||[]).forEach(function(s){
+                spots.push({title:s.title, location:s.location||'', city:c.city});
+            });
+        });
+
+        allMountains.forEach(function(m){
+            m.visited=false; m.seen=false;
+            var mKeys=m.matchKeys||[];
+            for(var i=0;i<spots.length;i++){
+                var hay=spots[i].title+'|'+spots[i].location+'|'+spots[i].city;
+                for(var j=0;j<mKeys.length;j++){
+                    if(hay.indexOf(mKeys[j])!==-1){m.visited=true;break;}
+                }
+                if(m.visited) break;
+            }
+            var vps=m.viewpoints||[];
+            vps.forEach(function(v){
+                v.visited=false;
+                var vKeys=v.matchKeys||[v.name];
+                for(var i=0;i<spots.length;i++){
+                    var hay=spots[i].title+'|'+spots[i].location+'|'+spots[i].city;
+                    for(var j=0;j<vKeys.length;j++){
+                        if(hay.indexOf(vKeys[j])!==-1){v.visited=true;break;}
+                    }
+                    if(v.visited) break;
+                }
+                if(v.visited) m.seen=true;
+            });
+        });
+    }
+
+    /* ===== Badge evaluation ===== */
+    function evaluateBadge(badge, visitedSpots, allSpots){
+        var cond=badge.condition;
+        var count=0;
+        switch(cond.type){
+            case 'tag_count':
+                allSpots.forEach(function(s){
+                    var tags=s.tags||[];
+                    for(var i=0;i<tags.length;i++){
+                        if(tags[i].indexOf(cond.tag)!==-1){count++;break;}
+                    }
+                });
+                break;
+            case 'province_count':
+                var provSet={};
+                allSpots.forEach(function(s){
+                    var p=extractProvince(s.location);
+                    if(p)provSet[p]=true;
+                });
+                count=Object.keys(provSet).length;
+                break;
+            case 'country_count':
+                var cSet={};
+                visitedSpots.forEach(function(s){
+                    var c=extractCountry(s.location, s.city);
+                    if(c)cSet[c]=true;
+                });
+                count=Object.keys(cSet).length;
+                break;
+            case 'lng_below':
+                allSpots.forEach(function(s){
+                    if(s.lng && s.lng<cond.value)count++;
+                });
+                break;
+            case 'lat_above':
+                allSpots.forEach(function(s){
+                    if(s.lat && s.lat>cond.value)count++;
+                });
+                break;
+            case 'heritage_count':
+                allSpots.forEach(function(s){
+                    if(s.category==='世界遗产')count++;
+                });
+                break;
+            case 'category_count':
+                allSpots.forEach(function(s){
+                    if(s.category===cond.category)count++;
+                });
+                break;
+            case 'has_spot_with_tag':
+                allSpots.forEach(function(s){
+                    var tags=s.tags||[];
+                    for(var i=0;i<tags.length;i++){
+                        if(tags[i].indexOf(cond.tag)!==-1){count++;break;}
+                    }
+                });
+                break;
+            case 'total_count':
+                count=allSpots.length;
+                break;
+        }
+        var threshold=cond.threshold||1;
+        var unlocked=count>=threshold;
+        var currentTier=0;
+        var maxTier=0;
+        var nextThreshold=threshold;
+        if(badge.tiers){
+            maxTier=badge.tiers.length;
+            for(var i=0;i<badge.tiers.length;i++){
+                if(count>=badge.tiers[i].threshold){
+                    currentTier=badge.tiers[i].level;
+                }
+            }
+            /* Find next threshold */
+            for(var i=0;i<badge.tiers.length;i++){
+                if(count<badge.tiers[i].threshold){
+                    nextThreshold=badge.tiers[i].threshold;
+                    break;
+                }
+                nextThreshold=badge.tiers[i].threshold;
+            }
+        }
+        return {
+            unlocked:unlocked,
+            count:count,
+            threshold:threshold,
+            currentTier:currentTier,
+            maxTier:maxTier,
+            nextThreshold:nextThreshold,
+            tiers:badge.tiers||null
+        };
+    }
+
+    /* ===== Category Config ===== */
+    var CATEGORIES=[
+        {name:'自然景观',emoji:'🏞️',color:'#48bb78'},
+        {name:'世界遗产',emoji:'🏛️',color:'#9f7aea'},
+        {name:'历史文化',emoji:'🏯',color:'#ed8936'},
+        {name:'现代都市',emoji:'🌃',color:'#4299e1'},
+        {name:'美食体验',emoji:'🍜',color:'#fc8181'},
+        {name:'海岛海滩',emoji:'🏖️',color:'#38b2ac'},
+        {name:'主题乐园',emoji:'🎢',color:'#ed64a6'},
+        {name:'自驾公路',emoji:'🚗',color:'#ecc94b'},
+        {name:'地质奇观',emoji:'🪨',color:'#a0aec0'}
+    ];
+
+    /* ===== Elevation bracket config ===== */
+    var ELEV_BRACKETS=[
+        {label:'8000m+',min:8000,max:99999,color:'#ef4444'},
+        {label:'7000-8000',min:7000,max:8000,color:'#f97316'},
+        {label:'6000-7000',min:6000,max:7000,color:'#eab308'},
+        {label:'5000-6000',min:5000,max:6000,color:'#22c55e'},
+        {label:'4000-5000',min:4000,max:5000,color:'#38bdf8'},
+        {label:'< 4000',min:0,max:4000,color:'#a78bfa'}
+    ];
+
+    /* ===== Type colors ===== */
+    var TYPE_COLORS={
+        '极高峰':'#ef4444',
+        '高峰':'#f97316',
+        '著名雪山':'#eab308',
+        '经典雪山':'#22c55e',
+        '火山雪峰':'#38bdf8'
+    };
+
+    /* ===== Draw donut ===== */
+    function drawDonut(canvas, data, total){
+        var ctx=canvas.getContext('2d');
+        var dpr=window.devicePixelRatio||1;
+        var size=140;
+        canvas.width=size*dpr;
+        canvas.height=size*dpr;
+        canvas.style.width=size+'px';
+        canvas.style.height=size+'px';
+        ctx.scale(dpr,dpr);
+
+        var cx=size/2, cy=size/2, r=55, lineW=14;
+        var startAngle=-Math.PI/2;
+        var gap=0.04;
+
+        data.forEach(function(item){
+            var sweep=(item.value/total)*Math.PI*2-gap;
+            if(sweep<0.01)sweep=0.01;
+
+            ctx.beginPath();
+            ctx.arc(cx,cy,r,startAngle,startAngle+sweep,false);
+            ctx.strokeStyle=item.color;
+            ctx.lineWidth=lineW;
+            ctx.lineCap='round';
+            ctx.stroke();
+
+            startAngle+=sweep+gap;
+        });
+    }
+
+    /* ===== Main render ===== */
+    function render(data){
+        var travelData=data.travel;
+        var allMountains=data.mountains;
+        var badgesData=data.badges;
+
+        /* --- Compute visited spots --- */
+        var visitedCities=[];
+        var allVisitedSpots=[];
+        var totalSpots=0;
+
+        travelData.forEach(function(c){
+            if(!c.visited)return;
+            visitedCities.push(c);
+            (c.spots||[]).forEach(function(s){
+                allVisitedSpots.push({
+                    title:s.title,
+                    content:s.content,
+                    location:s.location||'',
+                    lat:s.lat,
+                    lng:s.lng,
+                    category:s.category||'',
+                    tags:s.tags||[],
+                    city:c.city
+                });
+            });
+        });
+        totalSpots=allVisitedSpots.length;
+
+        /* --- Countries & Provinces --- */
+        var countrySet={};
+        var provinceSet={};
+        allVisitedSpots.forEach(function(s){
+            var c=extractCountry(s.location, s.city);
+            if(c)countrySet[c]=true;
+            var p=extractProvince(s.location);
+            if(p)provinceSet[p]=true;
+        });
+        var countryCount=Object.keys(countrySet).length;
+        var provinceCount=Object.keys(provinceSet).length;
+
+        /* --- Mountains --- */
+        matchMountains(travelData, allMountains);
+        var mtnVisited=0, mtnSeen=0, mtn8000=0;
+        allMountains.forEach(function(m){
+            if(m.visited)mtnVisited++;
+            if(m.seen)mtnSeen++;
+            if(m.elevation>=8000)mtn8000++;
+        });
+
+        /* --- Heritage --- */
+        var heritageCount=0;
+        allVisitedSpots.forEach(function(s){
+            if(s.category==='世界遗产')heritageCount++;
+        });
+
+        /* ===== 1. Core Stats ===== */
+        var coreEl=document.getElementById('coreStats');
+        var coreItems=[
+            {num:visitedCities.length, label:'总城市', cls:''},
+            {num:totalSpots, label:'总景点', cls:''},
+            {num:countryCount, label:'到过的国家', cls:'gold'},
+            {num:provinceCount, label:'到过的省份', cls:'green'},
+            {num:mtnVisited+'/'+mtnSeen, label:'雪山 到过/看过', cls:'', sub:'共 '+allMountains.length+' 座'},
+            {num:heritageCount, label:'世界遗产', cls:'purple'},
+            {num:mtn8000, label:'8000m+ 山峰', cls:'red', sub:'全球共 14 座'}
+        ];
+        var coreHtml='';
+        coreItems.forEach(function(item, idx){
+            coreHtml+='<div class="stat-card" style="animation-delay:'+((idx*0.06))+'s">';
+            coreHtml+='<div class="stat-num '+item.cls+'">'+item.num+'</div>';
+            coreHtml+='<div class="stat-label">'+item.label+'</div>';
+            if(item.sub)coreHtml+='<div class="stat-sub">'+item.sub+'</div>';
+            coreHtml+='</div>';
+        });
+        coreEl.innerHTML=coreHtml;
+
+        /* ===== 2. Category Distribution ===== */
+        var catCounts={};
+        CATEGORIES.forEach(function(cat){catCounts[cat.name]=0;});
+        allVisitedSpots.forEach(function(s){
+            if(catCounts.hasOwnProperty(s.category)){catCounts[s.category]++;}
+        });
+        var maxCat=0;
+        CATEGORIES.forEach(function(cat){
+            if(catCounts[cat.name]>maxCat)maxCat=catCounts[cat.name];
+        });
+
+        var catEl=document.getElementById('catChart');
+        var catHtml='';
+        /* Sort by count descending */
+        var sortedCats=CATEGORIES.slice().sort(function(a,b){return catCounts[b.name]-catCounts[a.name];});
+        sortedCats.forEach(function(cat, idx){
+            var cnt=catCounts[cat.name];
+            var pct=maxCat>0?Math.round((cnt/maxCat)*100):0;
+            catHtml+='<div class="cat-row" style="animation-delay:'+(idx*0.05)+'s">';
+            catHtml+='<span class="cat-emoji">'+cat.emoji+'</span>';
+            catHtml+='<span class="cat-name">'+cat.name+'</span>';
+            catHtml+='<div class="cat-bar-wrap"><div class="cat-bar" style="width:0%;background:'+cat.color+'" data-width="'+pct+'%"></div></div>';
+            catHtml+='<span class="cat-count">'+cnt+'</span>';
+            catHtml+='</div>';
+        });
+        catEl.innerHTML=catHtml;
+
+        /* ===== 3. Mountain Stats ===== */
+        /* Elevation distribution */
+        var elevCounts=[];
+        var elevMax=0;
+        ELEV_BRACKETS.forEach(function(b){
+            var cnt=0;
+            allMountains.forEach(function(m){
+                if(m.elevation>=b.min && m.elevation<b.max)cnt++;
+            });
+            elevCounts.push({label:b.label,count:cnt,color:b.color});
+            if(cnt>elevMax)elevMax=cnt;
+        });
+
+        var elevEl=document.getElementById('elevChart');
+        var elevHtml='';
+        elevCounts.forEach(function(item){
+            var pct=elevMax>0?Math.round((item.count/elevMax)*100):0;
+            elevHtml+='<div class="elev-row">';
+            elevHtml+='<span class="elev-label">'+item.label+'</span>';
+            elevHtml+='<div class="elev-bar-wrap"><div class="elev-bar" style="width:0%;background:'+item.color+'" data-width="'+pct+'%"><span class="elev-bar-num">'+item.count+'</span></div></div>';
+            elevHtml+='</div>';
+        });
+        elevEl.innerHTML=elevHtml;
+
+        /* Mountain ranges TOP 8 */
+        var rangeCounts={};
+        allMountains.forEach(function(m){
+            var r=m.range||'其他';
+            rangeCounts[r]=(rangeCounts[r]||0)+1;
+        });
+        var rangeArr=[];
+        for(var key in rangeCounts){
+            if(rangeCounts.hasOwnProperty(key)){
+                rangeArr.push({name:key,count:rangeCounts[key]});
+            }
+        }
+        rangeArr.sort(function(a,b){return b.count-a.count;});
+        rangeArr=rangeArr.slice(0,8);
+        var rangeMax=rangeArr.length>0?rangeArr[0].count:1;
+
+        var rangeEl=document.getElementById('rangeChart');
+        var rangeHtml='';
+        rangeArr.forEach(function(item){
+            var pct=Math.round((item.count/rangeMax)*100);
+            rangeHtml+='<div class="range-row">';
+            rangeHtml+='<span class="range-label" title="'+item.name+'">'+item.name+'</span>';
+            rangeHtml+='<div class="range-bar-wrap"><div class="range-bar" style="width:0%" data-width="'+pct+'%"></div></div>';
+            rangeHtml+='<span class="range-count">'+item.count+'</span>';
+            rangeHtml+='</div>';
+        });
+        rangeEl.innerHTML=rangeHtml;
+
+        /* Type distribution donut */
+        var typeCounts={};
+        var typeOrder=['极高峰','高峰','著名雪山','经典雪山','火山雪峰'];
+        typeOrder.forEach(function(t){typeCounts[t]=0;});
+        allMountains.forEach(function(m){
+            var t=m.type||'其他';
+            if(typeCounts.hasOwnProperty(t))typeCounts[t]++;
+        });
+
+        var typeWrap=document.getElementById('typeWrap');
+        var typeHtml='<div class="type-canvas-wrap"><canvas id="typeCanvas"></canvas>';
+        typeHtml+='<div class="type-center"><span class="type-center-num">'+allMountains.length+'</span>';
+        typeHtml+='<span class="type-center-label">总计</span></div></div>';
+        typeHtml+='<div class="type-legend">';
+        var donutData=[];
+        typeOrder.forEach(function(t){
+            var color=TYPE_COLORS[t]||'#888';
+            donutData.push({value:typeCounts[t],color:color});
+            typeHtml+='<div class="type-legend-item">';
+            typeHtml+='<span class="type-legend-dot" style="background:'+color+'"></span>';
+            typeHtml+='<span>'+t+'</span>';
+            typeHtml+='<span class="type-legend-num">'+typeCounts[t]+'</span>';
+            typeHtml+='</div>';
+        });
+        typeHtml+='</div>';
+        typeWrap.innerHTML=typeHtml;
+
+        setTimeout(function(){
+            var canvas=document.getElementById('typeCanvas');
+            if(canvas)drawDonut(canvas, donutData, allMountains.length);
+        },100);
+
+        /* ===== 4. Badges ===== */
+        /* Prepare spots for badge evaluation (all visited spots with extra info) */
+        var badgeSpotsAll=[];
+        var badgeSpotsWithCity=[];
+        travelData.forEach(function(c){
+            if(!c.visited)return;
+            (c.spots||[]).forEach(function(s){
+                badgeSpotsAll.push({
+                    title:s.title, location:s.location||'', lat:s.lat, lng:s.lng,
+                    category:s.category||'', tags:s.tags||[], city:c.city
+                });
+                badgeSpotsWithCity.push({
+                    title:s.title, location:s.location||'', lat:s.lat, lng:s.lng,
+                    category:s.category||'', tags:s.tags||[], city:c.city
+                });
+            });
+        });
+
+        var badgeEl=document.getElementById('badgeGrid');
+        var badgeHtml='';
+        /* Sort: unlocked first */
+        var badgeResults=[];
+        badgesData.forEach(function(b){
+            var result=evaluateBadge(b, badgeSpotsWithCity, badgeSpotsAll);
+            badgeResults.push({badge:b, result:result});
+        });
+        badgeResults.sort(function(a,b){
+            if(a.result.unlocked&&!b.result.unlocked)return -1;
+            if(!a.result.unlocked&&b.result.unlocked)return 1;
+            return 0;
+        });
+
+        badgeResults.forEach(function(item, idx){
+            var b=item.badge;
+            var r=item.result;
+            var cardClass=r.unlocked?'unlocked':'locked';
+            badgeHtml+='<div class="badge-card '+cardClass+'" style="animation-delay:'+(idx*0.04)+'s">';
+
+            /* Status indicator */
+            if(r.unlocked){
+                badgeHtml+='<span class="badge-status unlocked">已解锁</span>';
+            }else{
+                badgeHtml+='<span class="badge-status locked">未解锁</span>';
+            }
+
+            badgeHtml+='<div class="badge-icon">'+b.icon+'</div>';
+            badgeHtml+='<div class="badge-info">';
+
+            /* Title with tier suffix */
+            var titleText=b.title;
+            if(r.tiers && r.currentTier>0){
+                for(var i=0;i<r.tiers.length;i++){
+                    if(r.tiers[i].level===r.currentTier){
+                        titleText+=r.tiers[i].suffix;
+                        break;
+                    }
+                }
+            }
+            badgeHtml+='<div class="badge-title">'+titleText+'</div>';
+            badgeHtml+='<div class="badge-desc">'+b.description+'</div>';
+
+            /* Progress bar for tiered badges */
+            if(r.tiers){
+                var progressPct=Math.min(100,Math.round((r.count/r.nextThreshold)*100));
+                badgeHtml+='<div class="badge-progress">';
+                badgeHtml+='<div class="badge-progress-bar"><div class="badge-progress-fill" style="width:0%" data-width="'+progressPct+'%"></div></div>';
+                badgeHtml+='<div class="badge-progress-text">';
+                badgeHtml+='<span>'+r.count+' / '+r.nextThreshold+'</span>';
+                if(r.currentTier>0){
+                    badgeHtml+='<span class="badge-tier">Lv.'+r.currentTier+'</span>';
+                }
+                badgeHtml+='</div>';
+                badgeHtml+='</div>';
+            }else{
+                /* Non-tiered: simple progress */
+                var threshold=r.threshold;
+                var progressPct=Math.min(100,Math.round((r.count/threshold)*100));
+                badgeHtml+='<div class="badge-progress">';
+                badgeHtml+='<div class="badge-progress-bar"><div class="badge-progress-fill" style="width:0%" data-width="'+progressPct+'%"></div></div>';
+                badgeHtml+='<div class="badge-progress-text"><span>'+r.count+' / '+threshold+'</span></div>';
+                badgeHtml+='</div>';
+            }
+
+            badgeHtml+='</div>'; /* .badge-info */
+            badgeHtml+='</div>'; /* .badge-card */
+        });
+        badgeEl.innerHTML=badgeHtml;
+
+        /* ===== 5. Tag Cloud ===== */
+        var tagFreq={};
+        allVisitedSpots.forEach(function(s){
+            (s.tags||[]).forEach(function(t){
+                tagFreq[t]=(tagFreq[t]||0)+1;
+            });
+        });
+        var tagArr=[];
+        for(var key in tagFreq){
+            if(tagFreq.hasOwnProperty(key)){
+                tagArr.push({tag:key,count:tagFreq[key]});
+            }
+        }
+        tagArr.sort(function(a,b){return b.count-a.count;});
+        var tagMax=tagArr.length>0?tagArr[0].count:1;
+        var tagMin=tagArr.length>0?tagArr[tagArr.length-1].count:1;
+
+        var tagEl=document.getElementById('tagCloud');
+        var tagHtml='';
+        /* Shuffle for visual variety */
+        var shuffled=tagArr.slice();
+        for(var i=shuffled.length-1;i>0;i--){
+            var j=Math.floor(Math.random()*(i+1));
+            var tmp=shuffled[i];shuffled[i]=shuffled[j];shuffled[j]=tmp;
+        }
+        shuffled.forEach(function(item){
+            var ratio=(item.count-tagMin)/(tagMax-tagMin||1);
+            var fontSize=Math.round(11+ratio*16);
+            var opacity=0.4+ratio*0.6;
+            tagHtml+='<span class="tag-cloud-item" style="font-size:'+fontSize+'px;opacity:'+opacity+'" title="'+item.count+' 次">'+item.tag+'</span>';
+        });
+        tagEl.innerHTML=tagHtml;
+
+        /* ===== Animate bars in ===== */
+        setTimeout(function(){
+            var bars=document.querySelectorAll('[data-width]');
+            for(var i=0;i<bars.length;i++){
+                (function(bar){
+                    setTimeout(function(){
+                        bar.style.width=bar.getAttribute('data-width');
+                    },50);
+                })(bars[i]);
+            }
+        },200);
+
+        /* Show content */
+        document.getElementById('mainContent').style.opacity='1';
+        document.getElementById('mainContent').style.transition='opacity 0.5s ease';
+    }
+
+    /* ===== Init ===== */
+    loadAll(function(err, data){
+        setTimeout(function(){
+            document.getElementById('loadingScreen').classList.add('hide');
+        },800);
+        if(err){
+            console.error('Failed to load data:',err);
+        }
+        setTimeout(function(){
+            render(data);
+        },900);
+    });
+
+})();
+</script>
+</body>
+</html>

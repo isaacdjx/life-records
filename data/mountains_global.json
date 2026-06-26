@@ -1,0 +1,5511 @@
+[
+  {
+    "id": 1,
+    "name": "珠穆朗玛峰",
+    "nameEn": "Mount Everest",
+    "elevation": 8849,
+    "country": "中国/尼泊尔",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 27.9881,
+    "lng": 86.925,
+    "type": "极高峰",
+    "firstAscent": 1953,
+    "matchKeys": [
+      "珠穆朗玛",
+      "珠峰",
+      "Everest",
+      "Sagarmatha",
+      "Chomolungma"
+    ],
+    "difficulty": "PD+",
+    "viewpoints": [
+      {
+        "name": "加乌拉山口",
+        "lat": 28.49,
+        "lng": 86.85,
+        "route": "从日喀则出发经定日县沿318国道, 约6小时车程到达垭口",
+        "matchKeys": [
+          "加乌拉"
+        ]
+      },
+      {
+        "name": "绒布寺",
+        "lat": 28.1938,
+        "lng": 86.8528,
+        "route": "从定日县城沿珠峰公路约70公里, 约2小时车程, 需办理珠峰边防证",
+        "matchKeys": [
+          "绒布寺",
+          "珠峰大本营"
+        ]
+      },
+      {
+        "name": "Kala Patthar",
+        "lat": 27.9953,
+        "lng": 86.8292,
+        "route": "从卢卡拉出发EBC徒步线路, 约10天到达, 海拔5643m"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "乔戈里峰",
+    "nameEn": "K2",
+    "elevation": 8611,
+    "country": "中国/巴基斯坦",
+    "region": "亚洲",
+    "range": "喀喇昆仑山脉",
+    "lat": 35.88,
+    "lng": 76.5133,
+    "type": "极高峰",
+    "firstAscent": 1954,
+    "matchKeys": [
+      "乔戈里",
+      "K2",
+      "Chhogori",
+      "Godwin-Austen"
+    ],
+    "difficulty": "D",
+    "viewpoints": [
+      {
+        "name": "Concordia营地",
+        "lat": 35.75,
+        "lng": 76.5167,
+        "route": "从斯卡杜出发经Baltoro冰川徒步约7天到达协和广场"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "干城章嘉峰",
+    "nameEn": "Kangchenjunga",
+    "elevation": 8586,
+    "country": "尼泊尔/印度",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 27.7025,
+    "lng": 88.1475,
+    "type": "极高峰",
+    "firstAscent": 1955,
+    "matchKeys": [
+      "干城章嘉",
+      "Kangchenjunga",
+      "Kanchenjunga"
+    ],
+    "difficulty": "AD+",
+    "viewpoints": [
+      {
+        "name": "Goecha La",
+        "lat": 27.6167,
+        "lng": 88.1833,
+        "route": "从甘托克出发经Yuksom徒步约8天到达Goecha La山口（4940m）"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "洛子峰",
+    "nameEn": "Lhotse",
+    "elevation": 8516,
+    "country": "尼泊尔/中国",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 27.9617,
+    "lng": 86.9333,
+    "type": "极高峰",
+    "firstAscent": 1956,
+    "matchKeys": [
+      "洛子",
+      "Lhotse"
+    ],
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "Chukhung Ri",
+        "lat": 27.9,
+        "lng": 86.8833,
+        "route": "EBC徒步支线，从丁波切出发约2天到达Chukhung Ri（5546m）"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "马卡鲁峰",
+    "nameEn": "Makalu",
+    "elevation": 8485,
+    "country": "尼泊尔/中国",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 27.8897,
+    "lng": 87.0886,
+    "type": "极高峰",
+    "firstAscent": 1955,
+    "matchKeys": [
+      "马卡鲁",
+      "Makalu"
+    ],
+    "difficulty": "AD+",
+    "viewpoints": [
+      {
+        "name": "马卡鲁大本营",
+        "lat": 27.82,
+        "lng": 87.09,
+        "route": "从卢卡拉经Arun Valley徒步约12天到达大本营",
+        "matchKeys": [
+          "马卡鲁",
+          "Makalu"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "name": "卓奥友峰",
+    "nameEn": "Cho Oyu",
+    "elevation": 8188,
+    "country": "尼泊尔/中国",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 28.0942,
+    "lng": 86.6608,
+    "type": "极高峰",
+    "firstAscent": 1954,
+    "matchKeys": [
+      "卓奥友",
+      "Cho Oyu"
+    ],
+    "difficulty": "PD",
+    "viewpoints": [
+      {
+        "name": "果佐",
+        "lat": 28.0833,
+        "lng": 86.7167,
+        "route": "从定日县城驾车约2小时到达果佐观景点"
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "name": "道拉吉里峰",
+    "nameEn": "Dhaulagiri",
+    "elevation": 8167,
+    "country": "尼泊尔",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 28.6967,
+    "lng": 83.4875,
+    "type": "极高峰",
+    "firstAscent": 1960,
+    "matchKeys": [
+      "道拉吉里",
+      "Dhaulagiri"
+    ],
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "Poon Hill",
+        "lat": 28.3992,
+        "lng": 83.6947,
+        "route": "从博卡拉出发经ABC徒步约2天到达Poon Hill（3210m）"
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "name": "马纳斯鲁峰",
+    "nameEn": "Manaslu",
+    "elevation": 8163,
+    "country": "尼泊尔",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 28.55,
+    "lng": 84.5597,
+    "type": "极高峰",
+    "firstAscent": 1956,
+    "matchKeys": [
+      "马纳斯鲁",
+      "Manaslu"
+    ],
+    "difficulty": "PD+",
+    "viewpoints": [
+      {
+        "name": "马纳斯鲁大本营",
+        "lat": 28.59,
+        "lng": 84.58,
+        "route": "从阿鲁格哈特出发，经Samagaon村到达大本营",
+        "matchKeys": [
+          "马纳斯鲁",
+          "Manaslu"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "name": "南迦帕尔巴特峰",
+    "nameEn": "Nanga Parbat",
+    "elevation": 8126,
+    "country": "巴基斯坦",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 35.2375,
+    "lng": 74.5892,
+    "type": "极高峰",
+    "firstAscent": 1953,
+    "matchKeys": [
+      "南迦帕尔巴特",
+      "Nanga Parbat",
+      "杀人峰"
+    ],
+    "difficulty": "D-",
+    "viewpoints": [
+      {
+        "name": "Fairy Meadows",
+        "lat": 35.3833,
+        "lng": 74.5833,
+        "route": "从吉尔吉特驾车至Raikot桥，再徒步约5小时或乘吉普上山"
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "name": "安纳普尔纳峰",
+    "nameEn": "Annapurna I",
+    "elevation": 8091,
+    "country": "尼泊尔",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 28.5961,
+    "lng": 83.8203,
+    "type": "极高峰",
+    "firstAscent": 1950,
+    "matchKeys": [
+      "安纳普尔纳",
+      "Annapurna"
+    ],
+    "difficulty": "D",
+    "viewpoints": [
+      {
+        "name": "Poon Hill",
+        "lat": 28.3992,
+        "lng": 83.6947,
+        "route": "从博卡拉出发经Ghorepani徒步约2天到达Poon Hill（3210m）"
+      },
+      {
+        "name": "ABC大本营",
+        "lat": 28.5306,
+        "lng": 83.8781,
+        "route": "从博卡拉出发经ABC Trek约7天到达安纳普尔纳大本营（4130m）"
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "name": "加舒尔布鲁木I峰",
+    "nameEn": "Gasherbrum I",
+    "elevation": 8080,
+    "country": "中国/巴基斯坦",
+    "region": "亚洲",
+    "range": "喀喇昆仑山脉",
+    "lat": 35.7244,
+    "lng": 76.6961,
+    "type": "极高峰",
+    "firstAscent": 1958,
+    "matchKeys": [
+      "加舒尔布鲁木",
+      "Gasherbrum",
+      "Hidden Peak"
+    ],
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "阿斯科雷冰川营地",
+        "lat": 35.73,
+        "lng": 76.5,
+        "route": "从斯卡杜出发，经Shigar河谷徒步至冰川",
+        "matchKeys": [
+          "加舒尔布鲁木",
+          "Gasherbrum"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "name": "布洛阿特峰",
+    "nameEn": "Broad Peak",
+    "elevation": 8051,
+    "country": "中国/巴基斯坦",
+    "region": "亚洲",
+    "range": "喀喇昆仑山脉",
+    "lat": 35.8117,
+    "lng": 76.5653,
+    "type": "极高峰",
+    "firstAscent": 1957,
+    "matchKeys": [
+      "布洛阿特",
+      "Broad Peak"
+    ],
+    "difficulty": "AD-",
+    "viewpoints": [
+      {
+        "name": "协和广场营地",
+        "lat": 35.76,
+        "lng": 76.52,
+        "route": "从斯卡杜经Baltoro冰川徒步抵达",
+        "matchKeys": [
+          "布洛阿特",
+          "Broad Peak"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "name": "加舒尔布鲁木II峰",
+    "nameEn": "Gasherbrum II",
+    "elevation": 8035,
+    "country": "中国/巴基斯坦",
+    "region": "亚洲",
+    "range": "喀喇昆仑山脉",
+    "lat": 35.7583,
+    "lng": 76.6533,
+    "type": "极高峰",
+    "firstAscent": 1956,
+    "matchKeys": [
+      "加舒尔布鲁木II",
+      "Gasherbrum II"
+    ],
+    "difficulty": "PD+",
+    "viewpoints": [
+      {
+        "name": "Baltoro冰川观景点",
+        "lat": 35.74,
+        "lng": 76.63,
+        "route": "经K2大本营路线可远眺",
+        "matchKeys": [
+          "加舒尔布鲁木",
+          "Gasherbrum II"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "name": "希夏邦马峰",
+    "nameEn": "Shishapangma",
+    "elevation": 8027,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 28.3528,
+    "lng": 85.7797,
+    "type": "极高峰",
+    "firstAscent": 1964,
+    "matchKeys": [
+      "希夏邦马",
+      "Shishapangma",
+      "高僧赞拉"
+    ],
+    "difficulty": "PD",
+    "viewpoints": [
+      {
+        "name": "希夏邦马大本营",
+        "lat": 28.32,
+        "lng": 85.79,
+        "route": "从聂拉木或定日出发，经中尼公路到达南坡大本营",
+        "matchKeys": [
+          "希夏邦马",
+          "Shishapangma"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "name": "努子峰",
+    "nameEn": "Nuptse",
+    "elevation": 7861,
+    "country": "尼泊尔",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 27.9681,
+    "lng": 86.8889,
+    "type": "高峰",
+    "firstAscent": 1961,
+    "matchKeys": [
+      "努子",
+      "Nuptse"
+    ],
+    "difficulty": "TD",
+    "viewpoints": [
+      {
+        "name": "Lobuche高原",
+        "lat": 27.95,
+        "lng": 86.81,
+        "route": "EBC徒步途中经过，可远眺努子峰南壁",
+        "matchKeys": [
+          "努子峰",
+          "Nuptse"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "name": "马舍布鲁姆峰",
+    "nameEn": "Masherbrum",
+    "elevation": 7821,
+    "country": "巴基斯坦",
+    "region": "亚洲",
+    "range": "喀喇昆仑山脉",
+    "lat": 35.6722,
+    "lng": 76.3056,
+    "type": "高峰",
+    "firstAscent": 1960,
+    "matchKeys": [
+      "马舍布鲁姆",
+      "Masherbrum",
+      "K1"
+    ],
+    "difficulty": "D+",
+    "viewpoints": [
+      {
+        "name": "Hushe村",
+        "lat": 35.42,
+        "lng": 76.37,
+        "route": "从斯卡杜驾车约6小时到达Hushe村",
+        "matchKeys": [
+          "马舍布鲁姆",
+          "Masherbrum"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "name": "巴图拉峰",
+    "nameEn": "Batura Sar",
+    "elevation": 7795,
+    "country": "巴基斯坦",
+    "region": "亚洲",
+    "range": "喀喇昆仑山脉",
+    "lat": 36.4833,
+    "lng": 74.6833,
+    "type": "高峰",
+    "firstAscent": 1976,
+    "matchKeys": [
+      "巴图拉",
+      "Batura Sar"
+    ],
+    "difficulty": "D",
+    "viewpoints": [
+      {
+        "name": "帕苏冰川",
+        "lat": 36.46,
+        "lng": 74.87,
+        "route": "沿喀喇昆仑公路经帕苏村可达冰川观景点",
+        "matchKeys": [
+          "巴图拉",
+          "Batura"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "name": "拉卡波希峰",
+    "nameEn": "Rakaposhi",
+    "elevation": 7788,
+    "country": "巴基斯坦",
+    "region": "亚洲",
+    "range": "喀喇昆仑山脉",
+    "lat": 36.15,
+    "lng": 74.5167,
+    "type": "高峰",
+    "firstAscent": 1958,
+    "matchKeys": [
+      "拉卡波希",
+      "Rakaposhi"
+    ],
+    "difficulty": "AD+",
+    "viewpoints": [
+      {
+        "name": "Karimabad",
+        "lat": 36.3167,
+        "lng": 74.6667,
+        "route": "沿喀喇昆仑公路到达卡里马巴德，可远眺拉卡波希峰"
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "name": "南迦巴瓦峰",
+    "nameEn": "Namcha Barwa",
+    "elevation": 7782,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 29.6375,
+    "lng": 95.0536,
+    "type": "高峰",
+    "firstAscent": 1992,
+    "matchKeys": [
+      "南迦巴瓦",
+      "Namcha Barwa",
+      "那木恰巴尔瓦"
+    ],
+    "difficulty": "ED",
+    "viewpoints": [
+      {
+        "name": "色季拉山口",
+        "lat": 29.6,
+        "lng": 94.7167,
+        "route": "从林芝市区沿318国道向西约25公里, 约40分钟车程, 海拔4728m",
+        "matchKeys": [
+          "色季拉"
+        ]
+      },
+      {
+        "name": "索松村",
+        "lat": 29.5833,
+        "lng": 94.8333,
+        "route": "从林芝经雅鲁藏布大峡谷景区进入, 约2小时车程",
+        "matchKeys": [
+          "索松"
+        ]
+      },
+      {
+        "name": "直白村",
+        "lat": 29.6833,
+        "lng": 95.05,
+        "route": "从排龙乡进入雅鲁藏布大峡谷, 约1.5小时车程",
+        "matchKeys": [
+          "直白"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "name": "坎珠特峰",
+    "nameEn": "Kanjut Sar",
+    "elevation": 7760,
+    "country": "巴基斯坦",
+    "region": "亚洲",
+    "range": "喀喇昆仑山脉",
+    "lat": 36.2833,
+    "lng": 75.4167,
+    "type": "高峰",
+    "firstAscent": 1959,
+    "matchKeys": [
+      "坎珠特",
+      "Kanjut Sar"
+    ],
+    "difficulty": "D",
+    "viewpoints": [
+      {
+        "name": "罕萨河谷",
+        "lat": 36.32,
+        "lng": 74.66,
+        "route": "沿喀喇昆仑公路经卡里马巴德到达",
+        "matchKeys": [
+          "坎珠特",
+          "Kunyang"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 21,
+    "name": "卡梅特峰",
+    "nameEn": "Kamet",
+    "elevation": 7756,
+    "country": "印度",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 30.9208,
+    "lng": 79.5919,
+    "type": "高峰",
+    "firstAscent": 1931,
+    "matchKeys": [
+      "卡梅特",
+      "Kamet"
+    ],
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "焦希马特镇",
+        "lat": 30.55,
+        "lng": 79.57,
+        "route": "从里希凯什驾车约12小时到达焦希马特",
+        "matchKeys": [
+          "卡梅特",
+          "Kamet"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 22,
+    "name": "萨尔托罗峰",
+    "nameEn": "Saltoro Kangri",
+    "elevation": 7742,
+    "country": "印度",
+    "region": "亚洲",
+    "range": "喀喇昆仑山脉",
+    "lat": 35.3833,
+    "lng": 76.85,
+    "type": "高峰",
+    "firstAscent": 1962,
+    "matchKeys": [
+      "萨尔托罗",
+      "Saltoro Kangri"
+    ],
+    "difficulty": "AD+",
+    "viewpoints": [
+      {
+        "name": "努布拉河谷",
+        "lat": 35.3,
+        "lng": 77,
+        "route": "从列城经锡亚琴冰川方向前往",
+        "matchKeys": [
+          "萨尔托罗",
+          "Saltoro"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 23,
+    "name": "章子峰",
+    "nameEn": "Changtse",
+    "elevation": 7543,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 28.0167,
+    "lng": 86.9333,
+    "type": "高峰",
+    "firstAscent": 1982,
+    "matchKeys": [
+      "章子",
+      "Changtse",
+      "北峰"
+    ],
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "珠峰东绒布冰川",
+        "lat": 28.03,
+        "lng": 86.91,
+        "route": "从定日县出发经珠峰大本营可远眺",
+        "matchKeys": [
+          "章子峰",
+          "Changtse"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 24,
+    "name": "蒂里奇米尔峰",
+    "nameEn": "Tirich Mir",
+    "elevation": 7708,
+    "country": "巴基斯坦",
+    "region": "亚洲",
+    "range": "兴都库什山脉",
+    "lat": 36.2522,
+    "lng": 71.8456,
+    "type": "高峰",
+    "firstAscent": 1950,
+    "matchKeys": [
+      "蒂里奇米尔",
+      "Tirich Mir"
+    ],
+    "difficulty": "AD+",
+    "viewpoints": [
+      {
+        "name": "奇特拉尔镇",
+        "lat": 35.85,
+        "lng": 71.78,
+        "route": "从白沙瓦飞奇特拉尔或陆路经Lowari隧道",
+        "matchKeys": [
+          "蒂里奇米尔",
+          "Tirich Mir"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 25,
+    "name": "贡布康日峰",
+    "nameEn": "Jannu",
+    "elevation": 7711,
+    "country": "尼泊尔",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 27.6833,
+    "lng": 88.05,
+    "type": "高峰",
+    "firstAscent": 1962,
+    "matchKeys": [
+      "贡布康日",
+      "Jannu",
+      "Kumbhakarna"
+    ],
+    "difficulty": "TD+",
+    "viewpoints": [
+      {
+        "name": "Kangchenjunga大本营",
+        "lat": 27.7,
+        "lng": 88.05,
+        "route": "从塔普勒琼出发徒步约20天到达",
+        "matchKeys": [
+          "贡布康日",
+          "Jannu"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 26,
+    "name": "纳木那尼峰",
+    "nameEn": "Gurla Mandhata",
+    "elevation": 7694,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 30.4333,
+    "lng": 81.2833,
+    "type": "高峰",
+    "firstAscent": 1985,
+    "matchKeys": [
+      "纳木那尼",
+      "Gurla Mandhata",
+      "阿比峰"
+    ],
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "普兰",
+        "lat": 30.2833,
+        "lng": 81.1667,
+        "route": "从拉萨经日喀则、萨嘎驾车约3天到达普兰县"
+      }
+    ]
+  },
+  {
+    "id": 27,
+    "name": "公格尔峰",
+    "nameEn": "Kongur Tagh",
+    "elevation": 7649,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "昆仑山脉",
+    "lat": 38.5883,
+    "lng": 75.3142,
+    "type": "高峰",
+    "firstAscent": 1981,
+    "matchKeys": [
+      "公格尔",
+      "Kongur"
+    ],
+    "difficulty": "AD+",
+    "viewpoints": [
+      {
+        "name": "卡拉库里湖",
+        "lat": 38.44,
+        "lng": 75.04,
+        "route": "从喀什沿中巴公路约200km到达",
+        "matchKeys": [
+          "公格尔",
+          "Kongur"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 28,
+    "name": "冈仁波齐峰",
+    "nameEn": "Mount Kailash",
+    "elevation": 6714,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "冈底斯山脉",
+    "lat": 31.0667,
+    "lng": 81.3167,
+    "type": "著名雪山",
+    "firstAscent": null,
+    "matchKeys": [
+      "冈仁波齐",
+      "Kailash",
+      "神山"
+    ],
+    "difficulty": "禁登",
+    "viewpoints": [
+      {
+        "name": "冈仁波齐转山路",
+        "lat": 31.05,
+        "lng": 81.35,
+        "route": "冈仁波齐转山路线全程52km，从塔钦出发约2-3天"
+      },
+      {
+        "name": "塔钦",
+        "lat": 30.9667,
+        "lng": 81.2833,
+        "route": "从拉萨经日喀则驾车约3天到达塔钦镇"
+      }
+    ]
+  },
+  {
+    "id": 29,
+    "name": "岗嘎本森峰",
+    "nameEn": "Gangkhar Puensum",
+    "elevation": 7570,
+    "country": "不丹",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 28.0478,
+    "lng": 90.4536,
+    "type": "高峰",
+    "firstAscent": null,
+    "matchKeys": [
+      "岗嘎本森",
+      "Gangkhar Puensum",
+      "未登顶"
+    ],
+    "difficulty": "禁登",
+    "viewpoints": [
+      {
+        "name": "Laya村",
+        "lat": 27.95,
+        "lng": 89.83,
+        "route": "不丹Snowman Trek路线经过此村",
+        "matchKeys": [
+          "岗嘎本森",
+          "Gangkar Puensum"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 30,
+    "name": "贡嘎山",
+    "nameEn": "Minya Konka",
+    "elevation": 7556,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "横断山脉",
+    "lat": 29.5958,
+    "lng": 101.8783,
+    "type": "高峰",
+    "firstAscent": 1932,
+    "matchKeys": [
+      "贡嘎",
+      "Minya Konka",
+      "蜀山之王"
+    ],
+    "difficulty": "D+",
+    "viewpoints": [
+      {
+        "name": "子梅垭口",
+        "lat": 29.5667,
+        "lng": 101.8667,
+        "route": "从康定出发经新都桥、沙德至玉龙西村, 再越野车到垭口, 约4-5小时",
+        "matchKeys": [
+          "子梅"
+        ]
+      },
+      {
+        "name": "冷嘎措",
+        "lat": 29.55,
+        "lng": 101.8333,
+        "route": "从康定经格西草原徒步约4小时到达, 海拔4600m",
+        "matchKeys": [
+          "冷嘎措",
+          "冷噶措"
+        ]
+      },
+      {
+        "name": "牛背山",
+        "lat": 29.65,
+        "lng": 102.35,
+        "route": "从泸定县冷碛镇出发, 盘山公路约3小时车程到山顶, 海拔3660m",
+        "matchKeys": [
+          "牛背山"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 31,
+    "name": "公格尔九别峰",
+    "nameEn": "Kongur Tiube",
+    "elevation": 7530,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "昆仑山脉",
+    "lat": 38.6167,
+    "lng": 75.1167,
+    "type": "高峰",
+    "firstAscent": 1956,
+    "matchKeys": [
+      "公格尔九别",
+      "Kongur Tiube"
+    ],
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "卡拉库里湖西岸",
+        "lat": 38.45,
+        "lng": 75.08,
+        "route": "从喀什沿中巴公路至卡湖停车场",
+        "matchKeys": [
+          "公格尔九别",
+          "Kongur Tiube"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 32,
+    "name": "慕士塔格峰",
+    "nameEn": "Muztagh Ata",
+    "elevation": 7509,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "昆仑山脉",
+    "lat": 38.2833,
+    "lng": 75.1167,
+    "type": "高峰",
+    "firstAscent": 1956,
+    "matchKeys": [
+      "慕士塔格",
+      "Muztagh Ata",
+      "冰山之父"
+    ],
+    "difficulty": "PD-",
+    "viewpoints": [
+      {
+        "name": "喀拉库勒湖",
+        "lat": 38.4167,
+        "lng": 75.05,
+        "route": "沿中巴公路（314国道）从喀什出发约200km到达"
+      },
+      {
+        "name": "314国道观景台",
+        "lat": 38.3,
+        "lng": 75.1333,
+        "route": "314国道沿途多个停车观景点可远眺慕士塔格"
+      }
+    ]
+  },
+  {
+    "id": 33,
+    "name": "伊斯梅尔·索莫尼峰",
+    "nameEn": "Ismoil Somoni Peak",
+    "elevation": 7495,
+    "country": "塔吉克斯坦",
+    "region": "亚洲",
+    "range": "帕米尔高原",
+    "lat": 38.9333,
+    "lng": 72.0167,
+    "type": "高峰",
+    "firstAscent": 1933,
+    "matchKeys": [
+      "索莫尼",
+      "Ismoil Somoni",
+      "共产主义峰"
+    ],
+    "difficulty": "PD+",
+    "viewpoints": [
+      {
+        "name": "阿契克河谷",
+        "lat": 39,
+        "lng": 72.08,
+        "route": "从杜尚别驾车经帕米尔公路前往",
+        "matchKeys": [
+          "索莫尼",
+          "Ismoil Somoni"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 34,
+    "name": "诺沙克峰",
+    "nameEn": "Noshaq",
+    "elevation": 7492,
+    "country": "阿富汗",
+    "region": "亚洲",
+    "range": "兴都库什山脉",
+    "lat": 36.4167,
+    "lng": 71.8167,
+    "type": "高峰",
+    "firstAscent": 1960,
+    "matchKeys": [
+      "诺沙克",
+      "Noshaq"
+    ],
+    "difficulty": "PD+",
+    "viewpoints": [
+      {
+        "name": "努里斯坦山口",
+        "lat": 36.35,
+        "lng": 71.8,
+        "route": "经奇特拉尔方向可远眺（需安全许可）",
+        "matchKeys": [
+          "诺沙克",
+          "Noshaq"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 35,
+    "name": "托木尔峰",
+    "nameEn": "Tomur Peak",
+    "elevation": 7443,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "天山山脉",
+    "lat": 42.0333,
+    "lng": 80.1167,
+    "type": "高峰",
+    "firstAscent": 1977,
+    "matchKeys": [
+      "托木尔",
+      "Tomur",
+      "天山最高峰"
+    ],
+    "difficulty": "D",
+    "viewpoints": [
+      {
+        "name": "天山南坡温宿",
+        "lat": 41.67,
+        "lng": 80.2,
+        "route": "从阿克苏驾车至温宿县托木尔峰景区",
+        "matchKeys": [
+          "托木尔",
+          "Tomur"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 36,
+    "name": "胜利峰",
+    "nameEn": "Jengish Chokusu",
+    "elevation": 7439,
+    "country": "吉尔吉斯斯坦/中国",
+    "region": "亚洲",
+    "range": "天山山脉",
+    "lat": 42.0333,
+    "lng": 79.9167,
+    "type": "高峰",
+    "firstAscent": 1938,
+    "matchKeys": [
+      "胜利峰",
+      "Jengish Chokusu",
+      "Peak Pobeda"
+    ],
+    "difficulty": "AD+",
+    "viewpoints": [
+      {
+        "name": "伊宁那拉提",
+        "lat": 42.05,
+        "lng": 80,
+        "route": "从伊宁出发经218国道可远眺",
+        "matchKeys": [
+          "胜利峰",
+          "Jengish"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 37,
+    "name": "念青唐古拉峰",
+    "nameEn": "Nyenchen Tanglha",
+    "elevation": 7162,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "念青唐古拉山脉",
+    "lat": 30.3917,
+    "lng": 90.575,
+    "type": "高峰",
+    "firstAscent": 1986,
+    "matchKeys": [
+      "念青唐古拉",
+      "Nyenchen Tanglha"
+    ],
+    "difficulty": "AD+",
+    "viewpoints": [
+      {
+        "name": "念青唐古拉山口",
+        "lat": 30.2833,
+        "lng": 90.6667,
+        "route": "沿109国道从拉萨北行约120km经过山口（4640m）"
+      },
+      {
+        "name": "纳木错",
+        "lat": 30.7167,
+        "lng": 90.6167,
+        "route": "从拉萨驾车约4小时到达纳木错湖畔"
+      }
+    ]
+  },
+  {
+    "id": 38,
+    "name": "列宁峰",
+    "nameEn": "Lenin Peak",
+    "elevation": 7134,
+    "country": "塔吉克斯坦/吉尔吉斯斯坦",
+    "region": "亚洲",
+    "range": "帕米尔高原",
+    "lat": 39.35,
+    "lng": 72.8667,
+    "type": "高峰",
+    "firstAscent": 1928,
+    "matchKeys": [
+      "列宁峰",
+      "Lenin Peak",
+      "Ibn Sina Peak"
+    ],
+    "difficulty": "PD",
+    "viewpoints": [
+      {
+        "name": "Achik-Tash大本营",
+        "lat": 39.37,
+        "lng": 72.85,
+        "route": "从奥什驾车约6小时到达大本营",
+        "matchKeys": [
+          "列宁峰",
+          "Lenin"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 39,
+    "name": "普莫里峰",
+    "nameEn": "Pumori",
+    "elevation": 7161,
+    "country": "尼泊尔/中国",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 28.0136,
+    "lng": 86.83,
+    "type": "高峰",
+    "firstAscent": 1962,
+    "matchKeys": [
+      "普莫里",
+      "Pumori"
+    ],
+    "difficulty": "D",
+    "viewpoints": [
+      {
+        "name": "Kala Patthar",
+        "lat": 27.99,
+        "lng": 86.83,
+        "route": "EBC徒步终点，海拔5644m的著名观景台",
+        "matchKeys": [
+          "普莫里",
+          "Pumori"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 40,
+    "name": "汗腾格里峰",
+    "nameEn": "Khan Tengri",
+    "elevation": 7010,
+    "country": "哈萨克斯坦/吉尔吉斯斯坦",
+    "region": "亚洲",
+    "range": "天山山脉",
+    "lat": 42.2083,
+    "lng": 80.175,
+    "type": "高峰",
+    "firstAscent": 1931,
+    "matchKeys": [
+      "汗腾格里",
+      "Khan Tengri"
+    ],
+    "difficulty": "AD+",
+    "viewpoints": [
+      {
+        "name": "南伊宁河谷",
+        "lat": 42.2,
+        "lng": 80.25,
+        "route": "从阿拉木图或比什凯克出发至大本营",
+        "matchKeys": [
+          "汗腾格里",
+          "Khan Tengri"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 41,
+    "name": "阿玛达布拉姆峰",
+    "nameEn": "Ama Dablam",
+    "elevation": 6812,
+    "country": "尼泊尔",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 27.8614,
+    "lng": 86.8611,
+    "type": "著名雪山",
+    "firstAscent": 1961,
+    "matchKeys": [
+      "阿玛达布拉姆",
+      "Ama Dablam"
+    ],
+    "difficulty": "D",
+    "viewpoints": [
+      {
+        "name": "EBC徒步沿途",
+        "lat": 27.8667,
+        "lng": 86.85,
+        "route": "从卢卡拉出发的EBC徒步沿途多处可见"
+      }
+    ]
+  },
+  {
+    "id": 42,
+    "name": "梅里雪山",
+    "nameEn": "Meili Snow Mountain",
+    "elevation": 6740,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "横断山脉",
+    "lat": 28.4333,
+    "lng": 98.6833,
+    "type": "著名雪山",
+    "firstAscent": null,
+    "matchKeys": [
+      "梅里",
+      "卡瓦格博",
+      "Kawagebo",
+      "太子雪山"
+    ],
+    "difficulty": "禁登",
+    "viewpoints": [
+      {
+        "name": "飞来寺观景台",
+        "lat": 28.4667,
+        "lng": 98.8833,
+        "route": "从德钦县城沿214国道向南约10公里, 约15分钟车程, 日照金山最佳观赏点",
+        "matchKeys": [
+          "飞来寺"
+        ]
+      },
+      {
+        "name": "雾浓顶观景台",
+        "lat": 28.45,
+        "lng": 98.8667,
+        "route": "从德钦县城沿214国道约8公里, 比飞来寺更近县城",
+        "matchKeys": [
+          "雾浓顶"
+        ]
+      },
+      {
+        "name": "说拉垭口",
+        "lat": 28.5,
+        "lng": 98.9167,
+        "route": "从德钦沿214国道向北约20公里, 可看梅里全景",
+        "matchKeys": [
+          "说拉"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 43,
+    "name": "各拉丹冬峰",
+    "nameEn": "Geladandong",
+    "elevation": 6621,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "唐古拉山脉",
+    "lat": 33.5833,
+    "lng": 91.1833,
+    "type": "著名雪山",
+    "firstAscent": 1986,
+    "matchKeys": [
+      "各拉丹冬",
+      "Geladandong",
+      "长江源"
+    ],
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "各拉丹冬温泉",
+        "lat": 33.5,
+        "lng": 91.2,
+        "route": "从安多县或沱沱河出发需越野车，路况极差",
+        "matchKeys": [
+          "各拉丹冬",
+          "Geladandong"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 44,
+    "name": "阿尼玛卿峰",
+    "nameEn": "Amnye Machen",
+    "elevation": 6282,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "昆仑山脉",
+    "lat": 34.8,
+    "lng": 99.45,
+    "type": "著名雪山",
+    "firstAscent": 1981,
+    "matchKeys": [
+      "阿尼玛卿",
+      "Amnye Machen",
+      "玛卿岗日"
+    ],
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "大武镇",
+        "lat": 34.4833,
+        "lng": 100.2333,
+        "route": "从西宁经共和驾车约6小时到达玛沁县大武镇"
+      }
+    ]
+  },
+  {
+    "id": 45,
+    "name": "四姑娘山",
+    "nameEn": "Mount Siguniang",
+    "elevation": 6250,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "横断山脉",
+    "lat": 31.1333,
+    "lng": 102.9,
+    "type": "著名雪山",
+    "firstAscent": 1981,
+    "matchKeys": [
+      "四姑娘山",
+      "幺妹峰",
+      "Siguniang"
+    ],
+    "difficulty": "D+",
+    "viewpoints": [
+      {
+        "name": "猫鼻梁",
+        "lat": 31.1,
+        "lng": 102.8667,
+        "route": "从成都经巴朗山驾车约4小时到达猫鼻梁观景台"
+      },
+      {
+        "name": "四姑娘山镇",
+        "lat": 31.0833,
+        "lng": 102.8667,
+        "route": "从成都经巴朗山隧道驾车约4.5小时到达"
+      },
+      {
+        "name": "双桥沟",
+        "lat": 31.1667,
+        "lng": 102.8333,
+        "route": "四姑娘山镇内进入双桥沟景区，乘观光车游览"
+      }
+    ]
+  },
+  {
+    "id": 46,
+    "name": "雀儿山",
+    "nameEn": "Chola Mountain",
+    "elevation": 6168,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "横断山脉",
+    "lat": 31.8167,
+    "lng": 99.1,
+    "type": "著名雪山",
+    "firstAscent": 1988,
+    "matchKeys": [
+      "雀儿山",
+      "Chola",
+      "绰斯甲"
+    ],
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "317国道垭口",
+        "lat": 31.8,
+        "lng": 99.1167,
+        "route": "沿317国道经德格方向驾车，在雀儿山垭口（5050m）可远眺"
+      }
+    ]
+  },
+  {
+    "id": 47,
+    "name": "仙乃日",
+    "nameEn": "Xiannairi",
+    "elevation": 6032,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "横断山脉",
+    "lat": 28.75,
+    "lng": 100.3,
+    "type": "著名雪山",
+    "firstAscent": null,
+    "matchKeys": [
+      "仙乃日",
+      "Xiannairi",
+      "稻城三神山",
+      "亚丁"
+    ],
+    "difficulty": "禁登",
+    "viewpoints": [
+      {
+        "name": "亚丁景区洛绒牛场",
+        "lat": 28.7167,
+        "lng": 100.3,
+        "route": "从稻城驾车至亚丁景区，乘电瓶车至洛绒牛场"
+      },
+      {
+        "name": "冲古寺",
+        "lat": 28.7333,
+        "lng": 100.3,
+        "route": "亚丁景区内从冲古寺观景台远眺仙乃日"
+      }
+    ]
+  },
+  {
+    "id": 48,
+    "name": "央迈勇",
+    "nameEn": "Yangmaiyong",
+    "elevation": 5958,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "横断山脉",
+    "lat": 28.6833,
+    "lng": 100.3167,
+    "type": "著名雪山",
+    "firstAscent": null,
+    "matchKeys": [
+      "央迈勇",
+      "Yangmaiyong",
+      "稻城三神山"
+    ],
+    "difficulty": "禁登",
+    "viewpoints": [
+      {
+        "name": "洛绒牛场",
+        "lat": 28.7167,
+        "lng": 100.3,
+        "route": "从亚丁景区乘电瓶车至洛绒牛场（4180m）"
+      }
+    ]
+  },
+  {
+    "id": 49,
+    "name": "夏诺多吉",
+    "nameEn": "Chanadorje",
+    "elevation": 5958,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "横断山脉",
+    "lat": 28.7333,
+    "lng": 100.35,
+    "type": "著名雪山",
+    "firstAscent": null,
+    "matchKeys": [
+      "夏诺多吉",
+      "Chanadorje",
+      "稻城三神山"
+    ],
+    "difficulty": "禁登",
+    "viewpoints": [
+      {
+        "name": "冲古寺",
+        "lat": 28.7333,
+        "lng": 100.3,
+        "route": "从亚丁景区游客中心乘电瓶车至冲古寺"
+      }
+    ]
+  },
+  {
+    "id": 50,
+    "name": "玉龙雪山",
+    "nameEn": "Jade Dragon Snow Mountain",
+    "elevation": 5596,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "横断山脉",
+    "lat": 27.1167,
+    "lng": 100.1833,
+    "type": "著名雪山",
+    "firstAscent": null,
+    "matchKeys": [
+      "玉龙",
+      "Jade Dragon",
+      "丽江"
+    ],
+    "difficulty": "禁登",
+    "viewpoints": [
+      {
+        "name": "甘海子",
+        "lat": 27.1,
+        "lng": 100.2,
+        "route": "从丽江市区沿玉龙雪山公路约25公里, 约40分钟车程",
+        "matchKeys": [
+          "甘海子"
+        ]
+      },
+      {
+        "name": "蓝月谷",
+        "lat": 27.0833,
+        "lng": 100.1833,
+        "route": "玉龙雪山景区内, 从甘海子乘观光车约10分钟",
+        "matchKeys": [
+          "蓝月谷",
+          "白水河"
+        ]
+      },
+      {
+        "name": "印象丽江观景台",
+        "lat": 27.0667,
+        "lng": 100.1833,
+        "route": "玉龙雪山景区内甘海子附近, 印象丽江剧场旁",
+        "matchKeys": [
+          "印象丽江"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 51,
+    "name": "博格达峰",
+    "nameEn": "Bogda Peak",
+    "elevation": 5445,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "天山山脉",
+    "lat": 43.8,
+    "lng": 88.3167,
+    "type": "著名雪山",
+    "firstAscent": 1981,
+    "matchKeys": [
+      "博格达",
+      "Bogda",
+      "天池"
+    ],
+    "difficulty": "D",
+    "viewpoints": [
+      {
+        "name": "天山天池",
+        "lat": 43.8833,
+        "lng": 88.1167,
+        "route": "从乌鲁木齐出发约110公里, 约1.5小时车程, 天池景区内可观博格达峰",
+        "matchKeys": [
+          "天山天池",
+          "天池"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 52,
+    "name": "哈巴雪山",
+    "nameEn": "Haba Snow Mountain",
+    "elevation": 5396,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "横断山脉",
+    "lat": 27.3667,
+    "lng": 100.1167,
+    "type": "著名雪山",
+    "firstAscent": 1995,
+    "matchKeys": [
+      "哈巴",
+      "Haba",
+      "入门级雪山"
+    ],
+    "difficulty": "PD-",
+    "viewpoints": [
+      {
+        "name": "哈巴村",
+        "lat": 27.35,
+        "lng": 100.1167,
+        "route": "从丽江/香格里拉驾车约4小时到达哈巴村"
+      }
+    ]
+  },
+  {
+    "id": 53,
+    "name": "尕朵觉沃峰",
+    "nameEn": "Gaduo Juewo",
+    "elevation": 5395,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "巴颜喀拉山脉",
+    "lat": 33.7667,
+    "lng": 97.1833,
+    "type": "著名雪山",
+    "firstAscent": null,
+    "matchKeys": [
+      "尕朵觉沃",
+      "Gaduo Juewo"
+    ],
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "称多县城",
+        "lat": 33.37,
+        "lng": 97.1,
+        "route": "从玉树州驾车约3小时到达",
+        "matchKeys": [
+          "尕朵觉沃",
+          "Gaduo"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 54,
+    "name": "那玛峰",
+    "nameEn": "Nama Peak",
+    "elevation": 5588,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "横断山脉",
+    "lat": 29.62,
+    "lng": 101.83,
+    "type": "著名雪山",
+    "firstAscent": null,
+    "matchKeys": [
+      "那玛",
+      "Nama",
+      "贡嘎卫峰",
+      "入门级"
+    ],
+    "difficulty": "PD-",
+    "viewpoints": [
+      {
+        "name": "贡嘎寺",
+        "lat": 29.6,
+        "lng": 101.85,
+        "route": "从康定老榆林出发徒步约6-7小时到达, 贡嘎山东坡经典观赏点",
+        "matchKeys": [
+          "贡嘎寺"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 55,
+    "name": "半脊峰",
+    "nameEn": "Banjifeng",
+    "elevation": 5430,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "横断山脉",
+    "lat": 31.15,
+    "lng": 102.85,
+    "type": "著名雪山",
+    "firstAscent": null,
+    "matchKeys": [
+      "半脊峰",
+      "Banjifeng",
+      "入门级"
+    ],
+    "difficulty": "PD-",
+    "viewpoints": [
+      {
+        "name": "毕棚沟",
+        "lat": 31.2167,
+        "lng": 102.7833,
+        "route": "从理县出发约20公里进入毕棚沟景区, 约30分钟车程",
+        "matchKeys": [
+          "毕棚沟"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 56,
+    "name": "都日峰",
+    "nameEn": "Duri Peak",
+    "elevation": 5210,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "横断山脉",
+    "lat": 29.63,
+    "lng": 101.86,
+    "type": "著名雪山",
+    "firstAscent": null,
+    "matchKeys": [
+      "都日峰",
+      "Duri",
+      "贡嘎卫峰"
+    ],
+    "difficulty": "PD",
+    "viewpoints": [
+      {
+        "name": "海螺沟景区",
+        "lat": 29.58,
+        "lng": 101.98,
+        "route": "从成都驾车经雅安约6小时到达",
+        "matchKeys": [
+          "都日",
+          "Duri"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 57,
+    "name": "白马雪山",
+    "nameEn": "Baima Snow Mountain",
+    "elevation": 5429,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "横断山脉",
+    "lat": 28.35,
+    "lng": 99.0167,
+    "type": "著名雪山",
+    "firstAscent": null,
+    "matchKeys": [
+      "白马雪山",
+      "白茫雪山",
+      "Baima"
+    ],
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "214国道观景台",
+        "lat": 28.3667,
+        "lng": 99,
+        "route": "德钦至香格里拉的214国道白马雪山垭口处, 海拔4292m",
+        "matchKeys": [
+          "白马雪山"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 58,
+    "name": "格聂神山",
+    "nameEn": "Mount Genyen",
+    "elevation": 6204,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "横断山脉",
+    "lat": 29.85,
+    "lng": 99.8167,
+    "type": "著名雪山",
+    "firstAscent": null,
+    "matchKeys": [
+      "格聂",
+      "Genyen",
+      "理塘"
+    ],
+    "difficulty": "AD+",
+    "viewpoints": [
+      {
+        "name": "格聂之眼",
+        "lat": 29.8333,
+        "lng": 99.8,
+        "route": "从理塘县出发经铁匠山约100公里, 约3小时越野车",
+        "matchKeys": [
+          "格聂之眼"
+        ]
+      },
+      {
+        "name": "冷谷寺",
+        "lat": 29.8667,
+        "lng": 99.8167,
+        "route": "从格聂之眼继续前行约20公里, 格聂神山脚下古寺",
+        "matchKeys": [
+          "冷谷寺",
+          "冷古寺"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 59,
+    "name": "雅拉雪山",
+    "nameEn": "Yala Snow Mountain",
+    "elevation": 5884,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "横断山脉",
+    "lat": 30.3667,
+    "lng": 101.7667,
+    "type": "著名雪山",
+    "firstAscent": null,
+    "matchKeys": [
+      "雅拉",
+      "Yala",
+      "康定"
+    ],
+    "difficulty": "AD-",
+    "viewpoints": [
+      {
+        "name": "塔公草原",
+        "lat": 30.3167,
+        "lng": 101.65,
+        "route": "从康定沿川藏北线约110公里, 约2.5小时车程",
+        "matchKeys": [
+          "塔公"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 60,
+    "name": "措普沟雪山",
+    "nameEn": "Cuopu Snow Mountain",
+    "elevation": 5833,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "横断山脉",
+    "lat": 30.7833,
+    "lng": 99.0833,
+    "type": "著名雪山",
+    "firstAscent": null,
+    "matchKeys": [
+      "措普沟",
+      "Cuopu",
+      "巴塘"
+    ],
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "措普湖景区",
+        "lat": 30.77,
+        "lng": 99.1,
+        "route": "从巴塘县城驾车约50km到达",
+        "matchKeys": [
+          "措普沟",
+          "Cuopu"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 61,
+    "name": "阿空加瓜峰",
+    "nameEn": "Aconcagua",
+    "elevation": 6961,
+    "country": "阿根廷",
+    "region": "南美洲",
+    "range": "安第斯山脉",
+    "lat": -32.6533,
+    "lng": -70.0109,
+    "type": "著名雪山",
+    "firstAscent": 1897,
+    "matchKeys": [
+      "阿空加瓜",
+      "Aconcagua",
+      "南美最高峰"
+    ],
+    "difficulty": "PD",
+    "viewpoints": [
+      {
+        "name": "Confluencia营地",
+        "lat": -32.7333,
+        "lng": -69.95,
+        "route": "从门多萨驾车至Horcones入口，徒步约7小时到达"
+      }
+    ]
+  },
+  {
+    "id": 62,
+    "name": "奥霍斯德尔萨拉多峰",
+    "nameEn": "Ojos del Salado",
+    "elevation": 6893,
+    "country": "智利/阿根廷",
+    "region": "南美洲",
+    "range": "安第斯山脉",
+    "lat": -27.1092,
+    "lng": -68.5414,
+    "type": "著名雪山",
+    "firstAscent": 1937,
+    "matchKeys": [
+      "奥霍斯",
+      "Ojos del Salado",
+      "最高火山"
+    ],
+    "difficulty": "PD-",
+    "viewpoints": [
+      {
+        "name": "科皮亚波市",
+        "lat": -27.37,
+        "lng": -70.33,
+        "route": "从圣地亚哥飞科皮亚波，再驾车至登山口",
+        "matchKeys": [
+          "萨拉多",
+          "Ojos del Salado"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 63,
+    "name": "瓦斯卡兰峰",
+    "nameEn": "Huascarán",
+    "elevation": 6768,
+    "country": "秘鲁",
+    "region": "南美洲",
+    "range": "安第斯山脉",
+    "lat": -9.1222,
+    "lng": -77.6042,
+    "type": "著名雪山",
+    "firstAscent": 1932,
+    "matchKeys": [
+      "瓦斯卡兰",
+      "Huascaran"
+    ],
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "瓦拉斯镇",
+        "lat": -9.52,
+        "lng": -77.53,
+        "route": "从利马长途巴士约8小时到达",
+        "matchKeys": [
+          "瓦斯卡兰",
+          "Huascarán"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 64,
+    "name": "伊利马尼峰",
+    "nameEn": "Illimani",
+    "elevation": 6438,
+    "country": "玻利维亚",
+    "region": "南美洲",
+    "range": "安第斯山脉",
+    "lat": -16.6544,
+    "lng": -67.7725,
+    "type": "著名雪山",
+    "firstAscent": 1898,
+    "matchKeys": [
+      "伊利马尼",
+      "Illimani"
+    ],
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "拉巴斯市区",
+        "lat": -16.5,
+        "lng": -68.15,
+        "route": "从拉巴斯市区El Alto地区可远眺伊利马尼峰"
+      }
+    ]
+  },
+  {
+    "id": 65,
+    "name": "钦博拉索峰",
+    "nameEn": "Chimborazo",
+    "elevation": 6263,
+    "country": "厄瓜多尔",
+    "region": "南美洲",
+    "range": "安第斯山脉",
+    "lat": -1.4694,
+    "lng": -78.8175,
+    "type": "著名雪山",
+    "firstAscent": 1880,
+    "matchKeys": [
+      "钦博拉索",
+      "Chimborazo",
+      "离地心最远"
+    ],
+    "difficulty": "PD",
+    "viewpoints": [
+      {
+        "name": "里奥班巴市",
+        "lat": -1.67,
+        "lng": -78.63,
+        "route": "从基多驾车约4小时到达",
+        "matchKeys": [
+          "钦博拉索",
+          "Chimborazo"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 66,
+    "name": "科托帕希火山",
+    "nameEn": "Cotopaxi",
+    "elevation": 5897,
+    "country": "厄瓜多尔",
+    "region": "南美洲",
+    "range": "安第斯山脉",
+    "lat": -0.6833,
+    "lng": -78.4375,
+    "type": "火山雪峰",
+    "firstAscent": 1872,
+    "matchKeys": [
+      "科托帕希",
+      "Cotopaxi"
+    ],
+    "difficulty": "PD-",
+    "viewpoints": [
+      {
+        "name": "科托帕希国家公园",
+        "lat": -0.7,
+        "lng": -78.4333,
+        "route": "从基多驾车约2小时到达国家公园入口"
+      }
+    ]
+  },
+  {
+    "id": 67,
+    "name": "阿尔帕马约峰",
+    "nameEn": "Alpamayo",
+    "elevation": 5947,
+    "country": "秘鲁",
+    "region": "南美洲",
+    "range": "安第斯山脉",
+    "lat": -8.8783,
+    "lng": -77.6536,
+    "type": "著名雪山",
+    "firstAscent": 1957,
+    "matchKeys": [
+      "阿尔帕马约",
+      "Alpamayo",
+      "最美雪山"
+    ],
+    "difficulty": "D",
+    "viewpoints": [
+      {
+        "name": "Alpamayo Base Camp",
+        "lat": -8.8833,
+        "lng": -77.6333,
+        "route": "从瓦拉斯出发经Santa Cruz徒步约4天到达"
+      }
+    ]
+  },
+  {
+    "id": 68,
+    "name": "萨哈马峰",
+    "nameEn": "Sajama",
+    "elevation": 6542,
+    "country": "玻利维亚",
+    "region": "南美洲",
+    "range": "安第斯山脉",
+    "lat": -18.106,
+    "lng": -68.88,
+    "type": "著名雪山",
+    "firstAscent": 1939,
+    "matchKeys": [
+      "萨哈马",
+      "Sajama"
+    ],
+    "difficulty": "PD",
+    "viewpoints": [
+      {
+        "name": "萨哈马村",
+        "lat": -18.07,
+        "lng": -68.87,
+        "route": "从拉巴斯驾车约5小时到达",
+        "matchKeys": [
+          "萨哈马",
+          "Sajama"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 69,
+    "name": "菲茨罗伊峰",
+    "nameEn": "Fitz Roy",
+    "elevation": 3405,
+    "country": "阿根廷",
+    "region": "南美洲",
+    "range": "安第斯山脉",
+    "lat": -49.2717,
+    "lng": -73.0456,
+    "type": "经典雪山",
+    "firstAscent": 1952,
+    "matchKeys": [
+      "菲茨罗伊",
+      "Fitz Roy",
+      "巴塔哥尼亚",
+      "查尔腾"
+    ],
+    "difficulty": "TD+",
+    "viewpoints": [
+      {
+        "name": "查尔腾镇",
+        "lat": -49.3317,
+        "lng": -72.8867,
+        "route": "从埃尔卡拉法特驾车约3小时到达查尔腾镇"
+      },
+      {
+        "name": "Laguna de los Tres",
+        "lat": -49.2833,
+        "lng": -73.0167,
+        "route": "从查尔腾镇徒步约8小时到达三湖观景台"
+      }
+    ]
+  },
+  {
+    "id": 70,
+    "name": "塞罗托雷峰",
+    "nameEn": "Cerro Torre",
+    "elevation": 3128,
+    "country": "阿根廷",
+    "region": "南美洲",
+    "range": "安第斯山脉",
+    "lat": -49.2833,
+    "lng": -73.0833,
+    "type": "经典雪山",
+    "firstAscent": 1974,
+    "matchKeys": [
+      "塞罗托雷",
+      "Cerro Torre",
+      "巴塔哥尼亚"
+    ],
+    "difficulty": "ED",
+    "viewpoints": [
+      {
+        "name": "查尔腾镇",
+        "lat": -49.3317,
+        "lng": -72.8867,
+        "route": "从查尔腾镇出发徒步至Laguna Torre约6小时"
+      }
+    ]
+  },
+  {
+    "id": 71,
+    "name": "迪纳利峰",
+    "nameEn": "Denali",
+    "elevation": 6190,
+    "country": "美国",
+    "region": "北美洲",
+    "range": "阿拉斯加山脉",
+    "lat": 63.0695,
+    "lng": -151.0074,
+    "type": "著名雪山",
+    "firstAscent": 1913,
+    "matchKeys": [
+      "迪纳利",
+      "Denali",
+      "McKinley",
+      "北美最高峰"
+    ],
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "Wonder Lake",
+        "lat": 63.4583,
+        "lng": -150.8833,
+        "route": "从Denali公园入口乘巴士约6小时到达Wonder Lake"
+      }
+    ]
+  },
+  {
+    "id": 72,
+    "name": "洛根山",
+    "nameEn": "Mount Logan",
+    "elevation": 5959,
+    "country": "加拿大",
+    "region": "北美洲",
+    "range": "圣伊莱亚斯山脉",
+    "lat": 60.5833,
+    "lng": -140.4167,
+    "type": "著名雪山",
+    "firstAscent": 1925,
+    "matchKeys": [
+      "洛根",
+      "Logan",
+      "加拿大最高峰"
+    ],
+    "difficulty": "AD+",
+    "viewpoints": [
+      {
+        "name": "Kluane湖畔",
+        "lat": 61.05,
+        "lng": -138.4,
+        "route": "从白马市沿阿拉斯加公路驾车约2小时",
+        "matchKeys": [
+          "洛根山",
+          "Logan"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 73,
+    "name": "圣伊莱亚斯山",
+    "nameEn": "Mount Saint Elias",
+    "elevation": 5489,
+    "country": "美国/加拿大",
+    "region": "北美洲",
+    "range": "圣伊莱亚斯山脉",
+    "lat": 60.2933,
+    "lng": -140.9267,
+    "type": "著名雪山",
+    "firstAscent": 1897,
+    "matchKeys": [
+      "圣伊莱亚斯",
+      "Saint Elias"
+    ],
+    "difficulty": "AD+",
+    "viewpoints": [
+      {
+        "name": "Yakutat村",
+        "lat": 59.55,
+        "lng": -139.73,
+        "route": "从安克雷奇飞Yakutat小飞机约2小时",
+        "matchKeys": [
+          "圣伊莱亚斯",
+          "Saint Elias"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 74,
+    "name": "福雷克山",
+    "nameEn": "Mount Foraker",
+    "elevation": 5304,
+    "country": "美国",
+    "region": "北美洲",
+    "range": "阿拉斯加山脉",
+    "lat": 62.9667,
+    "lng": -151.4,
+    "type": "著名雪山",
+    "firstAscent": 1934,
+    "matchKeys": [
+      "福雷克",
+      "Foraker"
+    ],
+    "difficulty": "D",
+    "viewpoints": [
+      {
+        "name": "Denali国家公园",
+        "lat": 63.73,
+        "lng": -148.87,
+        "route": "从安克雷奇驾车约4小时到达园区入口",
+        "matchKeys": [
+          "福雷克",
+          "Foraker"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 75,
+    "name": "雷尼尔山",
+    "nameEn": "Mount Rainier",
+    "elevation": 4392,
+    "country": "美国",
+    "region": "北美洲",
+    "range": "喀斯喀特山脉",
+    "lat": 46.8523,
+    "lng": -121.7603,
+    "type": "经典雪山",
+    "firstAscent": 1870,
+    "matchKeys": [
+      "雷尼尔",
+      "Rainier",
+      "西雅图"
+    ],
+    "difficulty": "PD",
+    "viewpoints": [
+      {
+        "name": "Paradise",
+        "lat": 46.7867,
+        "lng": -121.7367,
+        "route": "从西雅图驾车约3小时到达Paradise游客中心"
+      },
+      {
+        "name": "Reflection Lake",
+        "lat": 46.7683,
+        "lng": -121.7317,
+        "route": "Paradise附近，步行约15分钟到达倒影湖"
+      }
+    ]
+  },
+  {
+    "id": 76,
+    "name": "勃朗峰",
+    "nameEn": "Mont Blanc",
+    "elevation": 4808,
+    "country": "法国/意大利",
+    "region": "欧洲",
+    "range": "阿尔卑斯山脉",
+    "lat": 45.8326,
+    "lng": 6.8652,
+    "type": "经典雪山",
+    "firstAscent": 1786,
+    "matchKeys": [
+      "勃朗",
+      "Mont Blanc",
+      "阿尔卑斯最高峰"
+    ],
+    "difficulty": "F+",
+    "viewpoints": [
+      {
+        "name": "霞慕尼",
+        "lat": 45.9237,
+        "lng": 6.8694,
+        "route": "从日内瓦出发约80公里, 约1小时车程; 或从巴黎TGV约5.5小时",
+        "matchKeys": [
+          "霞慕尼",
+          "Chamonix",
+          "夏慕尼"
+        ]
+      },
+      {
+        "name": "南针峰观景台",
+        "lat": 45.8786,
+        "lng": 6.8875,
+        "route": "从霞慕尼乘缆车约20分钟直达, 海拔3842m, 360°全景",
+        "matchKeys": [
+          "南针峰",
+          "Aiguille du Midi"
+        ]
+      },
+      {
+        "name": "Lac Blanc",
+        "lat": 45.9667,
+        "lng": 6.8833,
+        "route": "从霞慕尼Flégère缆车站出发徒步约1.5小时, TMB线路经典段",
+        "matchKeys": [
+          "Lac Blanc"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 77,
+    "name": "蒙特罗萨峰",
+    "nameEn": "Monte Rosa",
+    "elevation": 4634,
+    "country": "瑞士/意大利",
+    "region": "欧洲",
+    "range": "阿尔卑斯山脉",
+    "lat": 45.9367,
+    "lng": 7.8667,
+    "type": "经典雪山",
+    "firstAscent": 1855,
+    "matchKeys": [
+      "蒙特罗萨",
+      "Monte Rosa",
+      "Dufourspitze"
+    ],
+    "difficulty": "PD",
+    "viewpoints": [
+      {
+        "name": "采尔马特Gornergrat",
+        "lat": 45.98,
+        "lng": 7.78,
+        "route": "从采尔马特乘齿轮火车约33分钟到达",
+        "matchKeys": [
+          "蒙特罗萨",
+          "Monte Rosa"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 78,
+    "name": "马特洪峰",
+    "nameEn": "Matterhorn",
+    "elevation": 4478,
+    "country": "瑞士/意大利",
+    "region": "欧洲",
+    "range": "阿尔卑斯山脉",
+    "lat": 45.9764,
+    "lng": 7.6586,
+    "type": "经典雪山",
+    "firstAscent": 1865,
+    "matchKeys": [
+      "马特洪",
+      "Matterhorn",
+      "Cervino",
+      "三角巧克力"
+    ],
+    "difficulty": "AD+",
+    "viewpoints": [
+      {
+        "name": "采尔马特",
+        "lat": 46.0207,
+        "lng": 7.7491,
+        "route": "从苏黎世乘火车约3.5小时, 无车小镇需在Täsch换乘电动接驳车",
+        "matchKeys": [
+          "采尔马特",
+          "Zermatt",
+          "策马特"
+        ]
+      },
+      {
+        "name": "Gornergrat",
+        "lat": 45.9833,
+        "lng": 7.7833,
+        "route": "从采尔马特乘齿轮火车约33分钟到达, 海拔3089m, 可见29座4000m+山峰",
+        "matchKeys": [
+          "Gornergrat",
+          "戈尔内格拉特"
+        ]
+      },
+      {
+        "name": "Riffelsee",
+        "lat": 45.9833,
+        "lng": 7.7667,
+        "route": "从Gornergrat向下步行约20分钟, 湖面倒影马特洪峰经典机位",
+        "matchKeys": [
+          "Riffelsee",
+          "里弗尔湖"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 79,
+    "name": "少女峰",
+    "nameEn": "Jungfrau",
+    "elevation": 4158,
+    "country": "瑞士",
+    "region": "欧洲",
+    "range": "阿尔卑斯山脉",
+    "lat": 46.5367,
+    "lng": 7.9614,
+    "type": "经典雪山",
+    "firstAscent": 1811,
+    "matchKeys": [
+      "少女峰",
+      "Jungfrau",
+      "欧洲之巅"
+    ],
+    "difficulty": "PD",
+    "viewpoints": [
+      {
+        "name": "少女峰火车站",
+        "lat": 46.5475,
+        "lng": 7.9853,
+        "route": "从因特拉肯乘齿轮火车经Kleine Scheidegg约2小时到达"
+      },
+      {
+        "name": "Schynige Platte",
+        "lat": 46.65,
+        "lng": 7.9,
+        "route": "从因特拉肯乘齿轮火车约50分钟到达"
+      }
+    ]
+  },
+  {
+    "id": 80,
+    "name": "艾格峰",
+    "nameEn": "Eiger",
+    "elevation": 3967,
+    "country": "瑞士",
+    "region": "欧洲",
+    "range": "阿尔卑斯山脉",
+    "lat": 46.5775,
+    "lng": 8.0053,
+    "type": "经典雪山",
+    "firstAscent": 1858,
+    "matchKeys": [
+      "艾格",
+      "Eiger",
+      "北壁"
+    ],
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "Kleine Scheidegg",
+        "lat": 46.5853,
+        "lng": 7.9614,
+        "route": "从格林德瓦乘火车约35分钟到达"
+      },
+      {
+        "name": "Männlichen",
+        "lat": 46.61,
+        "lng": 7.94,
+        "route": "从格林德瓦乘缆车约15分钟到达"
+      }
+    ]
+  },
+  {
+    "id": 81,
+    "name": "大格洛克纳山",
+    "nameEn": "Großglockner",
+    "elevation": 3798,
+    "country": "奥地利",
+    "region": "欧洲",
+    "range": "阿尔卑斯山脉",
+    "lat": 47.0742,
+    "lng": 12.6947,
+    "type": "经典雪山",
+    "firstAscent": 1800,
+    "matchKeys": [
+      "大格洛克纳",
+      "Grossglockner",
+      "奥地利最高峰"
+    ],
+    "difficulty": "PD+",
+    "viewpoints": [
+      {
+        "name": "大格洛克纳高山公路",
+        "lat": 47.0833,
+        "lng": 12.8167,
+        "route": "从Heiligenblut或Fusch出发驾车沿高山公路到达Kaiser Franz Josefs Höhe"
+      }
+    ]
+  },
+  {
+    "id": 82,
+    "name": "厄尔布鲁士峰",
+    "nameEn": "Mount Elbrus",
+    "elevation": 5642,
+    "country": "俄罗斯",
+    "region": "欧洲",
+    "range": "高加索山脉",
+    "lat": 43.3499,
+    "lng": 42.4453,
+    "type": "著名雪山",
+    "firstAscent": 1874,
+    "matchKeys": [
+      "厄尔布鲁士",
+      "Elbrus",
+      "欧洲最高峰"
+    ],
+    "difficulty": "F+",
+    "viewpoints": [
+      {
+        "name": "Cheget缆车",
+        "lat": 43.25,
+        "lng": 42.4333,
+        "route": "从矿水城驾车约3.5小时到达Elbrus地区Cheget缆车站"
+      }
+    ]
+  },
+  {
+    "id": 83,
+    "name": "卡兹别克峰",
+    "nameEn": "Mount Kazbek",
+    "elevation": 5047,
+    "country": "格鲁吉亚",
+    "region": "欧洲",
+    "range": "高加索山脉",
+    "lat": 42.6858,
+    "lng": 44.52,
+    "type": "著名雪山",
+    "firstAscent": 1868,
+    "matchKeys": [
+      "卡兹别克",
+      "Kazbek"
+    ],
+    "difficulty": "PD",
+    "viewpoints": [
+      {
+        "name": "Stepantsminda镇",
+        "lat": 42.6569,
+        "lng": 44.6439,
+        "route": "从第比利斯沿格鲁吉亚军用公路驾车约3小时到达"
+      },
+      {
+        "name": "Gergeti圣三一教堂",
+        "lat": 42.6619,
+        "lng": 44.62,
+        "route": "从Stepantsminda徒步约3小时或驾越野车上山"
+      }
+    ]
+  },
+  {
+    "id": 84,
+    "name": "乌什巴峰",
+    "nameEn": "Ushba",
+    "elevation": 4710,
+    "country": "格鲁吉亚",
+    "region": "欧洲",
+    "range": "高加索山脉",
+    "lat": 43.0247,
+    "lng": 42.655,
+    "type": "经典雪山",
+    "firstAscent": 1903,
+    "matchKeys": [
+      "乌什巴",
+      "Ushba",
+      "高加索马特洪"
+    ],
+    "difficulty": "TD",
+    "viewpoints": [
+      {
+        "name": "梅斯蒂亚镇",
+        "lat": 43,
+        "lng": 42.73,
+        "route": "从第比利斯驾车约8小时或飞梅斯蒂亚",
+        "matchKeys": [
+          "乌什巴",
+          "Ushba"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 85,
+    "name": "乞力马扎罗山",
+    "nameEn": "Mount Kilimanjaro",
+    "elevation": 5895,
+    "country": "坦桑尼亚",
+    "region": "非洲",
+    "range": "东非高原",
+    "lat": -3.0674,
+    "lng": 37.3556,
+    "type": "著名雪山",
+    "firstAscent": 1889,
+    "matchKeys": [
+      "乞力马扎罗",
+      "Kilimanjaro",
+      "非洲最高峰",
+      "Uhuru"
+    ],
+    "difficulty": "F",
+    "viewpoints": [
+      {
+        "name": "Amboseli国家公园",
+        "lat": -2.6528,
+        "lng": 37.2606,
+        "route": "从内罗毕出发约230公里, 约4小时车程, 肯尼亚侧远眺乞力马扎罗",
+        "matchKeys": [
+          "Amboseli",
+          "安博塞利"
+        ]
+      },
+      {
+        "name": "Moshi镇",
+        "lat": -3.3353,
+        "lng": 37.3403,
+        "route": "坦桑尼亚侧登山起点, 从达累斯萨拉姆乘大巴约8小时",
+        "matchKeys": [
+          "Moshi",
+          "莫希"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 86,
+    "name": "肯尼亚山",
+    "nameEn": "Mount Kenya",
+    "elevation": 5199,
+    "country": "肯尼亚",
+    "region": "非洲",
+    "range": "东非高原",
+    "lat": -0.1521,
+    "lng": 37.3083,
+    "type": "著名雪山",
+    "firstAscent": 1899,
+    "matchKeys": [
+      "肯尼亚山",
+      "Mount Kenya",
+      "Batian"
+    ],
+    "difficulty": "D",
+    "viewpoints": [
+      {
+        "name": "纳罗莫鲁门",
+        "lat": -0.17,
+        "lng": 37.18,
+        "route": "从内罗毕驾车约4小时到达Naro Moru Gate",
+        "matchKeys": [
+          "肯尼亚山",
+          "Mount Kenya"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 87,
+    "name": "鲁文佐里山",
+    "nameEn": "Rwenzori Mountains",
+    "elevation": 5109,
+    "country": "乌干达/刚果",
+    "region": "非洲",
+    "range": "东非裂谷",
+    "lat": 0.3833,
+    "lng": 29.8833,
+    "type": "著名雪山",
+    "firstAscent": 1906,
+    "matchKeys": [
+      "鲁文佐里",
+      "Rwenzori",
+      "月亮山",
+      "Margherita"
+    ],
+    "difficulty": "PD",
+    "viewpoints": [
+      {
+        "name": "伊巴拉村",
+        "lat": 0.37,
+        "lng": 29.97,
+        "route": "从坎帕拉驾车至卡塞塞镇转车到达",
+        "matchKeys": [
+          "鲁文佐里",
+          "Rwenzori"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 88,
+    "name": "文森峰",
+    "nameEn": "Vinson Massif",
+    "elevation": 4892,
+    "country": "南极洲",
+    "region": "南极洲",
+    "range": "埃尔斯沃思山脉",
+    "lat": -78.5254,
+    "lng": -85.6171,
+    "type": "经典雪山",
+    "firstAscent": 1966,
+    "matchKeys": [
+      "文森",
+      "Vinson",
+      "南极最高峰"
+    ],
+    "difficulty": "PD-",
+    "viewpoints": [
+      {
+        "name": "联合冰川营地",
+        "lat": -79.77,
+        "lng": -83.25,
+        "route": "从蓬塔阿雷纳斯乘坐专用飞机约4.5小时",
+        "matchKeys": [
+          "文森",
+          "Vinson"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 89,
+    "name": "查亚峰",
+    "nameEn": "Puncak Jaya",
+    "elevation": 4884,
+    "country": "印度尼西亚",
+    "region": "大洋洲",
+    "range": "毛克山脉",
+    "lat": -4.0833,
+    "lng": 137.1833,
+    "type": "经典雪山",
+    "firstAscent": 1962,
+    "matchKeys": [
+      "查亚",
+      "Puncak Jaya",
+      "Carstensz Pyramid",
+      "大洋洲最高峰"
+    ],
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "Tembagapura矿区",
+        "lat": -4.04,
+        "lng": 137.13,
+        "route": "从贾亚普拉乘小飞机至矿区（需许可）",
+        "matchKeys": [
+          "查亚",
+          "Carstensz"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 90,
+    "name": "库克山",
+    "nameEn": "Aoraki / Mount Cook",
+    "elevation": 3724,
+    "country": "新西兰",
+    "region": "大洋洲",
+    "range": "南阿尔卑斯山脉",
+    "lat": -43.595,
+    "lng": 170.1418,
+    "type": "经典雪山",
+    "firstAscent": 1894,
+    "matchKeys": [
+      "库克山",
+      "Aoraki",
+      "Mount Cook",
+      "新西兰最高峰"
+    ],
+    "difficulty": "AD+",
+    "viewpoints": [
+      {
+        "name": "胡克谷步道",
+        "lat": -43.6833,
+        "lng": 170.0833,
+        "route": "库克山村出发徒步约4小时往返Hooker Valley Track"
+      },
+      {
+        "name": "普卡基湖",
+        "lat": -44.1833,
+        "lng": 170.1167,
+        "route": "从蒂卡波湖驾车约1小时到达普卡基湖观景台"
+      }
+    ]
+  },
+  {
+    "id": 91,
+    "name": "富士山",
+    "nameEn": "Mount Fuji",
+    "elevation": 3776,
+    "country": "日本",
+    "region": "亚洲",
+    "range": "富士火山带",
+    "lat": 35.3606,
+    "lng": 138.7274,
+    "type": "火山雪峰",
+    "firstAscent": 663,
+    "matchKeys": [
+      "富士",
+      "Fuji",
+      "圣岳"
+    ],
+    "difficulty": "F",
+    "viewpoints": [
+      {
+        "name": "河口湖",
+        "lat": 35.5167,
+        "lng": 138.75,
+        "route": "从东京新宿乘高速巴士约2小时, 或JR到大月转富士急行线约2.5小时",
+        "matchKeys": [
+          "河口湖",
+          "富士山"
+        ]
+      },
+      {
+        "name": "新仓山浅间公园",
+        "lat": 35.5,
+        "lng": 138.8,
+        "route": "富士急行线下吉田站步行约20分钟, 爬398级台阶可到忠灵塔",
+        "matchKeys": [
+          "新仓山",
+          "浅间公园"
+        ]
+      },
+      {
+        "name": "忠灵塔",
+        "lat": 35.4975,
+        "lng": 138.7992,
+        "route": "新仓山浅间公园内, 五重塔与富士山同框的经典机位",
+        "matchKeys": [
+          "忠灵塔"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 92,
+    "name": "阿拉拉特山",
+    "nameEn": "Mount Ararat",
+    "elevation": 5137,
+    "country": "土耳其",
+    "region": "亚洲",
+    "range": "亚美尼亚高原",
+    "lat": 39.7019,
+    "lng": 44.2986,
+    "type": "火山雪峰",
+    "firstAscent": 1829,
+    "matchKeys": [
+      "阿拉拉特",
+      "Ararat",
+      "诺亚方舟"
+    ],
+    "difficulty": "F+",
+    "viewpoints": [
+      {
+        "name": "Doğubayazıt",
+        "lat": 39.7167,
+        "lng": 44.0833,
+        "route": "从凡城驾车约4小时到达多乌巴亚泽特镇"
+      }
+    ]
+  },
+  {
+    "id": 93,
+    "name": "达马万德峰",
+    "nameEn": "Mount Damavand",
+    "elevation": 5610,
+    "country": "伊朗",
+    "region": "亚洲",
+    "range": "厄尔布尔士山脉",
+    "lat": 35.9514,
+    "lng": 52.1089,
+    "type": "火山雪峰",
+    "firstAscent": 1837,
+    "matchKeys": [
+      "达马万德",
+      "Damavand",
+      "伊朗最高峰"
+    ],
+    "difficulty": "F+",
+    "viewpoints": [
+      {
+        "name": "拉里季安镇",
+        "lat": 35.68,
+        "lng": 52.11,
+        "route": "从德黑兰驾车约3小时到达南坡登山口",
+        "matchKeys": [
+          "达马万德",
+          "Damavand"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 94,
+    "name": "波波卡特佩特火山",
+    "nameEn": "Popocatépetl",
+    "elevation": 5426,
+    "country": "墨西哥",
+    "region": "北美洲",
+    "range": "跨墨西哥火山带",
+    "lat": 19.0225,
+    "lng": -98.6278,
+    "type": "火山雪峰",
+    "firstAscent": 1519,
+    "matchKeys": [
+      "波波卡特佩特",
+      "Popocatepetl"
+    ],
+    "difficulty": "PD",
+    "viewpoints": [
+      {
+        "name": "Paso de Cortés",
+        "lat": 19.0833,
+        "lng": -98.6333,
+        "route": "从墨西哥城驾车约2小时到达Paso de Cortés山口"
+      }
+    ]
+  },
+  {
+    "id": 95,
+    "name": "奥里萨巴峰",
+    "nameEn": "Pico de Orizaba",
+    "elevation": 5636,
+    "country": "墨西哥",
+    "region": "北美洲",
+    "range": "跨墨西哥火山带",
+    "lat": 19.0303,
+    "lng": -97.2681,
+    "type": "火山雪峰",
+    "firstAscent": 1848,
+    "matchKeys": [
+      "奥里萨巴",
+      "Orizaba",
+      "Citlaltépetl",
+      "墨西哥最高峰"
+    ],
+    "difficulty": "PD-",
+    "viewpoints": [
+      {
+        "name": "普埃布拉市",
+        "lat": 19.04,
+        "lng": -98.21,
+        "route": "从墨西哥城驾车约2小时到达",
+        "matchKeys": [
+          "奥里萨巴",
+          "Orizaba"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 96,
+    "name": "长白山",
+    "nameEn": "Changbai Mountain",
+    "elevation": 2749,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "长白山脉",
+    "lat": 42.0042,
+    "lng": 128.0597,
+    "type": "经典雪山",
+    "firstAscent": null,
+    "matchKeys": [
+      "长白山",
+      "白头山",
+      "Changbai",
+      "天池"
+    ],
+    "difficulty": "F",
+    "viewpoints": [
+      {
+        "name": "长白山北坡天池",
+        "lat": 42.0167,
+        "lng": 128.0667,
+        "route": "从二道白河镇乘景区车到达北坡天池观景台"
+      },
+      {
+        "name": "西坡观景台",
+        "lat": 41.9833,
+        "lng": 127.95,
+        "route": "从松江河镇乘景区车到达西坡天池观景台"
+      }
+    ]
+  },
+  {
+    "id": 97,
+    "name": "太白山",
+    "nameEn": "Taibai Mountain",
+    "elevation": 3767,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "秦岭",
+    "lat": 33.9583,
+    "lng": 107.7667,
+    "type": "经典雪山",
+    "firstAscent": null,
+    "matchKeys": [
+      "太白山",
+      "Taibai",
+      "秦岭最高峰"
+    ],
+    "difficulty": "F",
+    "viewpoints": [
+      {
+        "name": "大爷海",
+        "lat": 33.9667,
+        "lng": 107.7667,
+        "route": "从太白山景区南坡登山约2天到达大爷海（3590m）"
+      }
+    ]
+  },
+  {
+    "id": 98,
+    "name": "乔木隆德峰",
+    "nameEn": "Chomolhari",
+    "elevation": 7326,
+    "country": "不丹/中国",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 27.8283,
+    "lng": 89.2728,
+    "type": "高峰",
+    "firstAscent": 1937,
+    "matchKeys": [
+      "乔木隆德",
+      "Chomolhari",
+      "Jomolhari"
+    ],
+    "difficulty": "AD+",
+    "viewpoints": [
+      {
+        "name": "Lingshi村",
+        "lat": 27.83,
+        "lng": 89.4,
+        "route": "不丹Snowman Trek路线经过",
+        "matchKeys": [
+          "乔木隆德",
+          "Jomolhari"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 99,
+    "name": "珠穆拉里峰",
+    "nameEn": "Jitchu Drake",
+    "elevation": 6989,
+    "country": "不丹",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 27.85,
+    "lng": 89.2167,
+    "type": "著名雪山",
+    "firstAscent": 1988,
+    "matchKeys": [
+      "珠穆拉里",
+      "Jitchu Drake"
+    ],
+    "difficulty": "D",
+    "viewpoints": [
+      {
+        "name": "Drugyel Dzong",
+        "lat": 27.55,
+        "lng": 89.39,
+        "route": "从帕罗出发驾车约1小时到达古堡",
+        "matchKeys": [
+          "珠穆拉里",
+          "Chomolhari"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 100,
+    "name": "穆朗玛卡峰",
+    "nameEn": "Molamenqing",
+    "elevation": 7703,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 28.35,
+    "lng": 86.45,
+    "type": "高峰",
+    "firstAscent": 1981,
+    "matchKeys": [
+      "穆朗玛卡",
+      "Molamenqing"
+    ],
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "加乌拉山口",
+        "lat": 28.35,
+        "lng": 86.47,
+        "route": "从定日至珠峰大本营途经",
+        "matchKeys": [
+          "穆朗玛卡",
+          "Molamenqing"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 101,
+    "name": "玉珠峰",
+    "nameEn": "Yuzhu Peak",
+    "elevation": 6178,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "昆仑山脉",
+    "lat": 35.6333,
+    "lng": 94.2333,
+    "type": "著名雪山",
+    "firstAscent": 1990,
+    "matchKeys": [
+      "玉珠峰",
+      "Yuzhu",
+      "入门级雪山",
+      "昆仑"
+    ],
+    "difficulty": "F+",
+    "viewpoints": [
+      {
+        "name": "玉珠峰登山大本营",
+        "lat": 35.6167,
+        "lng": 94.25,
+        "route": "从格尔木沿109国道驾车约6小时到达大本营"
+      }
+    ]
+  },
+  {
+    "id": 102,
+    "name": "慕士塔格阿塔峰",
+    "nameEn": "Muztagh Tower",
+    "elevation": 7276,
+    "country": "中国/巴基斯坦",
+    "region": "亚洲",
+    "range": "喀喇昆仑山脉",
+    "lat": 35.8333,
+    "lng": 76.35,
+    "type": "高峰",
+    "firstAscent": 1956,
+    "matchKeys": [
+      "慕士塔格塔",
+      "Muztagh Tower"
+    ],
+    "difficulty": "TD",
+    "viewpoints": [
+      {
+        "name": "康西瓦达坂",
+        "lat": 35.8,
+        "lng": 76.38,
+        "route": "沿新藏公路行驶可远眺",
+        "matchKeys": [
+          "慕士塔格阿塔",
+          "Muztagh Ata"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 103,
+    "name": "斯潘蒂克峰",
+    "nameEn": "Spantik",
+    "elevation": 7027,
+    "country": "巴基斯坦",
+    "region": "亚洲",
+    "range": "喀喇昆仑山脉",
+    "lat": 36.0667,
+    "lng": 75.25,
+    "type": "高峰",
+    "firstAscent": 1955,
+    "matchKeys": [
+      "斯潘蒂克",
+      "Spantik",
+      "Golden Peak"
+    ],
+    "difficulty": "AD+",
+    "viewpoints": [
+      {
+        "name": "Arandu村",
+        "lat": 36,
+        "lng": 75.3,
+        "route": "从吉尔吉特出发沿纳加尔河谷前往",
+        "matchKeys": [
+          "斯潘蒂克",
+          "Spantik"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 104,
+    "name": "奥太美峰",
+    "nameEn": "Ausangate",
+    "elevation": 6384,
+    "country": "秘鲁",
+    "region": "南美洲",
+    "range": "安第斯山脉",
+    "lat": -13.8,
+    "lng": -71.2333,
+    "type": "著名雪山",
+    "firstAscent": 1953,
+    "matchKeys": [
+      "奥太美",
+      "Ausangate",
+      "库斯科"
+    ],
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "Ausangate徒步环线",
+        "lat": -13.7833,
+        "lng": -71.2167,
+        "route": "从库斯科出发驾车至Tinke村开始5天环线徒步"
+      }
+    ]
+  },
+  {
+    "id": 105,
+    "name": "瓦伊纳波托西峰",
+    "nameEn": "Huayna Potosí",
+    "elevation": 6088,
+    "country": "玻利维亚",
+    "region": "南美洲",
+    "range": "安第斯山脉",
+    "lat": -16.2667,
+    "lng": -68.15,
+    "type": "著名雪山",
+    "firstAscent": 1919,
+    "matchKeys": [
+      "瓦伊纳波托西",
+      "Huayna Potosi",
+      "入门级6000m"
+    ],
+    "difficulty": "PD",
+    "viewpoints": [
+      {
+        "name": "Zongo Pass",
+        "lat": -16.28,
+        "lng": -68.12,
+        "route": "从拉巴斯驾车约2小时到达",
+        "matchKeys": [
+          "瓦伊纳波托西",
+          "Huayna Potosí"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 106,
+    "name": "厄尔布尔士山",
+    "nameEn": "Alborz Mountains",
+    "elevation": 5671,
+    "country": "伊朗",
+    "region": "亚洲",
+    "range": "厄尔布尔士山脉",
+    "lat": 35.7833,
+    "lng": 51.4167,
+    "type": "著名雪山",
+    "firstAscent": null,
+    "matchKeys": [
+      "厄尔布尔士",
+      "Alborz",
+      "Alam-Kuh"
+    ],
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "里内赫村",
+        "lat": 35.82,
+        "lng": 51.4,
+        "route": "从德黑兰驾车约2小时到达",
+        "matchKeys": [
+          "厄尔布尔士",
+          "Alborz"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 107,
+    "name": "多伯拉格佩克峰",
+    "nameEn": "Dykh-Tau",
+    "elevation": 5205,
+    "country": "俄罗斯",
+    "region": "欧洲",
+    "range": "高加索山脉",
+    "lat": 43.05,
+    "lng": 43.1333,
+    "type": "著名雪山",
+    "firstAscent": 1888,
+    "matchKeys": [
+      "迪赫套",
+      "Dykh-Tau",
+      "高加索第二峰"
+    ],
+    "difficulty": "D",
+    "viewpoints": [
+      {
+        "name": "特尔斯科尔村",
+        "lat": 43.26,
+        "lng": 42.47,
+        "route": "从矿水城驾车约3小时到达",
+        "matchKeys": [
+          "多伯拉格",
+          "Dombay"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 108,
+    "name": "科修斯科山",
+    "nameEn": "Mount Kosciuszko",
+    "elevation": 2228,
+    "country": "澳大利亚",
+    "region": "大洋洲",
+    "range": "大分水岭",
+    "lat": -36.4564,
+    "lng": 148.2631,
+    "type": "经典雪山",
+    "firstAscent": 1840,
+    "matchKeys": [
+      "科修斯科",
+      "Kosciuszko",
+      "澳洲最高峰"
+    ],
+    "difficulty": "F",
+    "viewpoints": [
+      {
+        "name": "Charlotte Pass",
+        "lat": -36.4333,
+        "lng": 148.3333,
+        "route": "从堪培拉驾车约5小时到达Charlotte Pass"
+      }
+    ]
+  },
+  {
+    "id": 109,
+    "name": "布鲁莫火山",
+    "nameEn": "Mount Bromo",
+    "elevation": 2329,
+    "country": "印度尼西亚",
+    "region": "亚洲",
+    "range": "东爪哇火山",
+    "lat": -7.9425,
+    "lng": 112.9531,
+    "type": "火山雪峰",
+    "firstAscent": null,
+    "matchKeys": [
+      "布鲁莫",
+      "Bromo",
+      "爪哇"
+    ],
+    "difficulty": "F",
+    "viewpoints": [
+      {
+        "name": "Penanjakan观景台",
+        "lat": -7.9167,
+        "lng": 112.95,
+        "route": "从泗水出发驾车约4小时，凌晨4点前到达看日出"
+      }
+    ]
+  },
+  {
+    "id": 110,
+    "name": "埃里伯斯火山",
+    "nameEn": "Mount Erebus",
+    "elevation": 3794,
+    "country": "南极洲",
+    "region": "南极洲",
+    "range": "罗斯岛",
+    "lat": -77.5283,
+    "lng": 167.1528,
+    "type": "火山雪峰",
+    "firstAscent": 1908,
+    "matchKeys": [
+      "埃里伯斯",
+      "Erebus",
+      "南极火山"
+    ],
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "麦克默多站",
+        "lat": -77.85,
+        "lng": 166.67,
+        "route": "从新西兰基督城乘军用运输机（科考许可）",
+        "matchKeys": [
+          "埃里伯斯",
+          "Erebus"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 111,
+    "name": "白朗峰冰川",
+    "nameEn": "Aiguille du Midi",
+    "elevation": 3842,
+    "country": "法国",
+    "region": "欧洲",
+    "range": "阿尔卑斯山脉",
+    "lat": 45.8786,
+    "lng": 6.8875,
+    "type": "经典雪山",
+    "firstAscent": 1818,
+    "matchKeys": [
+      "南针峰",
+      "Aiguille du Midi",
+      "霞慕尼",
+      "夏蒙尼"
+    ],
+    "difficulty": "PD",
+    "viewpoints": [
+      {
+        "name": "南针峰缆车顶",
+        "lat": 45.8786,
+        "lng": 6.8875,
+        "route": "从霞慕尼乘南针峰缆车约20分钟到达（3842m）"
+      }
+    ]
+  },
+  {
+    "id": 112,
+    "name": "大帕拉迪索峰",
+    "nameEn": "Gran Paradiso",
+    "elevation": 4061,
+    "country": "意大利",
+    "region": "欧洲",
+    "range": "阿尔卑斯山脉",
+    "lat": 45.5181,
+    "lng": 7.2667,
+    "type": "经典雪山",
+    "firstAscent": 1860,
+    "matchKeys": [
+      "大帕拉迪索",
+      "Gran Paradiso"
+    ],
+    "difficulty": "PD+",
+    "viewpoints": [
+      {
+        "name": "科涅山谷",
+        "lat": 45.6,
+        "lng": 7.35,
+        "route": "从都灵驾车约2小时到达Valnontey",
+        "matchKeys": [
+          "大帕拉迪索",
+          "Gran Paradiso"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 113,
+    "name": "魏斯霍恩峰",
+    "nameEn": "Weisshorn",
+    "elevation": 4506,
+    "country": "瑞士",
+    "region": "欧洲",
+    "range": "阿尔卑斯山脉",
+    "lat": 46.1067,
+    "lng": 7.7161,
+    "type": "经典雪山",
+    "firstAscent": 1861,
+    "matchKeys": [
+      "魏斯霍恩",
+      "Weisshorn"
+    ],
+    "difficulty": "D",
+    "viewpoints": [
+      {
+        "name": "兰达村",
+        "lat": 46.12,
+        "lng": 7.77,
+        "route": "从采尔马特乘火车至Randa站",
+        "matchKeys": [
+          "魏斯霍恩",
+          "Weisshorn"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 114,
+    "name": "勃朗纳峰",
+    "nameEn": "Breithorn",
+    "elevation": 4164,
+    "country": "瑞士/意大利",
+    "region": "欧洲",
+    "range": "阿尔卑斯山脉",
+    "lat": 45.9414,
+    "lng": 7.7472,
+    "type": "经典雪山",
+    "firstAscent": 1813,
+    "matchKeys": [
+      "勃朗纳",
+      "Breithorn",
+      "入门级4000m"
+    ],
+    "difficulty": "F+",
+    "viewpoints": [
+      {
+        "name": "Klein Matterhorn缆车",
+        "lat": 45.9414,
+        "lng": 7.73,
+        "route": "从采尔马特乘缆车约45分钟到达（3883m）"
+      }
+    ]
+  },
+  {
+    "id": 115,
+    "name": "穆尔达峰",
+    "nameEn": "Muztagh Pass",
+    "elevation": 5735,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "喀喇昆仑山脉",
+    "lat": 36.1667,
+    "lng": 76.5167,
+    "type": "著名雪山",
+    "firstAscent": null,
+    "matchKeys": [
+      "穆尔达",
+      "Muztagh Pass"
+    ],
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "红其拉甫口岸",
+        "lat": 36.85,
+        "lng": 75.42,
+        "route": "沿中巴公路从塔什库尔干出发约130km",
+        "matchKeys": [
+          "穆尔达",
+          "Murda"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 116,
+    "name": "唐拉昂曲峰",
+    "nameEn": "Tang La An Chu",
+    "elevation": 7035,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "念青唐古拉山脉",
+    "lat": 30.0333,
+    "lng": 90.3333,
+    "type": "高峰",
+    "firstAscent": null,
+    "matchKeys": [
+      "唐拉昂曲",
+      "念青唐古拉"
+    ],
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "当雄县",
+        "lat": 30.47,
+        "lng": 91.1,
+        "route": "从拉萨沿109国道北上约170km到达",
+        "matchKeys": [
+          "唐拉昂曲",
+          "Nyainqentanglha"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 118,
+    "name": "松岛峰",
+    "nameEn": "Mount Sidley",
+    "elevation": 4181,
+    "country": "南极洲",
+    "region": "南极洲",
+    "range": "执行委员山脉",
+    "lat": -77.0667,
+    "lng": -126.0833,
+    "type": "火山雪峰",
+    "firstAscent": 1990,
+    "matchKeys": [
+      "松岛",
+      "Sidley",
+      "南极最高火山"
+    ],
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "Byrd站",
+        "lat": -77,
+        "lng": -126,
+        "route": "南极科考站点（科考许可）",
+        "matchKeys": [
+          "松岛",
+          "Pine Island"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 119,
+    "name": "布兰卡山脉",
+    "nameEn": "Cordillera Blanca",
+    "elevation": 6768,
+    "country": "秘鲁",
+    "region": "南美洲",
+    "range": "安第斯山脉",
+    "lat": -9.15,
+    "lng": -77.5833,
+    "type": "著名雪山",
+    "firstAscent": null,
+    "matchKeys": [
+      "白山山脉",
+      "Cordillera Blanca",
+      "秘鲁"
+    ],
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "瓦拉斯市",
+        "lat": -9.5278,
+        "lng": -77.5278,
+        "route": "从利马乘长途巴士约8小时到达瓦拉斯"
+      }
+    ]
+  },
+  {
+    "id": 120,
+    "name": "涅拉贡戈火山",
+    "nameEn": "Mount Nyiragongo",
+    "elevation": 3470,
+    "country": "刚果",
+    "region": "非洲",
+    "range": "维龙加山脉",
+    "lat": -1.52,
+    "lng": 29.25,
+    "type": "火山雪峰",
+    "firstAscent": null,
+    "matchKeys": [
+      "涅拉贡戈",
+      "Nyiragongo",
+      "熔岩湖"
+    ],
+    "difficulty": "F",
+    "viewpoints": [
+      {
+        "name": "火山口边缘",
+        "lat": -1.52,
+        "lng": 29.25,
+        "route": "从戈马市徒步约6小时到达火山口（需当地向导和许可）"
+      }
+    ]
+  },
+  {
+    "id": 121,
+    "name": "黄河源头峰",
+    "nameEn": "Bayan Har Peak",
+    "elevation": 5267,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "巴颜喀拉山脉",
+    "lat": 34.6667,
+    "lng": 96.5,
+    "type": "著名雪山",
+    "firstAscent": null,
+    "matchKeys": [
+      "巴颜喀拉",
+      "Bayan Har",
+      "黄河源"
+    ],
+    "difficulty": "PD",
+    "viewpoints": [
+      {
+        "name": "扎陵湖畔",
+        "lat": 34.9,
+        "lng": 97.3,
+        "route": "从玛多县城驾车约80km到达",
+        "matchKeys": [
+          "黄河源",
+          "Yellow River Source"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 122,
+    "name": "岷山主峰",
+    "nameEn": "Min Shan Peak",
+    "elevation": 5588,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "岷山",
+    "lat": 32.65,
+    "lng": 103.95,
+    "type": "著名雪山",
+    "firstAscent": null,
+    "matchKeys": [
+      "岷山",
+      "雪宝顶",
+      "Min Shan",
+      "Xuebao Ding"
+    ],
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "黄龙景区",
+        "lat": 32.7333,
+        "lng": 103.8167,
+        "route": "从成都驾车经九寨沟约6小时到达黄龙景区"
+      }
+    ]
+  },
+  {
+    "id": 123,
+    "name": "唐古拉山口",
+    "nameEn": "Tanggula Pass",
+    "elevation": 5231,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "唐古拉山脉",
+    "lat": 32.8833,
+    "lng": 91.8833,
+    "type": "著名雪山",
+    "firstAscent": null,
+    "matchKeys": [
+      "唐古拉",
+      "Tanggula",
+      "青藏铁路"
+    ],
+    "difficulty": "F",
+    "viewpoints": [
+      {
+        "name": "唐古拉山口纪念碑",
+        "lat": 32.8833,
+        "lng": 91.8833,
+        "route": "沿109国道（青藏公路）从格尔木驾车约10小时到达"
+      }
+    ]
+  },
+  {
+    "id": 124,
+    "name": "昆仑山口",
+    "nameEn": "Kunlun Pass",
+    "elevation": 4772,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "昆仑山脉",
+    "lat": 35.6333,
+    "lng": 94.0667,
+    "type": "经典雪山",
+    "firstAscent": null,
+    "matchKeys": [
+      "昆仑山",
+      "Kunlun",
+      "万山之祖"
+    ],
+    "difficulty": "F",
+    "viewpoints": [
+      {
+        "name": "昆仑山口纪念碑",
+        "lat": 35.6333,
+        "lng": 94.0667,
+        "route": "沿109国道从格尔木驾车约4小时到达（4768m）"
+      }
+    ]
+  },
+  {
+    "id": 125,
+    "name": "白马岗日峰",
+    "nameEn": "Gangga Peak",
+    "elevation": 6106,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 28.0833,
+    "lng": 90.0833,
+    "type": "著名雪山",
+    "firstAscent": null,
+    "matchKeys": [
+      "白马岗日",
+      "Gangga"
+    ],
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "洛扎县城",
+        "lat": 28.39,
+        "lng": 90.86,
+        "route": "从拉萨经山南驾车约12小时到达",
+        "matchKeys": [
+          "白马岗日",
+          "Baimang"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 126,
+    "name": "希瓦利克峰",
+    "nameEn": "Nanda Devi",
+    "elevation": 7816,
+    "country": "印度",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 30.3733,
+    "lng": 79.9742,
+    "type": "高峰",
+    "firstAscent": 1936,
+    "matchKeys": [
+      "南达德维",
+      "Nanda Devi",
+      "印度最高峰"
+    ],
+    "difficulty": "AD+",
+    "viewpoints": [
+      {
+        "name": "巴德里纳特镇",
+        "lat": 30.74,
+        "lng": 79.49,
+        "route": "从里希凯什驾车约10小时到达",
+        "matchKeys": [
+          "希瓦利克",
+          "Nanda Devi East"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 127,
+    "name": "安纳普尔纳南峰",
+    "nameEn": "Annapurna South",
+    "elevation": 7219,
+    "country": "尼泊尔",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 28.5333,
+    "lng": 83.8,
+    "type": "高峰",
+    "firstAscent": 1964,
+    "matchKeys": [
+      "安纳普尔纳南",
+      "Annapurna South",
+      "鱼尾峰"
+    ],
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "安纳普尔纳大本营",
+        "lat": 28.53,
+        "lng": 83.88,
+        "route": "从博卡拉出发经ABC Trek约7天到达",
+        "matchKeys": [
+          "安纳普尔纳南",
+          "Annapurna South"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 128,
+    "name": "鱼尾峰",
+    "nameEn": "Machapuchare",
+    "elevation": 6993,
+    "country": "尼泊尔",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 28.4972,
+    "lng": 83.9483,
+    "type": "著名雪山",
+    "firstAscent": null,
+    "matchKeys": [
+      "鱼尾峰",
+      "Machapuchare",
+      "圣山",
+      "未登顶"
+    ],
+    "difficulty": "禁登",
+    "viewpoints": [
+      {
+        "name": "Annapurna Base Camp",
+        "lat": 28.5306,
+        "lng": 83.8781,
+        "route": "从博卡拉出发经ABC Trek约7天到达（4130m）"
+      },
+      {
+        "name": "博卡拉",
+        "lat": 28.2096,
+        "lng": 83.9856,
+        "route": "从加德满都乘飞机约25分钟或驾车约6小时到达"
+      }
+    ]
+  },
+  {
+    "id": 129,
+    "name": "道拉吉里II峰",
+    "nameEn": "Dhaulagiri II",
+    "elevation": 7751,
+    "country": "尼泊尔",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 28.7667,
+    "lng": 83.3833,
+    "type": "高峰",
+    "firstAscent": 1971,
+    "matchKeys": [
+      "道拉吉里II",
+      "Dhaulagiri II"
+    ],
+    "difficulty": "D",
+    "viewpoints": [
+      {
+        "name": "Marpha村",
+        "lat": 28.75,
+        "lng": 83.68,
+        "route": "从博卡拉经Jomsom飞行或安纳普尔纳环线徒步",
+        "matchKeys": [
+          "道拉吉里",
+          "Dhaulagiri II"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 130,
+    "name": "格重康峰",
+    "nameEn": "Gyachung Kang",
+    "elevation": 7952,
+    "country": "尼泊尔/中国",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 28.0972,
+    "lng": 86.7422,
+    "type": "高峰",
+    "firstAscent": 1964,
+    "matchKeys": [
+      "格重康",
+      "Gyachung Kang"
+    ],
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "Rolwaling谷地",
+        "lat": 27.9,
+        "lng": 86.55,
+        "route": "从加德满都经Dolakha徒步进入",
+        "matchKeys": [
+          "格重康",
+          "Gauri Shankar"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "奥太娜",
+    "nameEn": "Aotaina",
+    "elevation": 4800,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "岷山",
+    "lat": 32.23,
+    "lng": 102.6,
+    "type": "经典雪山",
+    "firstAscent": null,
+    "difficulty": "F",
+    "viewpoints": [
+      {
+        "name": "三奥雪山大本营",
+        "lat": 32.23,
+        "lng": 102.6,
+        "route": "从黑水县驾车至三奥雪山景区入口"
+      }
+    ],
+    "matchKeys": [
+      "奥太娜",
+      "Aotaina",
+      "三奥雪山",
+      "黑水",
+      "最入门"
+    ],
+    "id": 131
+  },
+  {
+    "name": "奥太基",
+    "nameEn": "Aotaiji",
+    "elevation": 5286,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "岷山",
+    "lat": 32.24,
+    "lng": 102.6,
+    "type": "著名雪山",
+    "firstAscent": null,
+    "difficulty": "PD",
+    "viewpoints": [
+      {
+        "name": "黑水县达古冰川",
+        "lat": 32.3,
+        "lng": 102.5,
+        "route": "从成都驾车约7小时经茂县到达",
+        "matchKeys": [
+          "奥太基",
+          "Aotaiqi"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "奥太基",
+      "三奥雪山",
+      "群山之父"
+    ],
+    "id": 132
+  },
+  {
+    "name": "奥太美",
+    "nameEn": "Aotaimei",
+    "elevation": 5257,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "岷山",
+    "lat": 32.23,
+    "lng": 102.61,
+    "type": "著名雪山",
+    "firstAscent": null,
+    "difficulty": "PD",
+    "viewpoints": [
+      {
+        "name": "黑水县达古冰川东",
+        "lat": 32.3,
+        "lng": 102.52,
+        "route": "与奥太基同一景区",
+        "matchKeys": [
+          "奥太美",
+          "Aotaimei"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "奥太美",
+      "三奥雪山",
+      "群山之母"
+    ],
+    "id": 133
+  },
+  {
+    "name": "四姑娘山大峰",
+    "nameEn": "Siguniang Dafeng",
+    "elevation": 5025,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "横断山脉",
+    "lat": 31.12,
+    "lng": 102.9,
+    "type": "著名雪山",
+    "firstAscent": null,
+    "difficulty": "F+",
+    "viewpoints": [
+      {
+        "name": "四姑娘山镇",
+        "lat": 31.08,
+        "lng": 102.78,
+        "route": "从成都驾车经巴朗山约5小时到达",
+        "matchKeys": [
+          "四姑娘山大峰",
+          "Siguniang"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "四姑娘山大峰",
+      "大峰",
+      "入门级"
+    ],
+    "id": 134
+  },
+  {
+    "name": "四姑娘山二峰",
+    "nameEn": "Siguniang Erfeng",
+    "elevation": 5276,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "横断山脉",
+    "lat": 31.12,
+    "lng": 102.89,
+    "type": "著名雪山",
+    "firstAscent": null,
+    "difficulty": "PD-",
+    "viewpoints": [
+      {
+        "name": "长坪沟",
+        "lat": 31.1,
+        "lng": 102.85,
+        "route": "四姑娘山镇内进入长坪沟景区",
+        "matchKeys": [
+          "四姑娘山二峰",
+          "Siguniang"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "四姑娘山二峰",
+      "二峰"
+    ],
+    "id": 135
+  },
+  {
+    "name": "四姑娘山三峰",
+    "nameEn": "Siguniang Sanfeng",
+    "elevation": 5355,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "横断山脉",
+    "lat": 31.13,
+    "lng": 102.89,
+    "type": "著名雪山",
+    "firstAscent": null,
+    "difficulty": "PD",
+    "viewpoints": [
+      {
+        "name": "海子沟",
+        "lat": 31.1,
+        "lng": 102.87,
+        "route": "四姑娘山镇内进入海子沟景区",
+        "matchKeys": [
+          "四姑娘山三峰",
+          "Siguniang"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "四姑娘山三峰",
+      "三峰",
+      "初级技术"
+    ],
+    "id": 136
+  },
+  {
+    "name": "岗什卡三峰",
+    "nameEn": "Gangshika III",
+    "elevation": 5005,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "祁连山脉",
+    "lat": 37.75,
+    "lng": 101.8,
+    "type": "著名雪山",
+    "firstAscent": null,
+    "difficulty": "PD-",
+    "viewpoints": [
+      {
+        "name": "岗什卡滑雪场",
+        "lat": 37.73,
+        "lng": 101.78,
+        "route": "从西宁驾车约3小时经门源到达",
+        "matchKeys": [
+          "岗什卡",
+          "Gangshika"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "岗什卡",
+      "Gangshika",
+      "青海",
+      "东方阿尔卑斯"
+    ],
+    "id": 137
+  },
+  {
+    "name": "洛堆峰",
+    "nameEn": "Luodui Peak",
+    "elevation": 6010,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "念青唐古拉山脉",
+    "lat": 30.36,
+    "lng": 90.7,
+    "type": "著名雪山",
+    "firstAscent": null,
+    "difficulty": "PD",
+    "viewpoints": [
+      {
+        "name": "羊八井镇",
+        "lat": 30.08,
+        "lng": 90.53,
+        "route": "从拉萨沿109国道西行约90km",
+        "matchKeys": [
+          "洛堆峰",
+          "Luodui"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "洛堆峰",
+      "Luodui",
+      "6000米入门"
+    ],
+    "id": 138
+  },
+  {
+    "name": "乌库楚雪山",
+    "nameEn": "Wukuchu",
+    "elevation": 5526,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "横断山脉",
+    "lat": 29.55,
+    "lng": 101.65,
+    "type": "著名雪山",
+    "firstAscent": null,
+    "difficulty": "PD+",
+    "viewpoints": [
+      {
+        "name": "理塘县城",
+        "lat": 30.05,
+        "lng": 100.27,
+        "route": "从成都经318国道驾车约14小时到达",
+        "matchKeys": [
+          "乌库楚",
+          "Wukuchu"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "乌库楚",
+      "Wukuchu",
+      "川西"
+    ],
+    "id": 139
+  },
+  {
+    "name": "萨普神山",
+    "nameEn": "Sapu",
+    "elevation": 6556,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "念青唐古拉山脉",
+    "lat": 31.3,
+    "lng": 93.98,
+    "type": "著名雪山",
+    "firstAscent": null,
+    "difficulty": "AD+",
+    "viewpoints": [
+      {
+        "name": "萨普冰川观景台",
+        "lat": 31.3,
+        "lng": 93.98,
+        "route": "从比如县城驾车约4小时到达萨普冰川观景台"
+      }
+    ],
+    "matchKeys": [
+      "萨普",
+      "Sapu",
+      "比如",
+      "冰川湖"
+    ],
+    "id": 140
+  },
+  {
+    "name": "库拉岗日峰",
+    "nameEn": "Kulha Kangri",
+    "elevation": 7538,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 28.23,
+    "lng": 90.63,
+    "type": "高峰",
+    "firstAscent": 1986,
+    "difficulty": "AD+",
+    "viewpoints": [
+      {
+        "name": "普莫雍措",
+        "lat": 28.52,
+        "lng": 90.35,
+        "route": "从拉萨经山南驾车约7小时到达普莫雍措湖畔"
+      },
+      {
+        "name": "蒙达拉山口",
+        "lat": 28.47,
+        "lng": 90.52,
+        "route": "从洛扎县驾车至蒙达拉山口远眺"
+      },
+      {
+        "name": "介久错",
+        "lat": 28.25,
+        "lng": 90.63,
+        "route": "从洛扎方向可到达介久错湖畔观赏"
+      }
+    ],
+    "matchKeys": [
+      "库拉岗日",
+      "Kulha Kangri",
+      "山南"
+    ],
+    "id": 141
+  },
+  {
+    "name": "加拉白垒峰",
+    "nameEn": "Gyala Peri",
+    "elevation": 7294,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 29.72,
+    "lng": 94.97,
+    "type": "高峰",
+    "firstAscent": 1986,
+    "difficulty": "ED",
+    "viewpoints": [
+      {
+        "name": "直白村",
+        "lat": 29.68,
+        "lng": 95.05,
+        "route": "从林芝驾车经雅鲁藏布大峡谷景区约3小时到达"
+      }
+    ],
+    "matchKeys": [
+      "加拉白垒",
+      "Gyala Peri",
+      "林芝"
+    ],
+    "id": 142
+  },
+  {
+    "name": "宁金抗沙峰",
+    "nameEn": "Noijin Kangsang",
+    "elevation": 7206,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 28.95,
+    "lng": 90.18,
+    "type": "高峰",
+    "firstAscent": 1986,
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "卡若拉冰川",
+        "lat": 28.88,
+        "lng": 90.22,
+        "route": "沿307省道从江孜至浪卡子途经卡若拉冰川观景台"
+      }
+    ],
+    "matchKeys": [
+      "宁金抗沙",
+      "Noijin Kangsang",
+      "卡若拉冰川"
+    ],
+    "id": 143
+  },
+  {
+    "name": "卓木拉日峰",
+    "nameEn": "Chomolhari",
+    "elevation": 7314,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 27.83,
+    "lng": 89.27,
+    "type": "高峰",
+    "firstAscent": 1937,
+    "difficulty": "AD+",
+    "viewpoints": [
+      {
+        "name": "多庆错",
+        "lat": 27.9,
+        "lng": 89.08,
+        "route": "从亚东县城驾车约30分钟到达多庆错湖畔"
+      }
+    ],
+    "matchKeys": [
+      "卓木拉日",
+      "Chomolhari",
+      "神女峰",
+      "亚东"
+    ],
+    "id": 144
+  },
+  {
+    "name": "轿子雪山",
+    "nameEn": "Jiaozi Snow Mountain",
+    "elevation": 4247,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "乌蒙山脉",
+    "lat": 26.1,
+    "lng": 102.87,
+    "type": "经典雪山",
+    "firstAscent": null,
+    "difficulty": "F",
+    "viewpoints": [
+      {
+        "name": "轿子雪山景区",
+        "lat": 26.1,
+        "lng": 102.87,
+        "route": "从昆明驾车约3小时到达轿子雪山景区停车场"
+      }
+    ],
+    "matchKeys": [
+      "轿子雪山",
+      "Jiaozi",
+      "昆明",
+      "滇中屋脊"
+    ],
+    "id": 145
+  },
+  {
+    "name": "马牙雪山",
+    "nameEn": "Maya Snow Mountain",
+    "elevation": 4447,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "祁连山脉",
+    "lat": 37.15,
+    "lng": 102.75,
+    "type": "经典雪山",
+    "firstAscent": null,
+    "difficulty": "F+",
+    "viewpoints": [
+      {
+        "name": "炭窑沟村观景台",
+        "lat": 37.15,
+        "lng": 102.76,
+        "route": "从天祝县城驾车约1小时到达"
+      }
+    ],
+    "matchKeys": [
+      "马牙雪山",
+      "Maya",
+      "天祝",
+      "武威"
+    ],
+    "id": 146
+  },
+  {
+    "name": "达古冰川",
+    "nameEn": "Dagu Glacier",
+    "elevation": 4860,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "岷山",
+    "lat": 32.52,
+    "lng": 102.89,
+    "type": "经典雪山",
+    "firstAscent": null,
+    "difficulty": "F",
+    "viewpoints": [
+      {
+        "name": "达古冰川索道顶",
+        "lat": 32.52,
+        "lng": 102.89,
+        "route": "从黑水县驾车约1小时到景区，乘索道至4860m冰川顶"
+      }
+    ],
+    "matchKeys": [
+      "达古冰川",
+      "Dagu",
+      "黑水",
+      "阿坝"
+    ],
+    "id": 147
+  },
+  {
+    "name": "拉伊米峰",
+    "nameEn": "Nevado Huayna Potosí",
+    "elevation": 6088,
+    "country": "玻利维亚",
+    "region": "南美洲",
+    "range": "安第斯山脉",
+    "lat": -16.27,
+    "lng": -68.15,
+    "type": "著名雪山",
+    "firstAscent": 1919,
+    "difficulty": "PD",
+    "viewpoints": [
+      {
+        "name": "Condoriri大本营",
+        "lat": -16.25,
+        "lng": -68.18,
+        "route": "从拉巴斯驾车约3小时到达",
+        "matchKeys": [
+          "拉伊米",
+          "Illimani"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "瓦伊纳波托西",
+      "Huayna Potosi",
+      "入门6000m"
+    ],
+    "id": 148
+  },
+  {
+    "name": "托罗尼峰",
+    "nameEn": "Nevado Tocllaraju",
+    "elevation": 6034,
+    "country": "秘鲁",
+    "region": "南美洲",
+    "range": "安第斯山脉",
+    "lat": -9.35,
+    "lng": -77.45,
+    "type": "著名雪山",
+    "firstAscent": 1939,
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "Pastoruri冰川",
+        "lat": -9.92,
+        "lng": -77.18,
+        "route": "从瓦拉斯驾车约3小时到达",
+        "matchKeys": [
+          "托罗尼",
+          "Tocllaraju"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "托罗尼",
+      "Tocllaraju",
+      "瓦拉斯"
+    ],
+    "id": 149
+  },
+  {
+    "name": "帕里纳科塔火山",
+    "nameEn": "Parinacota",
+    "elevation": 6342,
+    "country": "智利/玻利维亚",
+    "region": "南美洲",
+    "range": "安第斯山脉",
+    "lat": -18.17,
+    "lng": -69.14,
+    "type": "火山雪峰",
+    "firstAscent": 1928,
+    "difficulty": "PD",
+    "viewpoints": [
+      {
+        "name": "Chungará湖",
+        "lat": -18.25,
+        "lng": -69.12,
+        "route": "从阿里卡驾车经11号公路约4小时到达"
+      }
+    ],
+    "matchKeys": [
+      "帕里纳科塔",
+      "Parinacota"
+    ],
+    "id": 150
+  },
+  {
+    "name": "梅鲁火山",
+    "nameEn": "Mount Meru",
+    "elevation": 4566,
+    "country": "坦桑尼亚",
+    "region": "非洲",
+    "range": "东非裂谷",
+    "lat": -3.25,
+    "lng": 36.75,
+    "type": "经典雪山",
+    "firstAscent": 1904,
+    "difficulty": "PD-",
+    "viewpoints": [
+      {
+        "name": "阿鲁沙市",
+        "lat": -3.37,
+        "lng": 36.68,
+        "route": "从乞力马扎罗机场驾车约1小时到达",
+        "matchKeys": [
+          "梅鲁",
+          "Meru"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "梅鲁",
+      "Meru",
+      "阿鲁沙"
+    ],
+    "id": 151
+  },
+  {
+    "name": "布兰卡山",
+    "nameEn": "Mount Blackburn",
+    "elevation": 4996,
+    "country": "美国",
+    "region": "北美洲",
+    "range": "兰格尔山脉",
+    "lat": 61.73,
+    "lng": -143.4,
+    "type": "经典雪山",
+    "firstAscent": 1958,
+    "difficulty": "AD+",
+    "viewpoints": [
+      {
+        "name": "Kennecott矿区",
+        "lat": 61.48,
+        "lng": -142.89,
+        "route": "从安克雷奇驾车约6小时至McCarthy",
+        "matchKeys": [
+          "布兰卡",
+          "Blackburn"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "布兰卡",
+      "Blackburn",
+      "阿拉斯加"
+    ],
+    "id": 152
+  },
+  {
+    "name": "胡德山",
+    "nameEn": "Mount Hood",
+    "elevation": 3429,
+    "country": "美国",
+    "region": "北美洲",
+    "range": "喀斯喀特山脉",
+    "lat": 45.37,
+    "lng": -121.7,
+    "type": "经典雪山",
+    "firstAscent": 1857,
+    "difficulty": "PD",
+    "viewpoints": [
+      {
+        "name": "Trillium Lake",
+        "lat": 45.27,
+        "lng": -121.74,
+        "route": "从波特兰驾车约1.5小时到达Trillium Lake"
+      }
+    ],
+    "matchKeys": [
+      "胡德山",
+      "Hood",
+      "俄勒冈",
+      "波特兰"
+    ],
+    "id": 153
+  },
+  {
+    "name": "贝克山",
+    "nameEn": "Mount Baker",
+    "elevation": 3286,
+    "country": "美国",
+    "region": "北美洲",
+    "range": "喀斯喀特山脉",
+    "lat": 48.78,
+    "lng": -121.81,
+    "type": "经典雪山",
+    "firstAscent": 1868,
+    "difficulty": "PD",
+    "viewpoints": [
+      {
+        "name": "Artist Point",
+        "lat": 48.85,
+        "lng": -121.69,
+        "route": "从西雅图驾车约3小时到达贝克山公路终点",
+        "matchKeys": [
+          "贝克山",
+          "Baker"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "贝克山",
+      "Baker",
+      "华盛顿"
+    ],
+    "id": 154
+  },
+  {
+    "name": "多姆峰",
+    "nameEn": "Dom",
+    "elevation": 4545,
+    "country": "瑞士",
+    "region": "欧洲",
+    "range": "阿尔卑斯山脉",
+    "lat": 46.09,
+    "lng": 7.86,
+    "type": "经典雪山",
+    "firstAscent": 1858,
+    "difficulty": "AD-",
+    "viewpoints": [
+      {
+        "name": "Randa观景台",
+        "lat": 46.1,
+        "lng": 7.78,
+        "route": "从采尔马特乘火车约15分钟到达",
+        "matchKeys": [
+          "多姆",
+          "Dom"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "多姆",
+      "Dom",
+      "瑞士最高峰"
+    ],
+    "id": 155
+  },
+  {
+    "name": "大孔班峰",
+    "nameEn": "Grand Combin",
+    "elevation": 4314,
+    "country": "瑞士",
+    "region": "欧洲",
+    "range": "阿尔卑斯山脉",
+    "lat": 45.94,
+    "lng": 7.3,
+    "type": "经典雪山",
+    "firstAscent": 1857,
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "Grandes Jorasses观景",
+        "lat": 45.87,
+        "lng": 6.95,
+        "route": "从霞慕尼驾车至Ferret谷地",
+        "matchKeys": [
+          "大孔班",
+          "Grandes Jorasses"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "大孔班",
+      "Grand Combin"
+    ],
+    "id": 156
+  },
+  {
+    "name": "贝尔尼纳峰",
+    "nameEn": "Piz Bernina",
+    "elevation": 4049,
+    "country": "瑞士",
+    "region": "欧洲",
+    "range": "阿尔卑斯山脉",
+    "lat": 46.38,
+    "lng": 9.91,
+    "type": "经典雪山",
+    "firstAscent": 1850,
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "莫尔特拉奇冰川",
+        "lat": 46.41,
+        "lng": 9.94,
+        "route": "从圣莫里茨驾车约30分钟到达停车场",
+        "matchKeys": [
+          "贝尔尼纳",
+          "Bernina"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "贝尔尼纳",
+      "Bernina",
+      "东阿尔卑斯最高"
+    ],
+    "id": 157
+  },
+  {
+    "name": "大钟峰",
+    "nameEn": "Grandes Jorasses",
+    "elevation": 4208,
+    "country": "法国/意大利",
+    "region": "欧洲",
+    "range": "阿尔卑斯山脉",
+    "lat": 45.87,
+    "lng": 6.98,
+    "type": "经典雪山",
+    "firstAscent": 1868,
+    "difficulty": "TD",
+    "viewpoints": [
+      {
+        "name": "Courmayeur镇",
+        "lat": 45.79,
+        "lng": 6.97,
+        "route": "从都灵经A5高速约2小时到达",
+        "matchKeys": [
+          "大钟",
+          "Grandes Jorasses"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "大钟峰",
+      "Grandes Jorasses",
+      "六大北壁"
+    ],
+    "id": 158
+  },
+  {
+    "name": "勃朗峰冰针",
+    "nameEn": "Aiguille Verte",
+    "elevation": 4122,
+    "country": "法国",
+    "region": "欧洲",
+    "range": "阿尔卑斯山脉",
+    "lat": 45.94,
+    "lng": 6.9,
+    "type": "经典雪山",
+    "firstAscent": 1865,
+    "difficulty": "AD+",
+    "viewpoints": [
+      {
+        "name": "Les Bossons冰川",
+        "lat": 45.89,
+        "lng": 6.87,
+        "route": "从霞慕尼步行约30分钟到达",
+        "matchKeys": [
+          "勃朗峰冰针",
+          "Aiguille du Midi"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "绿针峰",
+      "Aiguille Verte",
+      "霞慕尼"
+    ],
+    "id": 159
+  },
+  {
+    "name": "勃兰拉峰",
+    "nameEn": "Barre des Écrins",
+    "elevation": 4102,
+    "country": "法国",
+    "region": "欧洲",
+    "range": "阿尔卑斯山脉",
+    "lat": 44.92,
+    "lng": 6.36,
+    "type": "经典雪山",
+    "firstAscent": 1864,
+    "difficulty": "PD+",
+    "viewpoints": [
+      {
+        "name": "La Grave缆车站",
+        "lat": 45.05,
+        "lng": 6.3,
+        "route": "从格勒诺布尔驾车约2小时到达",
+        "matchKeys": [
+          "勃兰拉",
+          "Barre des Écrins"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "勃兰拉",
+      "Barre des Ecrins",
+      "多菲内"
+    ],
+    "id": 160
+  },
+  {
+    "name": "格重康峰西峰",
+    "nameEn": "Cho Oyu West",
+    "elevation": 7540,
+    "country": "尼泊尔/中国",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 28.1,
+    "lng": 86.63,
+    "type": "高峰",
+    "firstAscent": null,
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "Rolwaling西端",
+        "lat": 28,
+        "lng": 86.6,
+        "route": "从加德满都经Dolakha进入Rolwaling谷",
+        "matchKeys": [
+          "格重康西",
+          "Gauri Shankar West"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "格重康西峰"
+    ],
+    "id": 161
+  },
+  {
+    "name": "安纳普尔纳II峰",
+    "nameEn": "Annapurna II",
+    "elevation": 7937,
+    "country": "尼泊尔",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 28.53,
+    "lng": 84.12,
+    "type": "高峰",
+    "firstAscent": 1960,
+    "difficulty": "AD+",
+    "viewpoints": [
+      {
+        "name": "Pisang村",
+        "lat": 28.63,
+        "lng": 84.18,
+        "route": "安纳普尔纳环线徒步途经",
+        "matchKeys": [
+          "安纳普尔纳II",
+          "Annapurna II"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "安纳普尔纳II",
+      "Annapurna II"
+    ],
+    "id": 162
+  },
+  {
+    "name": "安纳普尔纳III峰",
+    "nameEn": "Annapurna III",
+    "elevation": 7555,
+    "country": "尼泊尔",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 28.59,
+    "lng": 83.97,
+    "type": "高峰",
+    "firstAscent": 1961,
+    "difficulty": "D",
+    "viewpoints": [
+      {
+        "name": "Manang村",
+        "lat": 28.67,
+        "lng": 84.02,
+        "route": "安纳普尔纳环线徒步途经",
+        "matchKeys": [
+          "安纳普尔纳III",
+          "Annapurna III"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "安纳普尔纳III",
+      "Annapurna III"
+    ],
+    "id": 163
+  },
+  {
+    "name": "道拉吉里III峰",
+    "nameEn": "Dhaulagiri III",
+    "elevation": 7715,
+    "country": "尼泊尔",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 28.75,
+    "lng": 83.37,
+    "type": "高峰",
+    "firstAscent": 1973,
+    "difficulty": "D",
+    "viewpoints": [
+      {
+        "name": "Muri村",
+        "lat": 28.72,
+        "lng": 83.5,
+        "route": "道拉吉里环线徒步途经",
+        "matchKeys": [
+          "道拉吉里III",
+          "Dhaulagiri III"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "道拉吉里III",
+      "Dhaulagiri III"
+    ],
+    "id": 164
+  },
+  {
+    "name": "希穆尔冰峰",
+    "nameEn": "Himlung Himal",
+    "elevation": 7126,
+    "country": "尼泊尔",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 28.77,
+    "lng": 84.42,
+    "type": "高峰",
+    "firstAscent": 1992,
+    "difficulty": "PD+",
+    "viewpoints": [
+      {
+        "name": "Tilicho湖",
+        "lat": 28.69,
+        "lng": 83.86,
+        "route": "安纳普尔纳环线支线，从Manang出发约2天",
+        "matchKeys": [
+          "希穆尔",
+          "Himlung"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "希穆尔",
+      "Himlung"
+    ],
+    "id": 165
+  },
+  {
+    "name": "马纳斯鲁II峰",
+    "nameEn": "Ngadi Chuli",
+    "elevation": 7871,
+    "country": "尼泊尔",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 28.5,
+    "lng": 84.57,
+    "type": "高峰",
+    "firstAscent": 1970,
+    "difficulty": "D",
+    "viewpoints": [
+      {
+        "name": "Samagaon",
+        "lat": 28.6,
+        "lng": 84.62,
+        "route": "马纳斯鲁环线徒步途经",
+        "matchKeys": [
+          "马纳斯鲁II",
+          "Manaslu II"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "马纳斯鲁II",
+      "Ngadi Chuli",
+      "Peak 29"
+    ],
+    "id": 166
+  },
+  {
+    "name": "迪斯塔吉尔峰",
+    "nameEn": "Distaghil Sar",
+    "elevation": 7885,
+    "country": "巴基斯坦",
+    "region": "亚洲",
+    "range": "喀喇昆仑山脉",
+    "lat": 36.33,
+    "lng": 75.15,
+    "type": "高峰",
+    "firstAscent": 1960,
+    "difficulty": "D",
+    "viewpoints": [
+      {
+        "name": "Askole村",
+        "lat": 35.68,
+        "lng": 75.82,
+        "route": "从斯卡杜驾车至Askole，Baltoro冰川起点",
+        "matchKeys": [
+          "迪斯塔吉尔",
+          "Distaghil"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "迪斯塔吉尔",
+      "Distaghil Sar"
+    ],
+    "id": 167
+  },
+  {
+    "name": "昆洋奇什峰",
+    "nameEn": "Kunyang Chhish",
+    "elevation": 7852,
+    "country": "巴基斯坦",
+    "region": "亚洲",
+    "range": "喀喇昆仑山脉",
+    "lat": 36.2,
+    "lng": 75.23,
+    "type": "高峰",
+    "firstAscent": 1971,
+    "difficulty": "TD",
+    "viewpoints": [
+      {
+        "name": "Shimsal村",
+        "lat": 36.45,
+        "lng": 75.52,
+        "route": "从喀喇昆仑公路转入Shimsal谷地",
+        "matchKeys": [
+          "昆洋奇什",
+          "Kunyang Chhish"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "昆洋奇什",
+      "Kunyang Chhish"
+    ],
+    "id": 168
+  },
+  {
+    "name": "托布卡尔峰",
+    "nameEn": "Toubkal",
+    "elevation": 4167,
+    "country": "摩洛哥",
+    "region": "非洲",
+    "range": "阿特拉斯山脉",
+    "lat": 31.06,
+    "lng": -7.92,
+    "type": "经典雪山",
+    "firstAscent": 1923,
+    "difficulty": "F+",
+    "viewpoints": [
+      {
+        "name": "伊姆利勒村",
+        "lat": 31.14,
+        "lng": -7.92,
+        "route": "从马拉喀什驾车约1.5小时到达",
+        "matchKeys": [
+          "托布卡尔",
+          "Toubkal"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "托布卡尔",
+      "Toubkal",
+      "北非最高峰"
+    ],
+    "id": 169
+  },
+  {
+    "name": "奥利兹巴峰",
+    "nameEn": "Pico de Orizaba",
+    "elevation": 5636,
+    "country": "墨西哥",
+    "region": "北美洲",
+    "range": "跨墨西哥火山带",
+    "lat": 19.03,
+    "lng": -97.27,
+    "type": "火山雪峰",
+    "firstAscent": 1848,
+    "difficulty": "PD-",
+    "viewpoints": [
+      {
+        "name": "普埃布拉东郊",
+        "lat": 19.06,
+        "lng": -97.35,
+        "route": "从墨西哥城经普埃布拉驾车约3小时",
+        "matchKeys": [
+          "奥利兹巴",
+          "Pico de Orizaba"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "奥里萨巴",
+      "Orizaba",
+      "墨西哥最高峰"
+    ],
+    "id": 170
+  },
+  {
+    "name": "厄瓜多尔安提萨纳",
+    "nameEn": "Antisana",
+    "elevation": 5704,
+    "country": "厄瓜多尔",
+    "region": "南美洲",
+    "range": "安第斯山脉",
+    "lat": -0.48,
+    "lng": -78.14,
+    "type": "火山雪峰",
+    "firstAscent": 1880,
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "帕帕亚克塔镇",
+        "lat": -0.37,
+        "lng": -78.15,
+        "route": "从基多驾车约1小时到达",
+        "matchKeys": [
+          "安提萨纳",
+          "Antisana"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "安提萨纳",
+      "Antisana"
+    ],
+    "id": 171
+  },
+  {
+    "name": "伊斯塔西瓦特尔火山",
+    "nameEn": "Iztaccíhuatl",
+    "elevation": 5230,
+    "country": "墨西哥",
+    "region": "北美洲",
+    "range": "跨墨西哥火山带",
+    "lat": 19.18,
+    "lng": -98.64,
+    "type": "火山雪峰",
+    "firstAscent": 1889,
+    "difficulty": "PD",
+    "viewpoints": [
+      {
+        "name": "阿梅卡梅卡镇",
+        "lat": 19.12,
+        "lng": -98.77,
+        "route": "从墨西哥城驾车约1.5小时到达",
+        "matchKeys": [
+          "伊斯塔西",
+          "Iztaccíhuatl"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "伊斯塔西瓦特尔",
+      "Iztaccihuatl",
+      "睡美人"
+    ],
+    "id": 172
+  },
+  {
+    "name": "堪察加克柳切夫火山",
+    "nameEn": "Klyuchevskaya Sopka",
+    "elevation": 4750,
+    "country": "俄罗斯",
+    "region": "亚洲",
+    "range": "堪察加半岛",
+    "lat": 56.06,
+    "lng": 160.64,
+    "type": "火山雪峰",
+    "firstAscent": 1788,
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "克柳切夫斯科伊村",
+        "lat": 56.32,
+        "lng": 160.83,
+        "route": "从彼得罗巴甫洛夫斯克飞至克柳切夫斯科伊",
+        "matchKeys": [
+          "克柳切夫",
+          "Klyuchevskaya"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "克柳切夫",
+      "Klyuchevskaya",
+      "堪察加",
+      "欧亚最高活火山"
+    ],
+    "id": 173
+  },
+  {
+    "name": "塔斯曼山",
+    "nameEn": "Mount Tasman",
+    "elevation": 3497,
+    "country": "新西兰",
+    "region": "大洋洲",
+    "range": "南阿尔卑斯山脉",
+    "lat": -43.52,
+    "lng": 170.11,
+    "type": "经典雪山",
+    "firstAscent": 1895,
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "库克山村",
+        "lat": -43.73,
+        "lng": 170.1,
+        "route": "从基督城驾车约4小时到达",
+        "matchKeys": [
+          "塔斯曼",
+          "Tasman"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "塔斯曼",
+      "Tasman",
+      "新西兰第二高"
+    ],
+    "id": 174
+  },
+  {
+    "name": "穷母岗日峰",
+    "nameEn": "Qungmo Kangri",
+    "elevation": 7048,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "念青唐古拉山脉",
+    "lat": 30.85,
+    "lng": 90.23,
+    "type": "高峰",
+    "firstAscent": null,
+    "difficulty": "AD+",
+    "viewpoints": [
+      {
+        "name": "纳木措湖畔",
+        "lat": 30.7,
+        "lng": 90.4,
+        "route": "从拉萨出发经109国道约250km到达",
+        "matchKeys": [
+          "穷母岗日",
+          "Nyainqentanglha East"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "穷母岗日",
+      "Qungmo Kangri"
+    ],
+    "id": 175
+  },
+  {
+    "name": "玛卿岗日东峰",
+    "nameEn": "Amnye Machen East",
+    "elevation": 6100,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "昆仑山脉",
+    "lat": 34.8,
+    "lng": 99.5,
+    "type": "著名雪山",
+    "firstAscent": null,
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "大武镇",
+        "lat": 34.47,
+        "lng": 100.25,
+        "route": "从西宁经共和驾车约6小时到达玛沁县",
+        "matchKeys": [
+          "玛卿岗日",
+          "Maqen Gangri"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "阿尼玛卿东峰",
+      "Amnye Machen East"
+    ],
+    "id": 176
+  },
+  {
+    "name": "布喀达坂峰",
+    "nameEn": "Bukadaban Peak",
+    "elevation": 6860,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "昆仑山脉",
+    "lat": 36.33,
+    "lng": 90.9,
+    "type": "著名雪山",
+    "firstAscent": 1992,
+    "difficulty": "AD+",
+    "viewpoints": [
+      {
+        "name": "花土沟镇",
+        "lat": 37.75,
+        "lng": 90.85,
+        "route": "从格尔木驾车约12小时到达茫崖",
+        "matchKeys": [
+          "布喀达坂",
+          "Bukadaban"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "布喀达坂",
+      "Bukadaban",
+      "可可西里"
+    ],
+    "id": 177
+  },
+  {
+    "name": "木孜塔格峰",
+    "nameEn": "Ulugh Muztagh",
+    "elevation": 6973,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "昆仑山脉",
+    "lat": 36.43,
+    "lng": 87.43,
+    "type": "著名雪山",
+    "firstAscent": 1985,
+    "difficulty": "AD",
+    "viewpoints": [
+      {
+        "name": "若羌县城",
+        "lat": 39.02,
+        "lng": 88.17,
+        "route": "从库尔勒驾车经315国道约16小时到达",
+        "matchKeys": [
+          "木孜塔格",
+          "Muztag"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "木孜塔格",
+      "Ulugh Muztagh",
+      "昆仑"
+    ],
+    "id": 178
+  },
+  {
+    "name": "希夏邦马西峰",
+    "nameEn": "Phola Gangchen",
+    "elevation": 7661,
+    "country": "中国",
+    "region": "亚洲",
+    "range": "喜马拉雅山脉",
+    "lat": 28.35,
+    "lng": 85.75,
+    "type": "高峰",
+    "firstAscent": 1981,
+    "difficulty": "AD+",
+    "viewpoints": [
+      {
+        "name": "聂拉木镇",
+        "lat": 28.15,
+        "lng": 85.98,
+        "route": "从日喀则沿318国道西行至聂拉木",
+        "matchKeys": [
+          "希夏邦马西",
+          "Shishapangma West"
+        ]
+      }
+    ],
+    "matchKeys": [
+      "希夏邦马西峰",
+      "Phola Gangchen"
+    ],
+    "id": 179
+  }
+]

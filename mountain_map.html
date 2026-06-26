@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>雪山地图</title>
+    <link href="data/fonts/fonts_local.css" rel="stylesheet">
+    <script src="https://webapi.amap.com/maps?v=2.0&key=f66cdc07203c3075a2a2ae1ea67eea8e"></script>
+    <style>
+        :root{
+            --ice:#7cc4f5;--ice-bright:#a8dcfa;--ice-faint:rgba(124,196,245,0.18);
+            --gold:#d4a85a;--gold-bright:#f6c977;--gold-faint:rgba(212,168,90,0.18);
+            --green:#48bb78;--green-faint:rgba(72,187,120,0.15);
+            --dark:#080c18;--card:rgba(14,18,32,0.92);
+        }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Noto Sans SC',-apple-system,'PingFang SC',sans-serif;
+            height:100vh;overflow:hidden;background:var(--dark);color:rgba(255,255,255,0.88);}
+
+        @keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+        @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+        @keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes slideDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
+
+        #map{width:100%;height:100%;}
+
+        /* NAV */
+        .nav{position:fixed;top:0;left:0;right:0;height:52px;z-index:100;
+            background:linear-gradient(180deg,rgba(8,12,24,0.96),rgba(8,12,24,0.6));
+            backdrop-filter:blur(24px) saturate(1.8);
+            display:flex;align-items:center;justify-content:space-between;padding:0 20px;
+            animation:slideDown .5s .2s cubic-bezier(0.16,1,0.3,1) both;}
+        .nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+            background:linear-gradient(90deg,transparent,rgba(124,196,245,0.12) 30%,rgba(124,196,245,0.12) 70%,transparent);}
+        .nav-back{color:rgba(255,255,255,0.45);text-decoration:none;font-size:13px;display:flex;align-items:center;gap:4px;transition:color .2s;}
+        .nav-back:hover{color:var(--ice);}
+        .nav-back svg{width:16px;height:16px;fill:currentColor;}
+        .nav-title{font-family:'Cinzel','Noto Sans SC',serif;font-size:15px;font-weight:700;letter-spacing:4px;
+            background:linear-gradient(135deg,#fff 0%,var(--ice-bright) 40%,var(--ice) 60%,#fff 100%);
+            background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+            background-clip:text;animation:shimmer 4s linear infinite;}
+        .nav-right{display:flex;align-items:center;gap:10px;}
+        .nav-link{text-decoration:none;color:rgba(255,255,255,0.4);font-size:12px;
+            padding:4px 12px;border-radius:8px;border:1px solid rgba(124,196,245,0.08);
+            transition:all .2s;display:flex;align-items:center;gap:4px;}
+        .nav-link:hover{color:var(--ice);border-color:rgba(124,196,245,0.2);background:rgba(124,196,245,0.05);}
+        .nav-link svg{width:14px;height:14px;fill:currentColor;}
+
+        /* FILTER BAR */
+        .filter-bar{position:fixed;top:62px;left:50%;transform:translateX(-50%);z-index:90;
+            display:flex;align-items:center;gap:4px;padding:6px 12px;
+            background:rgba(8,12,24,0.88);backdrop-filter:blur(20px);
+            border:1px solid rgba(124,196,245,0.06);border-radius:14px;
+            animation:slideDown .5s .3s cubic-bezier(0.16,1,0.3,1) both;
+            max-width:calc(100vw - 40px);overflow-x:auto;scrollbar-width:none;}
+        .filter-bar::-webkit-scrollbar{display:none;}
+        .f-sep{width:1px;height:20px;background:rgba(124,196,245,0.08);flex-shrink:0;}
+        .f-tab{padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;
+            background:transparent;border:1px solid transparent;color:rgba(255,255,255,0.3);
+            transition:all .2s;white-space:nowrap;flex-shrink:0;}
+        .f-tab:hover{color:rgba(255,255,255,0.6);background:rgba(255,255,255,0.03);}
+        .f-tab.active{font-weight:600;background:var(--ice-faint);border-color:rgba(124,196,245,0.2);color:var(--ice);}
+
+        /* STATS BAR */
+        .stats-bar{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:90;
+            display:flex;align-items:center;gap:16px;padding:10px 20px;
+            background:rgba(8,12,24,0.88);backdrop-filter:blur(20px);
+            border:1px solid rgba(124,196,245,0.06);border-radius:14px;
+            animation:slideUp .5s .4s cubic-bezier(0.16,1,0.3,1) both;}
+        .stat-item{text-align:center;}
+        .stat-num{font-family:'Cinzel',serif;font-size:18px;font-weight:700;line-height:1;}
+        .stat-label{font-size:9px;color:rgba(255,255,255,0.3);letter-spacing:1px;margin-top:2px;}
+
+        /* LEGEND */
+        .legend{position:fixed;bottom:24px;right:24px;z-index:90;
+            padding:10px 14px;background:rgba(8,12,24,0.88);backdrop-filter:blur(20px);
+            border:1px solid rgba(124,196,245,0.06);border-radius:12px;
+            animation:slideUp .5s .5s cubic-bezier(0.16,1,0.3,1) both;}
+        .legend-title{font-size:9px;color:rgba(255,255,255,0.25);letter-spacing:2px;margin-bottom:6px;}
+        .legend-item{display:flex;align-items:center;gap:8px;margin-top:4px;}
+        .legend-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
+        .legend-text{font-size:10px;color:rgba(255,255,255,0.4);}
+
+        /* INFO CARD */
+        .info-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.5);
+            backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;
+            padding:20px;opacity:0;transition:opacity .25s;}
+        .info-overlay.open{display:flex;opacity:1;}
+        .info-card{width:100%;max-width:360px;background:var(--card);
+            border:1px solid rgba(124,196,245,0.08);border-radius:16px;overflow:hidden;
+            box-shadow:0 16px 48px rgba(0,0,0,0.4),0 0 24px rgba(124,196,245,0.04);
+            transform:scale(0.95) translateY(8px);transition:transform .3s cubic-bezier(0.16,1,0.3,1);}
+        .info-overlay.open .info-card{transform:scale(1) translateY(0);}
+        .info-cover{width:100%;height:180px;position:relative;overflow:hidden;
+            background:linear-gradient(135deg,rgba(12,16,30,1),rgba(16,22,44,1));}
+        .info-cover img{width:100%;height:100%;object-fit:cover;}
+        .info-cover-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+        .info-cover-ph svg{width:48px;height:48px;opacity:0.05;}
+        .info-cover-grad{position:absolute;bottom:0;left:0;right:0;height:80px;
+            background:linear-gradient(transparent,var(--card));}
+        .info-elev{position:absolute;bottom:12px;right:16px;z-index:2;
+            font-family:'Cinzel',serif;font-size:32px;font-weight:700;line-height:1;
+            background:linear-gradient(180deg,#fff,var(--ice));-webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;background-clip:text;
+            filter:drop-shadow(0 2px 6px rgba(0,0,0,0.5));}
+        .info-elev small{font-size:14px;-webkit-text-fill-color:rgba(124,196,245,0.4);}
+        .info-badge{position:absolute;top:12px;left:14px;z-index:2;padding:2px 8px;border-radius:6px;
+            font-size:10px;font-weight:600;backdrop-filter:blur(8px);}
+        .info-badge-visited{background:rgba(212,168,90,0.2);color:var(--gold);border:1px solid rgba(212,168,90,0.25);}
+        .info-badge-seen{background:rgba(72,187,120,0.15);color:var(--green);border:1px solid rgba(72,187,120,0.2);}
+        .info-close{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:8px;
+            background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.08);
+            color:rgba(255,255,255,0.5);font-size:16px;cursor:pointer;z-index:2;
+            display:flex;align-items:center;justify-content:center;transition:all .2s;}
+        .info-close:hover{color:#fff;background:rgba(255,255,255,0.1);}
+        .info-body{padding:14px 18px 18px;}
+        .info-name{font-size:20px;font-weight:700;line-height:1.3;}
+        .info-name-en{font-family:'Cinzel',serif;font-size:11px;color:rgba(255,255,255,0.2);margin-top:2px;letter-spacing:1px;}
+        .info-tags{display:flex;flex-wrap:wrap;gap:5px;margin:10px 0 12px;}
+        .info-tag{padding:3px 10px;border-radius:6px;font-size:10px;font-weight:500;
+            border:1px solid rgba(255,255,255,0.05);background:rgba(255,255,255,0.02);}
+        .info-tag-type{color:var(--ice);border-color:rgba(124,196,245,0.12);}
+        .info-tag-diff{font-weight:700;}
+        .info-row{display:flex;gap:8px;margin-top:8px;}
+        .info-cell{flex:1;background:rgba(124,196,245,0.03);border-radius:8px;padding:8px 10px;
+            border:1px solid rgba(124,196,245,0.03);}
+        .info-cell-label{font-size:9px;color:rgba(255,255,255,0.2);letter-spacing:1px;margin-bottom:2px;}
+        .info-cell-value{font-size:12px;font-weight:600;}
+        .info-detail-link{display:block;text-align:center;margin-top:14px;padding:10px;
+            border-radius:10px;background:linear-gradient(135deg,rgba(124,196,245,0.08),rgba(124,196,245,0.03));
+            border:1px solid rgba(124,196,245,0.1);color:var(--ice);font-size:12px;font-weight:600;
+            text-decoration:none;transition:all .2s;letter-spacing:1px;}
+        .info-detail-link:hover{background:rgba(124,196,245,0.12);border-color:rgba(124,196,245,0.2);}
+
+        /* LOADING */
+        .loading{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;
+            align-items:center;justify-content:center;background:var(--dark);transition:opacity .6s;}
+        .loading.hide{opacity:0;pointer-events:none;}
+        .load-mount svg{width:64px;height:64px;filter:drop-shadow(0 0 16px rgba(124,196,245,0.3));}
+        .load-mount svg path{stroke:var(--ice);stroke-width:2;fill:none;stroke-dasharray:200;stroke-dashoffset:200;animation:draw 1.5s ease forwards;}
+        .load-text{margin-top:10px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:4px;color:rgba(124,196,245,0.4);animation:breathe 2s ease-in-out infinite;}
+        @keyframes draw{to{stroke-dashoffset:0}}
+        @keyframes breathe{0%,100%{opacity:.4}50%{opacity:1}}
+
+        @media(max-width:640px){
+            .filter-bar{top:56px;padding:5px 8px;gap:3px;border-radius:10px;}
+            .f-tab{font-size:10px;padding:3px 8px;}
+            .stats-bar{padding:8px 14px;gap:10px;}
+            .stat-num{font-size:14px;}
+            .legend{display:none;}
+            .info-card{max-width:100%;}
+            .info-cover{height:140px;}
+        }
+    </style>
+</head>
+<body>
+    <div class="loading" id="loading">
+        <div class="load-mount"><svg viewBox="0 0 64 64"><path d="M32 8L4 56h56L32 8z"/></svg></div>
+        <div class="load-text">MOUNTAIN MAP</div>
+    </div>
+
+    <div class="nav">
+        <a class="nav-back" href="index.html">
+            <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+            首页
+        </a>
+        <div class="nav-title">雪 山 地 图</div>
+        <div class="nav-right">
+            <a class="nav-link" href="mountains.html">
+                <svg viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
+                卡片
+            </a>
+        </div>
+    </div>
+
+    <div class="filter-bar" id="filterBar"></div>
+
+    <div id="map"></div>
+
+    <div class="stats-bar" id="statsBar"></div>
+
+    <div class="legend">
+        <div class="legend-title">海拔</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div><span class="legend-text">8000m+</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#f97316"></div><span class="legend-text">7000m</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#eab308"></div><span class="legend-text">6000m</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div><span class="legend-text">5000m</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#38bdf8"></div><span class="legend-text">4000m</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#a78bfa"></div><span class="legend-text">&lt;4000m</span></div>
+    </div>
+
+    <div class="info-overlay" id="infoOverlay">
+        <div class="info-card" id="infoCard"></div>
+    </div>
+
+    <script>
+    (function(){
+        var map, allData=[], travelData=[];
+        var markers=[], vpMarkers=[], vpLines=[];
+        var activeType='all', activeRange='all', activeRegion='all';
+        var curMountain=null;
+
+        function getElevColor(elev){
+            if(elev>=8000)return '#ef4444';
+            if(elev>=7000)return '#f97316';
+            if(elev>=6000)return '#eab308';
+            if(elev>=5000)return '#22c55e';
+            if(elev>=4000)return '#38bdf8';
+            return '#a78bfa';
+        }
+        function getDiffColor(d){
+            if(!d)return '#888';if(d==='禁登')return '#718096';
+            if(d.indexOf('F')===0)return '#48bb78';if(d.indexOf('PD')===0)return '#4299e1';
+            if(d.indexOf('AD')===0)return '#ed8936';
+            if(d.indexOf('TD')===0||d.indexOf('ED')===0||d==='ABO')return '#9f7aea';
+            if(d.indexOf('D')===0)return '#e53e3e';return '#888';
+        }
+
+        Promise.all([
+            fetch('data/mountains_global.json').then(function(r){return r.json();}),
+            fetch('data/travel.json').then(function(r){return r.json();})
+        ]).then(function(res){
+            allData=res[0]; travelData=res[1]; init();
+        });
+
+        function init(){
+            matchVisited();
+            initMap();
+            createMarkers();
+            renderFilters();
+            renderStats();
+            bindEvents();
+            setTimeout(function(){document.getElementById('loading').classList.add('hide');},500);
+        }
+
+        function matchVisited(){
+            var spots=[];
+            travelData.forEach(function(c){(c.spots||[]).forEach(function(s){
+                spots.push({title:s.title,location:s.location||'',city:c.city});
+            });});
+            allData.forEach(function(m){
+                m.visited=false;m.seen=false;
+                var mKeys=m.matchKeys||[];
+                for(var i=0;i<spots.length;i++){
+                    var hay=spots[i].title+'|'+spots[i].location+'|'+spots[i].city;
+                    for(var j=0;j<mKeys.length;j++){
+                        if(hay.indexOf(mKeys[j])!==-1){m.visited=true;break;}
+                    }
+                    if(m.visited) break;
+                }
+                var vps=m.viewpoints||[];
+                vps.forEach(function(v){
+                    v.visited=false;
+                    var vKeys=v.matchKeys||[v.name];
+                    for(var i=0;i<spots.length;i++){
+                        var hay=spots[i].title+'|'+spots[i].location+'|'+spots[i].city;
+                        for(var j=0;j<vKeys.length;j++){
+                            if(hay.indexOf(vKeys[j])!==-1){v.visited=true;break;}
+                        }
+                        if(v.visited) break;
+                        if(v.name.indexOf(spots[i].title)!==-1&&spots[i].title.length>=2){v.visited=true;break;}
+                    }
+                    if(v.visited) m.seen=true;
+                });
+            });
+        }
+
+        function initMap(){
+            map=new AMap.Map('map',{
+                zoom:3,center:[90,30],mapStyle:'amap://styles/darkblue',
+                pitch:40,viewMode:'3D',rotation:-10,zooms:[2,18]
+            });
+        }
+
+        function createMarkers(){
+            allData.forEach(function(m){
+                var c=getElevColor(m.elevation);
+                var dotSize=m.elevation>=8000?10:m.elevation>=6000?7:5;
+                var glow=m.elevation>=8000?12:m.elevation>=6000?8:5;
+                var showLabel=m.elevation>=8000;
+
+                var html='<div style="display:flex;flex-direction:column;align-items:center;cursor:pointer;">'
+                    +'<div style="width:'+dotSize+'px;height:'+dotSize+'px;border-radius:50%;'
+                    +'background:radial-gradient(circle at 35% 35%,rgba(255,255,255,0.6),'+c+');'
+                    +'border:1.5px solid rgba(255,255,255,0.7);'
+                    +'box-shadow:0 0 '+glow+'px '+c+',0 0 '+(glow*2)+'px '+c+'44;"></div>';
+                if(showLabel){
+                    html+='<div style="font-size:9px;color:rgba(255,255,255,0.75);white-space:nowrap;margin-top:3px;'
+                        +'text-shadow:0 1px 4px rgba(0,0,0,0.9),0 0 6px rgba(0,0,0,0.6);font-weight:600;letter-spacing:0.5px;">'
+                        +m.name+'</div>';
+                }
+                html+='</div>';
+
+                var mk=new AMap.Marker({
+                    position:[m.lng,m.lat],
+                    content:html,
+                    offset:new AMap.Pixel(-dotSize/2,-dotSize/2-(showLabel?8:0)),
+                    extData:m
+                });
+                mk.setMap(map);
+                mk.on('click',function(){openInfo(m);});
+                m._marker=mk;
+                markers.push(mk);
+
+                // Viewpoint markers
+                var vps=m.viewpoints||[];
+                vps.forEach(function(v){
+                    var vc=v.visited?'#48bb78':'rgba(255,255,255,0.25)';
+                    var vpMk=new AMap.Marker({
+                        position:[v.lng,v.lat],
+                        content:'<div style="width:3px;height:3px;border-radius:50%;background:'+vc+';box-shadow:0 0 3px '+vc+';cursor:pointer;"></div>',
+                        offset:new AMap.Pixel(-1.5,-1.5),
+                        extData:{mountain:m,viewpoint:v}
+                    });
+                    vpMk.setMap(map);
+                    vpMk.on('click',function(){openInfo(m);});
+                    m._vpMarkers=m._vpMarkers||[];
+                    m._vpMarkers.push(vpMk);
+                    vpMarkers.push(vpMk);
+
+                    var line=new AMap.Polyline({
+                        path:[[m.lng,m.lat],[v.lng,v.lat]],
+                        strokeColor:c,strokeWeight:1,strokeStyle:'dashed',
+                        strokeDasharray:[4,4],strokeOpacity:0.25,lineJoin:'round'
+                    });
+                    line.setMap(map);
+                    m._vpLines=m._vpLines||[];
+                    m._vpLines.push(line);
+                    vpLines.push(line);
+                });
+            });
+        }
+
+        function renderFilters(){
+            var html='';
+            var types=[{k:'all',l:'全部'},{k:'极高峰',l:'极高峰'},{k:'高峰',l:'高峰'},{k:'著名雪山',l:'著名'},{k:'经典雪山',l:'经典'},{k:'火山雪峰',l:'火山'}];
+            types.forEach(function(t){
+                html+='<div class="f-tab'+(activeType===t.k?' active':'')+'" data-g="type" data-f="'+t.k+'">'+t.l+'</div>';
+            });
+            html+='<div class="f-sep"></div>';
+
+            var ranges={};allData.forEach(function(m){ranges[m.range]=(ranges[m.range]||0)+1;});
+            var rangeList=Object.keys(ranges).sort(function(a,b){return ranges[b]-ranges[a];}).slice(0,8);
+            html+='<div class="f-tab'+(activeRange==='all'?' active':'')+'" data-g="range" data-f="all">全部山脉</div>';
+            rangeList.forEach(function(r){
+                html+='<div class="f-tab'+(activeRange===r?' active':'')+'" data-g="range" data-f="'+r+'">'+r.replace('山脉','').replace('山系','')+'</div>';
+            });
+            html+='<div class="f-sep"></div>';
+
+            var regions=[{k:'all',l:'全球'},{k:'亚洲',l:'亚洲'},{k:'欧洲',l:'欧洲'},{k:'南美洲',l:'南美'},{k:'北美洲',l:'北美'},{k:'非洲',l:'非洲'}];
+            regions.forEach(function(r){
+                html+='<div class="f-tab'+(activeRegion===r.k?' active':'')+'" data-g="region" data-f="'+r.k+'">'+r.l+'</div>';
+            });
+
+            document.getElementById('filterBar').innerHTML=html;
+        }
+
+        function renderStats(){
+            var visible=allData.filter(function(m){return isVisible(m);});
+            var visited=visible.filter(function(m){return m.visited;}).length;
+            var seen=visible.filter(function(m){return m.seen&&!m.visited;}).length;
+            var e8k=visible.filter(function(m){return m.elevation>=8000;}).length;
+            var html='';
+            html+='<div class="stat-item"><div class="stat-num" style="color:var(--ice)">'+visible.length+'</div><div class="stat-label">显示</div></div>';
+            html+='<div class="stat-item"><div class="stat-num" style="color:var(--gold)">'+visited+'</div><div class="stat-label">到过</div></div>';
+            html+='<div class="stat-item"><div class="stat-num" style="color:var(--green)">'+seen+'</div><div class="stat-label">看过</div></div>';
+            html+='<div class="stat-item"><div class="stat-num" style="color:#ef4444">'+e8k+'</div><div class="stat-label">8000m+</div></div>';
+            document.getElementById('statsBar').innerHTML=html;
+        }
+
+        function isVisible(m){
+            if(activeType!=='all'&&m.type!==activeType)return false;
+            if(activeRange!=='all'&&m.range!==activeRange)return false;
+            if(activeRegion!=='all'&&m.region!==activeRegion)return false;
+            return true;
+        }
+
+        function applyFilters(){
+            allData.forEach(function(m){
+                var show=isVisible(m);
+                if(show){m._marker.show();}else{m._marker.hide();}
+                (m._vpMarkers||[]).forEach(function(v){if(show)v.show();else v.hide();});
+                (m._vpLines||[]).forEach(function(l){if(show)l.show();else l.hide();});
+            });
+            renderStats();
+        }
+
+        function openInfo(m){
+            curMountain=m;
+            var dc=getDiffColor(m.difficulty);
+            var ec=getElevColor(m.elevation);
+            var vps=m.viewpoints||[];
+            var visitedVps=vps.filter(function(v){return v.visited;}).length;
+
+            var html='';
+            html+='<button class="info-close" id="infoClose">&times;</button>';
+            html+='<div class="info-cover">';
+            html+='<img src="data/mountain_images/'+m.id+'.webp" onerror="this.style.display=\'none\'">';
+            html+='<div class="info-cover-ph"><svg viewBox="0 0 60 60"><polygon points="30,6 6,52 54,52" fill="none" stroke="rgba(124,196,245,0.1)" stroke-width="1.5" stroke-linejoin="round"/></svg></div>';
+            html+='<div class="info-cover-grad"></div>';
+            html+='<div class="info-elev">'+m.elevation+'<small>m</small></div>';
+            if(m.visited) html+='<div class="info-badge info-badge-visited">★ 到过</div>';
+            else if(m.seen) html+='<div class="info-badge info-badge-seen">👁 看过</div>';
+            html+='</div>';
+
+            html+='<div class="info-body">';
+            html+='<div class="info-name" style="color:'+ec+'">'+m.name+'</div>';
+            html+='<div class="info-name-en">'+m.nameEn+'</div>';
+
+            html+='<div class="info-tags">';
+            html+='<span class="info-tag info-tag-type">'+m.type+'</span>';
+            if(m.difficulty){
+                html+='<span class="info-tag info-tag-diff" style="color:'+dc+';border-color:'+dc+'18;">'+m.difficulty+'</span>';
+            }
+            html+='<span class="info-tag" style="color:rgba(255,255,255,0.35)">'+m.range+'</span>';
+            if(vps.length>0) html+='<span class="info-tag" style="color:rgba(255,255,255,0.3)">📍 '+vps.length+'个观赏点'+(visitedVps>0?' · '+visitedVps+'到过':'')+'</span>';
+            html+='</div>';
+
+            html+='<div class="info-row">';
+            html+='<div class="info-cell"><div class="info-cell-label">国家</div><div class="info-cell-value">'+m.country+'</div></div>';
+            html+='<div class="info-cell"><div class="info-cell-label">区域</div><div class="info-cell-value">'+m.region+'</div></div>';
+            if(m.firstAscent) html+='<div class="info-cell"><div class="info-cell-label">首登</div><div class="info-cell-value">'+m.firstAscent+'</div></div>';
+            html+='</div>';
+
+            html+='<a class="info-detail-link" href="mountains.html#m'+m.id+'" target="_blank">查看完整详情 →</a>';
+            html+='</div>';
+
+            document.getElementById('infoCard').innerHTML=html;
+            var overlay=document.getElementById('infoOverlay');
+            overlay.classList.add('open');
+            overlay.style.display='flex';
+            requestAnimationFrame(function(){overlay.style.opacity='1';});
+
+            document.getElementById('infoClose').addEventListener('click',closeInfo);
+            overlay.addEventListener('click',function(e){if(e.target===overlay)closeInfo();});
+
+            map.setCenter([m.lng,m.lat]);
+            if(map.getZoom()<5) map.setZoom(6);
+        }
+
+        function closeInfo(){
+            var overlay=document.getElementById('infoOverlay');
+            overlay.style.opacity='0';
+            setTimeout(function(){overlay.classList.remove('open');overlay.style.display='none';},250);
+            curMountain=null;
+        }
+
+        function bindEvents(){
+            document.getElementById('filterBar').addEventListener('click',function(e){
+                var tab=e.target.closest('.f-tab');if(!tab)return;
+                var g=tab.getAttribute('data-g'),v=tab.getAttribute('data-f');
+                if(g==='type')activeType=v;
+                else if(g==='range')activeRange=v;
+                else if(g==='region')activeRegion=v;
+                this.querySelectorAll('.f-tab[data-g="'+g+'"]').forEach(function(t){t.classList.remove('active');});
+                tab.classList.add('active');
+                applyFilters();
+            });
+            document.addEventListener('keydown',function(e){if(e.key==='Escape')closeInfo();});
+        }
+    })();
+    </script>
+</body>
+</html>

@@ -6,18 +6,24 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>我去过的地方</title>
+    <title>世界总览</title>
+    <link href="data/fonts/fonts_local.css" rel="stylesheet">
     <script src="https://webapi.amap.com/maps?v=2.0&key=f66cdc07203c3075a2a2ae1ea67eea8e"></script>
     <style>
-        @import url('data/fonts/fonts_local.css');
-
         :root {
-            --gold: #d4a85a;
-            --gold-bright: #f6c977;
-            --gold-soft: rgba(212,168,90,0.55);
-            --gold-faint: rgba(212,168,90,0.18);
-            --purple-glow: rgba(183,148,244,0.55);
-            --purple-soft: rgba(183,148,244,0.35);
+            --dark: #080c18;
+            --dark-card: rgba(12, 16, 32, 0.92);
+            --dark-card-border: rgba(255,255,255,0.08);
+            --text: #e8e6e3;
+            --text-dim: rgba(255,255,255,0.45);
+            --text-muted: rgba(255,255,255,0.28);
+            --accent-travel: #b794f4;
+            --accent-mountain: #7cc4f5;
+            --accent-park: #22c55e;
+            --accent-darksky: #818cf8;
+            --accent-diving: #0ea5e9;
+            --accent-hotspring: #f59e0b;
+            --accent-heritage: #9f7aea;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -26,7 +32,8 @@
             font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
             height: 100vh;
             overflow: hidden;
-            background: #141a2e;
+            background: var(--dark);
+            color: var(--text);
         }
 
         #map { width: 100%; height: 100%; }
@@ -36,7 +43,7 @@
             position: fixed;
             inset: 0;
             z-index: 9999;
-            background: #0a0e1a;
+            background: var(--dark);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -48,947 +55,759 @@
             visibility: hidden;
             pointer-events: none;
         }
-        .loading-globe {
-            width: 60px; height: 60px;
-            border: 3px solid rgba(212, 168, 90, 0.18);
-            border-top-color: var(--gold-bright);
+        .loading-globe-wrap {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin-bottom: 28px;
+        }
+        .loading-ring {
+            position: absolute;
+            inset: 0;
+            border: 2px solid rgba(255,255,255,0.06);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 24px;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .loading-text {
-            font-size: 14px;
-            color: rgba(255,255,255,0.5);
-            letter-spacing: 4px;
-            text-transform: uppercase;
+        .loading-ring-spin {
+            position: absolute;
+            inset: 0;
+            border: 2px solid transparent;
+            border-top-color: var(--accent-travel);
+            border-right-color: var(--accent-diving);
+            border-radius: 50%;
+            animation: globeSpin 1.2s linear infinite;
         }
-
-        /* ===== Title Bar ===== */
-        .page-title {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10;
-            background: rgba(20, 26, 46, 0.78);
-            backdrop-filter: blur(20px) saturate(1.6);
-            -webkit-backdrop-filter: blur(20px) saturate(1.6);
-            padding: 12px 32px;
-            border-radius: 50px;
-            border: 1px solid rgba(212,168,90,0.22);
-            box-shadow:
-                0 4px 30px rgba(0,0,0,0.4),
-                0 0 40px rgba(212,168,90,0.10),
-                inset 0 1px 0 rgba(255,255,255,0.06);
+        .loading-ring-spin2 {
+            position: absolute;
+            inset: 8px;
+            border: 2px solid transparent;
+            border-bottom-color: var(--accent-park);
+            border-left-color: var(--accent-hotspring);
+            border-radius: 50%;
+            animation: globeSpin 1.8s linear infinite reverse;
+        }
+        .loading-ring-spin3 {
+            position: absolute;
+            inset: 16px;
+            border: 2px solid transparent;
+            border-top-color: var(--accent-heritage);
+            border-radius: 50%;
+            animation: globeSpin 2.4s linear infinite;
+        }
+        .loading-globe-icon {
+            position: absolute;
+            inset: 0;
             display: flex;
             align-items: center;
-            gap: 14px;
-            opacity: 0;
-            animation: slideDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
+            justify-content: center;
+            font-size: 24px;
+            opacity: 0.7;
         }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        @keyframes globeSpin { to { transform: rotate(360deg); } }
+        .loading-text {
+            font-family: 'Cinzel', serif;
+            font-size: 13px;
+            color: var(--text-dim);
+            letter-spacing: 6px;
+            text-transform: uppercase;
         }
-
-        .title-dot {
-            width: 10px; height: 10px;
-            border-radius: 50%;
-            background: var(--gold-bright);
-            box-shadow: 0 0 12px rgba(246, 201, 119, 0.7);
-            animation: pulse-dot 2s ease-in-out infinite;
-        }
-        @keyframes pulse-dot {
-            0%, 100% { box-shadow: 0 0 12px rgba(246, 201, 119, 0.7); }
-            50% { box-shadow: 0 0 20px rgba(246, 201, 119, 1), 0 0 40px rgba(246, 201, 119, 0.35); }
-        }
-
-        .title-text {
-            font-family: 'Cinzel', 'Noto Serif SC', serif;
-            font-size: 16px;
-            font-weight: 700;
+        .loading-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 10px;
             letter-spacing: 2px;
-            background: linear-gradient(135deg, #fff 0%, var(--gold-bright) 50%, var(--gold) 100%);
+        }
+
+        /* ===== Nav Bar ===== */
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 52px;
+            z-index: 100;
+            background: rgba(8, 12, 24, 0.82);
+            backdrop-filter: blur(24px) saturate(1.5);
+            -webkit-backdrop-filter: blur(24px) saturate(1.5);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+        }
+        .nav-trigger{position:absolute;right:16px;top:50%;transform:translateY(-50%);
+            width:34px;height:34px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);
+            background:rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;
+            cursor:pointer;transition:all .25s;z-index:101;}
+        .nav-trigger:hover{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.12);}
+        .nav-trigger svg{width:18px;height:18px;fill:rgba(255,255,255,0.4);}
+        .nav-trigger:hover svg{fill:rgba(255,255,255,0.7);}
+        .drawer-overlay{position:fixed;inset:0;z-index:110;background:rgba(0,0,0,0.4);
+            opacity:0;pointer-events:none;transition:opacity .3s;}
+        .drawer-overlay.open{opacity:1;pointer-events:all;}
+        .drawer{position:fixed;top:0;right:0;bottom:0;z-index:115;width:200px;
+            background:rgba(10,14,26,0.95);backdrop-filter:blur(24px) saturate(1.6);
+            border-left:1px solid rgba(255,255,255,0.06);
+            transform:translateX(100%);transition:transform .3s cubic-bezier(0.16,1,0.3,1);
+            display:flex;flex-direction:column;padding:64px 16px 24px;overflow-y:auto;}
+        .drawer.open{transform:translateX(0);}
+        .drawer a{display:flex;align-items:center;gap:10px;
+            padding:10px 14px;border-radius:10px;
+            text-decoration:none;font-size:13px;font-weight:600;
+            transition:all .2s;color:rgba(255,255,255,0.5);}
+        .drawer a:hover{background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.8);}
+        .drawer .d-icon{font-size:16px;width:22px;text-align:center;}
+        .drawer .d-sep{height:1px;margin:6px 14px;background:linear-gradient(90deg,rgba(255,255,255,0.04),transparent);}
+        .nav-back {
+            position: absolute;
+            left: 20px;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.25s;
+        }
+        .nav-back:hover { color: var(--text); }
+        .nav-back-arrow {
+            font-size: 16px;
+            transition: transform 0.25s;
+        }
+        .nav-back:hover .nav-back-arrow { transform: translateX(-3px); }
+        .nav-title {
+            font-family: 'Cinzel', 'Noto Sans SC', serif;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 4px;
+            background: linear-gradient(90deg, #b794f4, #7cc4f5, #22c55e, #f59e0b, #b794f4);
+            background-size: 200% 100%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            animation: shimmer 4s ease-in-out infinite;
         }
+        @keyframes shimmer { 0%,100%{background-position:0% 50%;} 50%{background-position:100% 50%;} }
 
-        .title-divider {
-            width: 1px;
-            height: 16px;
-            background: rgba(212,168,90,0.35);
-        }
-
-        .title-stats {
-            font-family: 'Cinzel', serif;
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--gold-soft);
-            letter-spacing: 1px;
-        }
-
-        /* ===== Category Legend ===== */
-        .legend {
+        /* ===== Layer Toggle Panel ===== */
+        .layer-panel {
             position: fixed;
-            bottom: 24px;
-            left: 24px;
-            z-index: 10;
-            background: rgba(20, 26, 46, 0.72);
-            backdrop-filter: blur(20px) saturate(1.6);
-            -webkit-backdrop-filter: blur(20px) saturate(1.6);
-            padding: 16px 18px;
-            border-radius: 16px;
-            border: 1px solid rgba(212,168,90,0.16);
-            box-shadow:
-                0 4px 30px rgba(0,0,0,0.35),
-                inset 0 1px 0 rgba(255,255,255,0.05);
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 4px 8px;
-            width: min(420px, calc(100vw - 48px));
-            font-size: 11px;
-            opacity: 0;
-            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.7s forwards;
+            top: 72px;
+            left: 16px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
         }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .legend-item {
+        .layer-btn {
             display: flex;
             align-items: center;
             gap: 8px;
-            cursor: pointer;
-            padding: 6px 10px;
+            padding: 8px 14px 8px 10px;
+            background: var(--dark-card);
+            backdrop-filter: blur(16px) saturate(1.4);
+            -webkit-backdrop-filter: blur(16px) saturate(1.4);
+            border: 1px solid var(--dark-card-border);
             border-radius: 10px;
+            cursor: pointer;
             transition: all 0.3s ease;
             user-select: none;
-            color: rgba(255,255,255,0.6);
-            border: 1px solid transparent;
+            min-width: 120px;
+        }
+        .layer-btn:hover {
+            background: rgba(20, 26, 50, 0.95);
+            border-color: rgba(255,255,255,0.14);
+        }
+        .layer-btn.active {
+            border-color: var(--layer-color, rgba(255,255,255,0.2));
+            box-shadow: 0 0 12px -2px var(--layer-color, transparent),
+                        inset 0 0 16px -8px var(--layer-color, transparent);
+        }
+        .layer-btn.inactive {
+            opacity: 0.4;
+        }
+        .layer-btn.inactive:hover { opacity: 0.65; }
+        .layer-emoji {
+            font-size: 16px;
+            width: 22px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .layer-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text);
+            flex: 1;
             white-space: nowrap;
-            font-size: 12px;
         }
-
-        .legend-item:hover {
-            background: rgba(212,168,90,0.10);
-            color: var(--gold-bright);
-            border-color: rgba(212,168,90,0.25);
-        }
-
-        .legend-item.active {
-            background: linear-gradient(135deg, rgba(212,168,90,0.18), rgba(183,148,244,0.18));
-            color: var(--gold-bright);
+        .layer-btn.inactive .layer-label { color: var(--text-dim); }
+        .layer-count {
+            font-size: 11px;
             font-weight: 600;
-            border-color: var(--gold-soft);
-            box-shadow: 0 0 12px rgba(212,168,90,0.18);
-            text-shadow: 0 0 6px rgba(246,201,119,0.3);
+            padding: 2px 7px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.08);
+            color: var(--text-dim);
+            flex-shrink: 0;
+        }
+        .layer-btn.active .layer-count {
+            background: var(--layer-color, rgba(255,255,255,0.12));
+            color: #fff;
         }
 
-        .legend-item.dimmed {
-            opacity: 0.25;
-        }
-
-        .legend-icon {
-            width: 22px; height: 22px;
-            border-radius: 50%;
-            border: 1.5px solid rgba(212,168,90,0.45);
+        /* ===== Stats Bar ===== */
+        .stats-bar {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            background: var(--dark-card);
+            backdrop-filter: blur(20px) saturate(1.4);
+            -webkit-backdrop-filter: blur(20px) saturate(1.4);
+            border: 1px solid var(--dark-card-border);
+            border-radius: 24px;
+            padding: 10px 28px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            background: rgba(20,26,46,0.6);
+            gap: 28px;
+            font-size: 13px;
         }
-
-        .legend-item:hover .legend-icon {
-            border-color: var(--gold-bright);
-            box-shadow: 0 0 10px rgba(212,168,90,0.35);
-            transform: scale(1.1);
-        }
-        .legend-item.active .legend-icon {
-            border-color: var(--gold-bright);
-            background: rgba(212,168,90,0.18);
-        }
-
-        /* ===== Popup Overlay (Game Codex Golden/Purple) ===== */
-        .popup-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(5, 8, 20, 0.72);
-            z-index: 1000;
-            display: none;
+        .stat-item {
+            display: flex;
             align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            opacity: 0;
-            transition: opacity 0.4s ease;
+            gap: 6px;
+            color: var(--text-dim);
         }
-        .popup-overlay.show { display: flex; opacity: 1; }
+        .stat-val {
+            font-weight: 600;
+            color: var(--text);
+            font-variant-numeric: tabular-nums;
+        }
+        .stat-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent-park);
+            animation: statPulse 2s ease-in-out infinite;
+        }
+        @keyframes statPulse { 0%,100%{opacity:0.5;} 50%{opacity:1;} }
 
-        .popup-card {
-            background:
-                linear-gradient(var(--gold-bright), var(--gold-bright)) top    left  / 24px 2px no-repeat,
-                linear-gradient(var(--gold-bright), var(--gold-bright)) top    left  / 2px 24px no-repeat,
-                linear-gradient(var(--gold-bright), var(--gold-bright)) top    right / 24px 2px no-repeat,
-                linear-gradient(var(--gold-bright), var(--gold-bright)) top    right / 2px 24px no-repeat,
-                linear-gradient(var(--gold-bright), var(--gold-bright)) bottom left  / 24px 2px no-repeat,
-                linear-gradient(var(--gold-bright), var(--gold-bright)) bottom left  / 2px 24px no-repeat,
-                linear-gradient(var(--gold-bright), var(--gold-bright)) bottom right / 24px 2px no-repeat,
-                linear-gradient(var(--gold-bright), var(--gold-bright)) bottom right / 2px 24px no-repeat,
-                linear-gradient(135deg, rgba(212,168,90,0.06), transparent 40%),
-                rgba(20, 26, 46, 0.95);
-            backdrop-filter: blur(30px) saturate(1.8);
-            -webkit-backdrop-filter: blur(30px) saturate(1.8);
-            border-radius: 16px;
-            width: 420px;
-            max-width: 90vw;
-            max-height: 80vh;
-            overflow-y: auto;
-            border: 1px solid rgba(212,168,90,0.24);
-            box-shadow:
-                0 25px 80px rgba(0,0,0,0.55),
-                0 0 40px rgba(212,168,90,0.12),
-                inset 0 1px 0 rgba(255,255,255,0.06);
-            transform: translateY(30px) scale(0.92);
-            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        /* ===== Info Card (click popup) ===== */
+        .info-card {
+            position: fixed;
+            z-index: 200;
+            background: rgba(12, 16, 36, 0.96);
+            backdrop-filter: blur(20px) saturate(1.5);
+            -webkit-backdrop-filter: blur(20px) saturate(1.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 14px;
+            padding: 16px 20px;
+            min-width: 220px;
+            max-width: 300px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04);
+            display: none;
+            opacity: 0;
+            transform: translateY(6px) scale(0.96);
+            transition: opacity 0.25s ease, transform 0.25s ease;
         }
-        .popup-overlay.show .popup-card {
+        .info-card.show {
+            display: block;
+            opacity: 1;
             transform: translateY(0) scale(1);
         }
-
-        .popup-card::-webkit-scrollbar { width: 4px; }
-        .popup-card::-webkit-scrollbar-track { background: transparent; }
-        .popup-card::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
-
-        .popup-header {
+        .info-card-header {
             display: flex;
             align-items: center;
-            gap: 14px;
-            padding: 22px 22px 16px;
-            border-bottom: 1px solid rgba(212,168,90,0.16);
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .info-card-emoji {
+            font-size: 22px;
+        }
+        .info-card-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #fff;
+            line-height: 1.3;
+        }
+        .info-card-type {
+            font-size: 11px;
+            color: var(--text-dim);
+            padding: 2px 8px;
+            border-radius: 6px;
+            background: rgba(255,255,255,0.06);
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+        .info-card-detail {
+            font-size: 13px;
+            color: var(--text-dim);
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+        .info-card-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: var(--accent-travel);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .info-card-link:hover { color: #d4b8ff; }
+
+        /* ===== Custom Markers ===== */
+        .wm-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            border: 1.5px solid;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
             position: relative;
         }
-
-        .popup-emoji {
-            width: 56px; height: 56px;
-            border-radius: 14px;
-            background: rgba(212, 168, 90, 0.1);
-            border: 1px solid rgba(212, 168, 90, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            flex-shrink: 0;
-            box-shadow: 0 0 20px rgba(212, 168, 90, 0.12);
+        .wm-dot:hover {
+            transform: scale(1.8);
+            z-index: 10;
         }
-        .popup-emoji.wanted {
-            background: rgba(30, 40, 70, 0.8);
-            border-color: rgba(255,255,255,0.25);
-            border-style: dashed;
-            box-shadow: 0 0 20px rgba(212, 168, 90, 0.08);
-        }
-
-        .popup-info { flex: 1; min-width: 0; }
-
-        .popup-title {
-            font-family: 'Cinzel', 'Noto Serif SC', serif;
-            font-size: 18px;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 6px;
-            letter-spacing: 1px;
-            text-shadow: 0 0 12px rgba(212,168,90,0.25);
-        }
-
-        .popup-category {
-            display: inline-block;
-            padding: 3px 10px;
-            border-radius: 4px;
-            font-size: 10px;
-            font-weight: 600;
-            margin-bottom: 4px;
-            font-family: 'Cinzel', serif;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            background: transparent !important;
-            border: 1px solid currentColor;
-        }
-
-        .popup-status {
-            font-family: 'Cinzel', serif;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-        }
-        .popup-status.visited { color: var(--gold-bright); }
-        .popup-status.wanted { color: rgba(255,255,255,0.5); }
-
-        .popup-close {
-            width: 34px; height: 34px;
-            border-radius: 50%;
-            border: 1px solid rgba(212,168,90,0.35);
-            background: rgba(13,23,38,0.72);
+        .wm-tri {
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-bottom: 10px solid;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 15px;
-            color: var(--gold-bright);
-            flex-shrink: 0;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 10px rgba(212,168,90,0.2);
+            transition: transform 0.2s;
+            filter: drop-shadow(0 0 3px currentColor);
         }
-        .popup-close:hover {
-            background: rgba(212,168,90,0.18);
-            color: #fff;
-            box-shadow: 0 0 16px rgba(212,168,90,0.4);
+        .wm-tri:hover {
+            transform: scale(1.6);
+            z-index: 10;
         }
-
-        .popup-content { padding: 18px 22px; }
-
-        .popup-text {
-            font-size: 13px;
-            color: rgba(220,232,248,0.72);
-            line-height: 1.75;
-            margin-bottom: 14px;
+        .wm-diamond {
+            width: 8px;
+            height: 8px;
+            transform: rotate(45deg);
+            border: 1.5px solid;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
-
-        .popup-loc {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 12px;
-            color: var(--gold-bright);
-            font-weight: 500;
-            margin-bottom: 12px;
+        .wm-diamond:hover {
+            transform: rotate(45deg) scale(1.8);
+            z-index: 10;
         }
-        .popup-loc svg {
-            width: 13px; height: 13px;
-            fill: var(--gold-bright);
-            flex-shrink: 0;
+        .wm-sq {
+            width: 7px;
+            height: 7px;
+            border: 1.5px solid;
+            border-radius: 1.5px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .wm-sq:hover {
+            transform: scale(1.8);
+            z-index: 10;
         }
 
-        .popup-tags {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-            margin-bottom: 14px;
-        }
-        .popup-tag {
-            padding: 4px 12px;
-            background: rgba(212,168,90,0.05);
-            border: 1px solid rgba(212,168,90,0.14);
-            border-radius: 4px;
-            font-size: 11px;
-            color: rgba(212,168,90,0.8);
-            font-weight: 500;
-            transition: all 0.2s;
-            font-family: 'Cinzel', serif;
-            letter-spacing: 1px;
-        }
-        .popup-tag:hover {
-            background: rgba(212,168,90,0.12);
-            border-color: rgba(212,168,90,0.35);
-            color: var(--gold-bright);
-        }
-
-        .popup-minimap {
-            height: 130px;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid rgba(212,168,90,0.18);
-        }
-
-        /* ===== Marker Pulse Ring ===== */
-        @keyframes marker-pulse {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 var(--pulse-color); }
-            70% { transform: scale(1); box-shadow: 0 0 0 10px transparent; }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 transparent; }
-        }
-
-        /* ===== Wanted marker style ===== */
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-3px); }
-        }
-
-        /* ===== Heritage Link ===== */
-        .heritage-link {
-            position: fixed; top: 20px; right: 24px; z-index: 50;
-            display: flex; align-items: center; gap: 6px;
-            padding: 8px 16px; border-radius: 20px;
-            background: rgba(20, 26, 46, 0.78);
-            backdrop-filter: blur(20px) saturate(1.6);
-            border: 1px solid rgba(212,168,90,0.25);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.35), 0 0 12px rgba(212,168,90,0.08), inset 0 1px 0 rgba(255,255,255,0.05);
-            text-decoration: none; color: var(--gold-soft);
-            font-family: 'Cinzel', 'Noto Serif SC', serif;
-            font-size: 12px; font-weight: 700; letter-spacing: 1px;
-            transition: all 0.3s;
-            animation: slideDown 0.5s 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
-        }
-        .heritage-link:hover {
-            border-color: var(--gold-bright);
-            color: var(--gold-bright);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 18px rgba(183,148,244,0.18), inset 0 1px 0 rgba(255,255,255,0.06);
-        }
-        .heritage-link-icon { font-size: 15px; }
-
-        /* ===== Stats Panel ===== */
-        .stats-toggle {
-            position: fixed; bottom: 24px; right: 24px; z-index: 50;
-            display: flex; align-items: center; gap: 6px;
-            padding: 8px 14px; border-radius: 20px;
-            background: rgba(20, 26, 46, 0.78);
-            backdrop-filter: blur(20px) saturate(1.6);
-            border: 1px solid rgba(212,168,90,0.18);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.35), 0 0 12px rgba(212,168,90,0.08), inset 0 1px 0 rgba(255,255,255,0.05);
-            color: var(--gold-soft); cursor: pointer;
-            font-family: 'Cinzel', serif;
-            font-size: 12px; font-weight: 600; letter-spacing: 1px;
-            transition: all 0.3s;
-            animation: slideUp 0.5s 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
-        }
-        .stats-toggle:hover {
-            background: rgba(20, 26, 46, 0.9);
-            border-color: var(--gold-soft);
-            color: var(--gold-bright);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 18px rgba(212,168,90,0.18);
-        }
-        .stats-panel {
-            position: fixed; bottom: 60px; right: 24px; z-index: 49;
-            width: 240px; padding: 18px;
-            background: rgba(20, 26, 46, 0.88);
-            backdrop-filter: blur(20px) saturate(1.6);
-            border: 1px solid rgba(212,168,90,0.16);
-            border-radius: 14px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.05);
-            opacity: 0; visibility: hidden;
-            transform: translateY(10px);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .stats-panel.show {
-            opacity: 1; visibility: visible; transform: translateY(0);
-        }
-        .stats-row {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 5px 0; font-size: 12px; color: rgba(220,232,248,0.55);
-        }
-        .stats-row-label { display: flex; align-items: center; gap: 6px; }
-        .stats-row-value { font-weight: 700; color: var(--gold-bright); }
-        .stats-bar-row { margin: 3px 0; }
-        .stats-bar-label { font-size: 11px; color: rgba(220,232,248,0.4); margin-bottom: 3px;
-            display: flex; justify-content: space-between; }
-        .stats-bar-track { height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
-        .stats-bar-fill { height: 100%; border-radius: 2px; transition: width 0.6s; }
-        .stats-divider { height: 1px; background: rgba(212,168,90,0.15); margin: 8px 0; }
-
-        /* ===== Sub-icon on markers ===== */
-        .marker-sub-icon {
-            position: absolute; bottom: -2px; right: -2px;
-            width: 18px; height: 18px; border-radius: 50%;
-            background: rgba(20, 26, 46, 0.95);
-            border: 1px solid rgba(212,168,90,0.35);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 10px; z-index: 2; line-height: 1;
-            box-shadow: 0 0 8px rgba(212,168,90,0.25);
-        }
-
-        /* ===== Mobile ===== */
-        @media (max-width: 600px) {
-            .page-title {
-                top: 12px;
-                padding: 8px 18px;
-                gap: 8px;
-                max-width: calc(100vw - 80px);
-            }
-            .title-text { font-size: 14px; letter-spacing: 1px; }
-            .title-divider { display: none; }
-            .title-stats { font-size: 11px; }
-            .title-dot { width: 8px; height: 8px; }
-
-            .heritage-link {
-                top: 12px; right: 12px;
-                padding: 6px 10px;
-                font-size: 11px;
-            }
-            .heritage-link span:not(.heritage-link-icon) {
-                display: none;
-            }
-            .heritage-link-icon { font-size: 18px; margin: 0; }
-
-            .legend {
-                bottom: 12px; left: 12px; right: 12px;
-                width: auto;
-                padding: 12px 14px;
-                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-                gap: 2px 4px;
-                max-height: 40vh;
-                overflow-y: auto;
-            }
-            .legend-item {
-                padding: 5px 6px;
-                font-size: 11px;
-                gap: 6px;
-            }
-            .legend-icon {
-                width: 20px; height: 20px;
-                font-size: 10px;
-            }
-
-            .stats-toggle {
-                bottom: 12px; right: 12px;
-                padding: 7px 12px;
-                font-size: 11px;
-            }
-            .stats-panel {
-                right: 12px; bottom: 50px;
-                width: calc(100vw - 24px);
-                max-width: 300px;
-            }
-
-            .popup-card {
-                max-width: 94vw;
-                max-height: 85vh;
-                border-radius: 14px;
-            }
-            .popup-header {
-                padding: 16px 16px 12px;
-                gap: 10px;
-            }
-            .popup-emoji { width: 44px; height: 44px; font-size: 22px; border-radius: 10px; }
-            .popup-title { font-size: 16px; margin-bottom: 4px; }
-            .popup-content { padding: 14px 16px; }
-            .popup-text { font-size: 13px; line-height: 1.7; }
-            .popup-minimap { height: 110px; }
-            .popup-close {
-                width: 38px; height: 38px;
-                font-size: 18px;
-            }
-            .popup-tag { padding: 3px 8px; font-size: 10px; }
-        }
-
-        @media (max-width: 380px) {
-            .page-title {
-                padding: 6px 12px;
-                gap: 6px;
-            }
-            .title-text { font-size: 13px; }
-            .title-stats { display: none; }
-            .legend { grid-template-columns: repeat(2, 1fr); }
-        }
+        /* hide amap logo/copyright */
+        .amap-logo, .amap-copyright { display: none !important; }
     </style>
 </head>
 <body>
-    <div class="loading-screen" id="loadingScreen">
-        <div class="loading-globe"></div>
-        <div class="loading-text">Loading Map</div>
-    </div>
 
-    <div class="page-title">
-        <span class="title-dot"></span>
-        <span class="title-text">我去过的地方</span>
-        <span class="title-divider"></span>
-        <span class="title-stats" id="titleStats"></span>
+<!-- Loading Screen -->
+<div class="loading-screen" id="loadingScreen">
+    <div class="loading-globe-wrap">
+        <div class="loading-ring"></div>
+        <div class="loading-ring-spin"></div>
+        <div class="loading-ring-spin2"></div>
+        <div class="loading-ring-spin3"></div>
+        <div class="loading-globe-icon">🌏</div>
     </div>
+    <div class="loading-text">World Overview</div>
+    <div class="loading-sub">加载数据中...</div>
+</div>
 
-    <a href="heritage.html" class="heritage-link">
-        <span class="heritage-link-icon">🏛️</span>
-        <span>遗产册</span>
+<!-- Nav Bar -->
+<div class="nav-bar">
+    <div class="nav-title">世 界 总 览</div>
+    <div class="nav-trigger" onclick="var d=document.getElementById('drawer'),o=document.getElementById('dOverlay');d.classList.toggle('open');o.classList.toggle('open');">
+        <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+    </div>
+</div>
+<div class="drawer-overlay" id="dOverlay" onclick="document.getElementById('drawer').classList.remove('open');this.classList.remove('open');"></div>
+<div class="drawer" id="drawer">
+    <a href="travel_map.html"><span class="d-icon">📍</span>足迹地图</a>
+    <a href="heritage.html"><span class="d-icon">🏛️</span>遗产册</a>
+    <div class="d-sep"></div>
+    <a href="mountains.html"><span class="d-icon">🏔️</span>雪山图鉴</a>
+    <a href="mountain_map.html"><span class="d-icon">🗺️</span>雪山地图</a>
+    <div class="d-sep"></div>
+    <a href="parks.html"><span class="d-icon">🌲</span>国家公园</a>
+    <a href="darksky.html"><span class="d-icon">🌌</span>暗夜星空</a>
+    <a href="diving.html"><span class="d-icon">🤿</span>潜水图鉴</a>
+    <a href="hotspring.html"><span class="d-icon">♨️</span>温泉图鉴</a>
+    <div class="d-sep"></div>
+    <a href="timeline.html"><span class="d-icon">📅</span>旅行时间线</a>
+    <a href="stats.html"><span class="d-icon">📊</span>旅行统计</a>
+    <div class="d-sep"></div>
+    <a href="config.html"><span class="d-icon">⚙️</span>数据编辑</a>
+</div>
+
+<!-- Map -->
+<div id="map"></div>
+
+<!-- Layer Panel -->
+<div class="layer-panel" id="layerPanel"></div>
+
+<!-- Stats Bar -->
+<div class="stats-bar" id="statsBar">
+    <div class="stat-item">
+        <div class="stat-dot"></div>
+        <span>可见标记</span>
+        <span class="stat-val" id="statVisible">0</span>
+    </div>
+    <div class="stat-item">
+        <span>活跃图层</span>
+        <span class="stat-val" id="statLayers">0</span>
+        <span>/ 7</span>
+    </div>
+</div>
+
+<!-- Info Card -->
+<div class="info-card" id="infoCard">
+    <div class="info-card-header">
+        <span class="info-card-emoji" id="icEmoji"></span>
+        <span class="info-card-name" id="icName"></span>
+    </div>
+    <div class="info-card-type" id="icType"></div>
+    <div class="info-card-detail" id="icDetail"></div>
+    <a class="info-card-link" id="icLink" href="#" target="_blank">
+        查看详情 <span style="font-size:14px">→</span>
     </a>
+</div>
 
-    <div class="legend" id="legend"></div>
+<script>
+(function() {
+    'use strict';
 
-    <button class="stats-toggle" id="statsToggle">📊 数据</button>
-    <div class="stats-panel" id="statsPanel"></div>
+    /* ===== Layer config ===== */
+    var LAYERS = [
+        { key: 'travel',    emoji: '📍',  label: '足迹', color: '#b794f4' },
+        { key: 'mountain',  emoji: '🏔️', label: '雪山', color: '#7cc4f5' },
+        { key: 'park',      emoji: '🌲',  label: '公园', color: '#22c55e' },
+        { key: 'darksky',   emoji: '🌌',  label: '星空', color: '#818cf8' },
+        { key: 'diving',    emoji: '🤿',  label: '潜水', color: '#0ea5e9' },
+        { key: 'hotspring', emoji: '♨️',  label: '温泉', color: '#f59e0b' },
+        { key: 'heritage',  emoji: '🏛️', label: '遗产', color: '#9f7aea' }
+    ];
 
-    <div id="map"></div>
+    var TYPE_LABELS = {
+        travel: '足迹',
+        mountain: '雪山',
+        park: '国家公园',
+        darksky: '暗夜星空',
+        diving: '潜水',
+        hotspring: '温泉',
+        heritage: '世界遗产'
+    };
 
-    <div class="popup-overlay" id="popupOverlay">
-        <div class="popup-card" id="popupCard">
-            <div class="popup-header">
-                <div class="popup-emoji" id="popupEmoji"></div>
-                <div class="popup-info">
-                    <div class="popup-title" id="popupTitle"></div>
-                    <div class="popup-category" id="popupCategory"></div>
-                    <div class="popup-status" id="popupStatus"></div>
-                </div>
-                <button class="popup-close" id="popupClose">✕</button>
-            </div>
-            <div class="popup-content" id="popupContent"></div>
-        </div>
-    </div>
+    var layerMarkers = {};
+    var layerActive = {};
+    var layerDataLoaded = {};
+    var layerRawData = {};
+    LAYERS.forEach(function(l) {
+        layerMarkers[l.key] = [];
+        layerActive[l.key] = (l.key === 'travel');
+        layerDataLoaded[l.key] = false;
+    });
 
-    <script>
-    (function() {
-        var data = [];
-        var map = null;
-        var miniMap = null;
-        var markers = [];
-        var activeCategory = null;
+    /* ===== Init Map ===== */
+    var map = new AMap.Map('map', {
+        zoom: 3,
+        center: [20, 40],
+        mapStyle: 'amap://styles/darkblue',
+        viewMode: '3D',
+        pitch: 35,
+        features: ['bg', 'road', 'building'],
+        expandZoomRange: true,
+        zooms: [2, 20]
+    });
 
-        var categoryConfig = {
-            '自然景观': { emoji: '🏔️', color: '#48bb78', glow: 'rgba(72,187,120,0.4)', bg: 'rgba(72,187,120,0.15)', text: '#48bb78' },
-            '世界遗产': { emoji: '🏛️', color: '#9f7aea', glow: 'rgba(159,122,234,0.4)', bg: 'rgba(159,122,234,0.15)', text: '#9f7aea' },
-            '历史文化': { emoji: '🏯', color: '#ed8936', glow: 'rgba(237,137,54,0.4)', bg: 'rgba(237,137,54,0.15)', text: '#ed8936' },
-            '现代都市': { emoji: '🌃', color: '#4299e1', glow: 'rgba(66,153,225,0.4)', bg: 'rgba(66,153,225,0.15)', text: '#4299e1' },
-            '美食体验': { emoji: '🍜', color: '#fc8181', glow: 'rgba(252,129,129,0.4)', bg: 'rgba(252,129,129,0.15)', text: '#fc8181' },
-            '海岛海滩': { emoji: '🏖️', color: '#38b2ac', glow: 'rgba(56,178,172,0.4)', bg: 'rgba(56,178,172,0.15)', text: '#38b2ac' },
-            '主题乐园': { emoji: '🎢', color: '#ed64a6', glow: 'rgba(237,100,166,0.4)', bg: 'rgba(237,100,166,0.15)', text: '#ed64a6' },
-            '自驾公路': { emoji: '🚗', color: '#ecc94b', glow: 'rgba(236,201,75,0.4)', bg: 'rgba(236,201,75,0.15)', text: '#ecc94b' },
-            '地质奇观': { emoji: '🌋', color: '#a0aec0', glow: 'rgba(160,174,192,0.4)', bg: 'rgba(160,174,192,0.15)', text: '#a0aec0' }
-        };
+    /* ===== Marker helpers ===== */
+    function makeDot(color, size) {
+        var s = size || 8;
+        var el = document.createElement('div');
+        el.className = 'wm-dot';
+        el.style.width = s + 'px';
+        el.style.height = s + 'px';
+        el.style.borderColor = color;
+        el.style.background = color;
+        el.style.boxShadow = '0 0 6px ' + color;
+        return el;
+    }
 
-        function load() {
-            fetch('data/travel.json')
-                .then(function(r) { return r.ok ? r.json() : []; })
-                .then(function(d) { data = d; init(); })
-                .catch(function() {});
-        }
+    function makeTriangle(color, elev) {
+        var el = document.createElement('div');
+        el.className = 'wm-tri';
+        el.style.borderBottomColor = color;
+        el.style.color = color;
+        return el;
+    }
 
-        function init() {
-            var allSpots = [];
-            data.forEach(function(entry) {
-                entry.spots.forEach(function(spot) {
-                    allSpots.push({ city: entry.city, visited: entry.visited, spot: spot });
-                });
-            });
+    function makeDiamond(color) {
+        var el = document.createElement('div');
+        el.className = 'wm-diamond';
+        el.style.borderColor = color;
+        el.style.background = color;
+        el.style.boxShadow = '0 0 6px ' + color;
+        return el;
+    }
 
-            var visited = allSpots.filter(function(s) { return s.visited; });
-            var wanted = allSpots.filter(function(s) { return !s.visited; });
+    function makeSquare(color) {
+        var el = document.createElement('div');
+        el.className = 'wm-sq';
+        el.style.borderColor = color;
+        el.style.background = color;
+        el.style.boxShadow = '0 0 5px ' + color;
+        return el;
+    }
 
-            document.getElementById('titleStats').textContent =
-                visited.length + ' 已探索 · ' + wanted.length + ' 待解锁';
+    function elevColor(elev) {
+        if (elev >= 8000) return '#ef4444';
+        if (elev >= 7000) return '#f97316';
+        if (elev >= 6000) return '#eab308';
+        if (elev >= 5000) return '#22c55e';
+        if (elev >= 4000) return '#38bdf8';
+        return '#a78bfa';
+    }
 
-            var categories = {};
-            allSpots.forEach(function(s) {
-                var cat = s.spot.category || '自然景观';
-                categories[cat] = (categories[cat] || 0) + 1;
-            });
-
-            var legendHtml = '<div class="legend-item active" data-category="全部">' +
-                '<div class="legend-icon" style="background:rgba(99,179,237,0.2);border-color:rgba(99,179,237,0.3)">✦</div>' +
-                '<span>全部</span></div>';
-
-            legendHtml += Object.keys(categories).map(function(cat) {
-                var cfg = categoryConfig[cat] || categoryConfig['自然景观'];
-                return '<div class="legend-item" data-category="' + cat + '">' +
-                    '<div class="legend-icon" style="background:' + cfg.bg + ';border-color:' + cfg.color + '">' + cfg.emoji + '</div>' +
-                    '<span>' + cat + ' ' + categories[cat] + '</span></div>';
-            }).join('');
-
-            document.getElementById('legend').innerHTML = legendHtml;
-
-            document.getElementById('legend').addEventListener('click', function(e) {
-                var item = e.target.closest('.legend-item');
-                if (!item) return;
-                var category = item.getAttribute('data-category');
-
-                if (category === activeCategory || category === '全部') {
-                    activeCategory = null;
-                } else {
-                    activeCategory = category;
-                }
-
-                document.querySelectorAll('.legend-item').forEach(function(el) {
-                    var cat = el.getAttribute('data-category');
-                    el.classList.remove('active', 'dimmed');
-                    if (activeCategory === null) {
-                        if (cat === '全部') el.classList.add('active');
-                    } else {
-                        if (cat === activeCategory) el.classList.add('active');
-                        else if (cat !== '全部') el.classList.add('dimmed');
-                    }
-                });
-
-                filterMarkers();
-            });
-
-            map = new AMap.Map('map', {
-                zoom: 4,
-                center: [104.19, 35.86],
-                mapStyle: 'amap://styles/darkblue',
-                resizeEnable: true
-            });
-
-            map.on('complete', function() {
-                setTimeout(function() {
-                    document.getElementById('loadingScreen').classList.add('hidden');
-                }, 400);
-            });
-
-            renderMarkers(allSpots);
-            renderStats(allSpots);
-
-            document.getElementById('statsToggle').addEventListener('click', function() {
-                document.getElementById('statsPanel').classList.toggle('show');
-            });
-        }
-
-        function renderStats(allSpots) {
-            var visitedSpots = allSpots.filter(function(s) { return s.visited; });
-            var wantedSpots = allSpots.filter(function(s) { return !s.visited; });
-
-            var provinces = {};
-            var countries = { '中国': true };
-            visitedSpots.forEach(function(s) {
-                var loc = s.spot.location || '';
-                var m = loc.match(/^([\u4e00-\u9fa5]{2,3}(?:省|自治区|市))/);
-                if (m) provinces[m[1]] = true;
-                if (loc.indexOf('台湾') !== -1) { provinces['台湾'] = true; countries['台湾'] = true; }
-                if (loc.indexOf('日本') !== -1) countries['日本'] = true;
-                if (loc.indexOf('越南') !== -1) countries['越南'] = true;
-                if (loc.indexOf('冰岛') !== -1) countries['冰岛'] = true;
-            });
-
-            var categories = {};
-            allSpots.forEach(function(s) {
-                var cat = s.spot.category || '自然景观';
-                categories[cat] = (categories[cat] || 0) + 1;
-            });
-            var maxCat = Math.max.apply(null, Object.keys(categories).map(function(k) { return categories[k]; }));
-
-            var html = '<div class="stats-row"><span class="stats-row-label">🗺️ 省份</span><span class="stats-row-value">' + Object.keys(provinces).length + '</span></div>' +
-                '<div class="stats-row"><span class="stats-row-label">🌍 国家/地区</span><span class="stats-row-value">' + Object.keys(countries).length + '</span></div>' +
-                '<div class="stats-row"><span class="stats-row-label">✦ 已探索</span><span class="stats-row-value">' + visitedSpots.length + '</span></div>' +
-                '<div class="stats-row"><span class="stats-row-label">◇ 待解锁</span><span class="stats-row-value">' + wantedSpots.length + '</span></div>' +
-                '<div class="stats-divider"></div>';
-
-            Object.keys(categories).forEach(function(cat) {
-                var cfg = categoryConfig[cat] || categoryConfig['自然景观'];
-                var pct = (categories[cat] / maxCat * 100);
-                html += '<div class="stats-bar-row">' +
-                    '<div class="stats-bar-label"><span>' + cfg.emoji + ' ' + cat + '</span><span>' + categories[cat] + '</span></div>' +
-                    '<div class="stats-bar-track"><div class="stats-bar-fill" style="width:' + pct + '%;background:' + cfg.color + '"></div></div>' +
-                '</div>';
-            });
-
-            document.getElementById('statsPanel').innerHTML = html;
-        }
-
-        function renderMarkers(allSpots) {
-            allSpots.forEach(function(item, idx) {
-                var spot = item.spot;
-                if (!spot.lat || !spot.lng) return;
-
-                var cat = spot.category || '自然景观';
-                var cfg = categoryConfig[cat] || categoryConfig['自然景观'];
-                var isVisited = item.visited;
-
-                var wrapper = document.createElement('div');
-                wrapper.style.cssText = 'position:relative;width:44px;height:44px;display:flex;align-items:center;justify-content:center;';
-
-                if (isVisited) {
-                    // Pulse ring
-                    var ring = document.createElement('div');
-                    ring.style.cssText = 'position:absolute;inset:0;border-radius:50%;' +
-                        'animation:marker-pulse 2.5s ease-out infinite;' +
-                        'animation-delay:' + (idx * 0.15 % 2.5) + 's;' +
-                        '--pulse-color: rgba(212,168,90,0.6);';
-                    wrapper.appendChild(ring);
-                }
-
-                var el = document.createElement('div');
-                var goldBright = '#f6c977', gold = '#d4a85a', purpleGlow = 'rgba(183,148,244,0.55)';
-                if (isVisited) {
-                    el.style.cssText = 'width:38px;height:38px;border-radius:50%;' +
-                        'border:2.5px solid ' + goldBright + ';' +
-                        'box-shadow:0 4px 15px rgba(0,0,0,0.45), 0 0 22px ' + purpleGlow + ', 0 0 8px ' + goldBright + ';' +
-                        'display:flex;align-items:center;justify-content:center;' +
-                        'font-size:18px;cursor:pointer;transition:all 0.3s cubic-bezier(0.16,1,0.3,1);' +
-                        'background:linear-gradient(145deg, ' + gold + ', rgba(212,168,90,0.85));' +
-                        'color:#1a1206;' +
-                        'position:relative;z-index:1;';
-                } else {
-                    el.style.cssText = 'width:34px;height:34px;border-radius:50%;' +
-                        'border:2px dashed ' + gold + ';' +
-                        'box-shadow:0 4px 15px rgba(0,0,0,0.35), 0 0 12px rgba(212,168,90,0.15);' +
-                        'display:flex;align-items:center;justify-content:center;' +
-                        'font-size:16px;cursor:pointer;transition:all 0.3s cubic-bezier(0.16,1,0.3,1);' +
-                        'background:rgba(20,26,46,0.85);' +
-                        'animation:float 3s ease-in-out infinite;' +
-                        'animation-delay:' + (idx * 0.3 % 3) + 's;' +
-                        'position:relative;z-index:1;';
-                }
-                el.textContent = cfg.emoji;
-
-                el.addEventListener('mouseenter', function() {
-                    this.style.transform = 'scale(1.28)';
-                    this.style.boxShadow = isVisited
-                        ? '0 6px 25px rgba(0,0,0,0.55), 0 0 40px ' + purpleGlow + ', 0 0 16px ' + goldBright
-                        : '0 6px 25px rgba(0,0,0,0.45), 0 0 25px rgba(212,168,90,0.35)';
-                    this.style.borderColor = goldBright;
-                });
-                el.addEventListener('mouseleave', function() {
-                    this.style.transform = 'scale(1)';
-                    this.style.boxShadow = isVisited
-                        ? '0 4px 15px rgba(0,0,0,0.45), 0 0 22px ' + purpleGlow + ', 0 0 8px ' + goldBright
-                        : '0 4px 15px rgba(0,0,0,0.35), 0 0 12px rgba(212,168,90,0.15)';
-                    this.style.borderColor = isVisited ? goldBright : gold;
-                });
-
-                wrapper.appendChild(el);
-
-                var subIconMap = {
-                    '湖泊': '💧', '冰川': '🧊', '雪山': '❄️', '草原': '🌾',
-                    '沙漠': '🏜️', '峡谷': '⛰️', '盐湖': '✨', '花海': '🌸',
-                    '天池': '💎', '温泉': '♨️', '古城': '🏰', '寺院': '🙏',
-                    '夜景': '🌙', '海滩': '🏖️', '日落': '🌅', '红叶': '🍁',
-                    '极光': '🌌', '湿地': '🦆', '帕米尔': '⛰️', '边境': '🛂'
-                };
-                var tags = spot.tags || [];
-                for (var t = 0; t < tags.length; t++) {
-                    if (subIconMap[tags[t]]) {
-                        var subIcon = document.createElement('div');
-                        subIcon.className = 'marker-sub-icon';
-                        subIcon.textContent = subIconMap[tags[t]];
-                        wrapper.appendChild(subIcon);
-                        break;
-                    }
-                }
-
-                var marker = new AMap.Marker({
-                    position: [spot.lng, spot.lat],
-                    content: wrapper,
-                    offset: new AMap.Pixel(-22, -22)
-                });
-
-                marker.on('click', function() { showPopup(item); });
-                markers.push({ marker: marker, category: cat });
-                map.add(marker);
-            });
-
-            var allMarkers = map.getAllOverlays('marker');
-            if (allMarkers.length) {
-                map.setFitView(allMarkers, false, [80, 80, 80, 80]);
-            }
-        }
-
-        function filterMarkers() {
-            markers.forEach(function(item) {
-                if (activeCategory === null || item.category === activeCategory) {
-                    item.marker.show();
-                } else {
-                    item.marker.hide();
-                }
-            });
-
-            var visibleMarkers = markers
-                .filter(function(item) { return activeCategory === null || item.category === activeCategory; })
-                .map(function(item) { return item.marker; });
-
-            if (visibleMarkers.length > 0) {
-                map.setFitView(visibleMarkers, false, [80, 80, 80, 80]);
-            }
-        }
-
-        function showPopup(item) {
-            if (miniMap) { miniMap.destroy(); miniMap = null; }
-
-            var overlay = document.getElementById('popupOverlay');
-            var spot = item.spot;
-            var cat = spot.category || '自然景观';
-            var cfg = categoryConfig[cat] || categoryConfig['自然景观'];
-            var isVisited = item.visited;
-
-            document.getElementById('popupEmoji').textContent = cfg.emoji;
-            document.getElementById('popupEmoji').className = 'popup-emoji' + (isVisited ? '' : ' wanted');
-            document.getElementById('popupTitle').textContent = spot.title;
-
-            var categoryEl = document.getElementById('popupCategory');
-            categoryEl.textContent = cat;
-            categoryEl.style.background = cfg.bg;
-            categoryEl.style.color = cfg.text;
-            categoryEl.style.border = '1px solid ' + cfg.color + '33';
-
-            var statusEl = document.getElementById('popupStatus');
-            statusEl.textContent = isVisited ? '✦ 已探索' : '◇ 待解锁';
-            statusEl.className = 'popup-status ' + (isVisited ? 'visited' : 'wanted');
-
-            var html = '';
-            if (spot.content) {
-                html += '<div class="popup-text">' + spot.content + '</div>';
-            }
-            if (spot.location) {
-                html += '<div class="popup-loc"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>' + spot.location + '</div>';
-            }
-            if (spot.tags && spot.tags.length) {
-                html += '<div class="popup-tags">' + spot.tags.map(function(t) { return '<span class="popup-tag">' + t + '</span>'; }).join('') + '</div>';
-            }
-            if (spot.lat && spot.lng) {
-                var isOverseasFar = (spot.lng < 0 || spot.lat > 55);
-                if (!isOverseasFar) {
-                    html += '<div class="popup-minimap" id="popup-minimap"></div>';
-                } else {
-                    html += '<div class="popup-loc" style="margin-top:8px;opacity:0.6;">坐标: ' + spot.lat + ', ' + spot.lng + '</div>';
-                }
-            }
-
-            document.getElementById('popupContent').innerHTML = html;
-
-            overlay.style.display = 'flex';
-            requestAnimationFrame(function() {
-                requestAnimationFrame(function() {
-                    overlay.classList.add('show');
-                });
-            });
-
-            if (spot.lat && spot.lng && !(spot.lng < 0 || spot.lat > 55)) {
-                setTimeout(function() {
-                    var el = document.getElementById('popup-minimap');
-                    if (!el) return;
-
-                    var isRemote = spot.lng < 76 || spot.lng > 135;
-                    var miniZoom = isRemote ? 8 : 13;
-                    miniMap = new AMap.Map(el, {
-                        zoom: miniZoom,
-                        center: [spot.lng, spot.lat],
-                        mapStyle: isRemote ? 'amap://styles/normal' : 'amap://styles/darkblue',
-                        resizeEnable: true,
-                        dragEnable: false,
-                        zoomEnable: false,
-                        scrollWheel: false,
-                        doubleClickZoom: false
-                    });
-
-                    var dot = document.createElement('div');
-                    dot.style.cssText = 'width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,0.5);' +
-                        'box-shadow:0 0 15px ' + cfg.glow + ', 0 2px 6px rgba(0,0,0,0.4);background:' + cfg.color + ';';
-
-                    miniMap.add(new AMap.Marker({
-                        position: [spot.lng, spot.lat],
-                        content: dot,
-                        offset: new AMap.Pixel(-7, -7)
-                    }));
-                }, 200);
-            }
-        }
-
-        function closePopup() {
-            var overlay = document.getElementById('popupOverlay');
-            overlay.classList.remove('show');
-            setTimeout(function() {
-                overlay.style.display = 'none';
-                if (miniMap) { miniMap.destroy(); miniMap = null; }
-            }, 400);
-        }
-
-        document.getElementById('popupClose').addEventListener('click', closePopup);
-        document.getElementById('popupOverlay').addEventListener('click', function(e) {
-            if (e.target === this) closePopup();
+    function createMarker(pos, contentEl, extData, layerKey) {
+        var mk = new AMap.Marker({
+            position: pos,
+            content: contentEl,
+            offset: new AMap.Pixel(-4, -4),
+            extData: extData,
+            zIndex: layerKey === 'mountain' ? 12 : 10
         });
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closePopup();
+        mk.on('click', function(e) {
+            showInfoCard(e, mk.getExtData());
+        });
+        mk.setMap(map);
+        layerMarkers[layerKey].push(mk);
+    }
+
+    /* ===== Info Card ===== */
+    var infoCard = document.getElementById('infoCard');
+    var dismissTimer = null;
+
+    function showInfoCard(e, data) {
+        if (dismissTimer) { clearTimeout(dismissTimer); dismissTimer = null; }
+
+        var emojiMap = {};
+        LAYERS.forEach(function(l) { emojiMap[l.key] = l.emoji; });
+
+        document.getElementById('icEmoji').textContent = emojiMap[data.type] || '';
+        document.getElementById('icName').textContent = data.name || '';
+        document.getElementById('icType').textContent = TYPE_LABELS[data.type] || data.type;
+        document.getElementById('icDetail').textContent = data.detail || '';
+        document.getElementById('icLink').href = data.link || '#';
+
+        /* position near click */
+        var px = e.pixel || { x: 300, y: 300 };
+        var vw = window.innerWidth;
+        var vh = window.innerHeight;
+        var left = px.x + 16;
+        var top = px.y - 40;
+        if (left + 300 > vw) left = px.x - 320;
+        if (top + 200 > vh) top = vh - 220;
+        if (top < 60) top = 60;
+        if (left < 10) left = 10;
+        infoCard.style.left = left + 'px';
+        infoCard.style.top = top + 'px';
+
+        infoCard.classList.add('show');
+    }
+
+    function hideInfoCard() {
+        infoCard.classList.remove('show');
+    }
+
+    map.on('click', function(e) {
+        /* only dismiss if not clicking a marker */
+        var tgt = e.originEvent && e.originEvent.target;
+        if (tgt && (
+            tgt.classList.contains('wm-dot') ||
+            tgt.classList.contains('wm-tri') ||
+            tgt.classList.contains('wm-diamond') ||
+            tgt.classList.contains('wm-sq')
+        )) return;
+        hideInfoCard();
+    });
+
+    /* ===== Build layer panel ===== */
+    var panelEl = document.getElementById('layerPanel');
+
+    function buildPanel() {
+        panelEl.innerHTML = '';
+        LAYERS.forEach(function(cfg) {
+            var btn = document.createElement('div');
+            btn.className = 'layer-btn' + (layerActive[cfg.key] ? ' active' : ' inactive');
+            btn.style.setProperty('--layer-color', cfg.color);
+            btn.setAttribute('data-layer', cfg.key);
+
+            btn.innerHTML = '<span class="layer-emoji">' + cfg.emoji + '</span>' +
+                '<span class="layer-label">' + cfg.label + '</span>' +
+                '<span class="layer-count" id="count-' + cfg.key + '">0</span>';
+
+            btn.addEventListener('click', function() {
+                toggleLayer(cfg.key, btn);
+            });
+            panelEl.appendChild(btn);
+        });
+    }
+    buildPanel();
+
+    function toggleLayer(key, btn) {
+        layerActive[key] = !layerActive[key];
+        if (layerActive[key]) {
+            btn.classList.remove('inactive');
+            btn.classList.add('active');
+            if (!layerDataLoaded[key] && layerRawData[key]) {
+                buildLayerMarkers(key, layerRawData[key]);
+                layerDataLoaded[key] = true;
+                var el = document.getElementById('count-' + key);
+                if (el) el.textContent = layerMarkers[key].length;
+            }
+            layerMarkers[key].forEach(function(m) { m.show(); });
+        } else {
+            btn.classList.remove('active');
+            btn.classList.add('inactive');
+            layerMarkers[key].forEach(function(m) { m.hide(); });
+            hideInfoCard();
+        }
+        updateStats();
+    }
+
+    /* ===== Stats ===== */
+    function updateStats() {
+        var visible = 0;
+        var active = 0;
+        LAYERS.forEach(function(cfg) {
+            if (layerActive[cfg.key]) {
+                visible += layerMarkers[cfg.key].length;
+                active++;
+            }
+        });
+        document.getElementById('statVisible').textContent = visible;
+        document.getElementById('statLayers').textContent = active;
+    }
+
+    function updateCounts() {
+        LAYERS.forEach(function(cfg) {
+            var el = document.getElementById('count-' + cfg.key);
+            if (!el) return;
+            if (layerDataLoaded[cfg.key]) {
+                el.textContent = layerMarkers[cfg.key].length;
+            } else if (layerRawData[cfg.key]) {
+                var d = layerRawData[cfg.key];
+                if (cfg.key === 'travel') {
+                    var c = 0;
+                    d.forEach(function(city) { c += (city.spots || []).length; });
+                    el.textContent = c;
+                } else {
+                    el.textContent = d.length;
+                }
+            }
+        });
+    }
+
+    /* ===== Load Data ===== */
+    function buildLayerMarkers(key, data) {
+        if (key === 'travel') {
+            data.forEach(function(city) {
+                (city.spots || []).forEach(function(spot) {
+                    if (!spot.lat || !spot.lng) return;
+                    createMarker([spot.lng, spot.lat], makeDot('#b794f4', 6),
+                        { type: 'travel', name: spot.title || '', detail: city.city + (spot.category ? ' · ' + spot.category : ''), link: 'travel_map.html' }, 'travel');
+                });
+            });
+        } else if (key === 'mountain') {
+            data.forEach(function(mt) {
+                if (!mt.lat || !mt.lng) return;
+                var c = elevColor(mt.elevation || 0);
+                createMarker([mt.lng, mt.lat], makeTriangle(c),
+                    { type: 'mountain', name: mt.name || '', detail: (mt.elevation || 0) + 'm · ' + (mt.range || mt.country || ''), link: 'mountains.html' }, 'mountain');
+            });
+        } else if (key === 'park') {
+            data.forEach(function(pk) {
+                if (!pk.lat || !pk.lng) return;
+                createMarker([pk.lng, pk.lat], makeDot('#22c55e', 6),
+                    { type: 'park', name: pk.name || '', detail: pk.country + (pk.area ? ' · ' + pk.area + 'km²' : ''), link: 'parks.html' }, 'park');
+            });
+        } else if (key === 'darksky') {
+            data.forEach(function(ds) {
+                if (!ds.lat || !ds.lng) return;
+                createMarker([ds.lng, ds.lat], makeDiamond('#818cf8'),
+                    { type: 'darksky', name: ds.name || '', detail: (ds.bortle ? 'Bortle ' + ds.bortle : '') + (ds.country ? ' · ' + ds.country : ''), link: 'darksky.html' }, 'darksky');
+            });
+        } else if (key === 'diving') {
+            data.forEach(function(dv) {
+                if (!dv.lat || !dv.lng) return;
+                createMarker([dv.lng, dv.lat], makeDot('#0ea5e9', 6),
+                    { type: 'diving', name: dv.name || '', detail: (dv.depth ? dv.depth + 'm · ' : '') + (dv.country || ''), link: 'diving.html' }, 'diving');
+            });
+        } else if (key === 'hotspring') {
+            data.forEach(function(hs) {
+                if (!hs.lat || !hs.lng) return;
+                createMarker([hs.lng, hs.lat], makeDot('#f59e0b', 6),
+                    { type: 'hotspring', name: hs.name || '', detail: (hs.temperature ? hs.temperature + '°C · ' : '') + (hs.country || ''), link: 'hotspring.html' }, 'hotspring');
+            });
+        } else if (key === 'heritage') {
+            data.forEach(function(h) {
+                if (!h.lat || !h.lng) return;
+                createMarker([h.lng, h.lat], makeSquare('#9f7aea'),
+                    { type: 'heritage', name: h.name_zh || h.name || h.name_en || '', detail: (h.country || '') + (h.type ? ' · ' + h.type : ''), link: 'heritage.html' }, 'heritage');
+            });
+        }
+    }
+
+    var LAYER_FILES = {
+        travel: 'data/travel.json',
+        mountain: 'data/mountains_global.json',
+        park: 'data/parks_global.json',
+        darksky: 'data/darksky_global.json',
+        diving: 'data/diving_global.json',
+        hotspring: 'data/hotspring_global.json',
+        heritage: 'data/heritage_global.json'
+    };
+
+    var fileKeys = Object.keys(LAYER_FILES);
+    var fileUrls = fileKeys.map(function(k) { return LAYER_FILES[k]; });
+
+    Promise.all(
+        fileUrls.map(function(url) { return fetch(url).then(function(r) { return r.json(); }); })
+    ).then(function(results) {
+        fileKeys.forEach(function(key, i) {
+            layerRawData[key] = results[i];
         });
 
-        load();
-    })();
-    </script>
+        buildLayerMarkers('travel', layerRawData.travel);
+        layerDataLoaded.travel = true;
+
+        updateCounts();
+        updateStats();
+
+        setTimeout(function() {
+            document.getElementById('loadingScreen').classList.add('hidden');
+        }, 600);
+
+    }).catch(function(err) {
+        console.error('Data load error:', err);
+        document.querySelector('.loading-sub').textContent = '数据加载失败';
+    });
+
+})();
+</script>
 </body>
 </html>

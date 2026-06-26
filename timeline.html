@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>旅行时间线</title>
+    <link href="data/fonts/fonts_local.css" rel="stylesheet">
+    <style>
+        :root{
+            --dark:#080c18;--ice:#7cc4f5;--ice-bright:#a8dcfa;--ice-faint:rgba(124,196,245,0.18);
+            --gold:#d4a85a;--gold-bright:#f6c977;--gold-faint:rgba(212,168,90,0.18);
+            --green:#48bb78;--green-faint:rgba(72,187,120,0.15);
+            --card:rgba(14,18,32,0.85);
+        }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Noto Sans SC',-apple-system,'PingFang SC',sans-serif;
+            background:var(--dark);color:rgba(255,255,255,0.88);min-height:100vh;overflow-x:hidden;}
+        body::-webkit-scrollbar{width:6px;}
+        body::-webkit-scrollbar-track{background:transparent;}
+        body::-webkit-scrollbar-thumb{background:rgba(124,196,245,0.15);border-radius:3px;}
+        body::-webkit-scrollbar-thumb:hover{background:rgba(124,196,245,0.3);}
+
+        /* Loading */
+        .loading{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;
+            align-items:center;justify-content:center;background:var(--dark);transition:opacity .6s;}
+        .loading.hide{opacity:0;pointer-events:none;}
+        .load-mount svg{width:64px;height:64px;filter:drop-shadow(0 0 16px rgba(124,196,245,0.3));}
+        .load-mount svg path{stroke:var(--ice);stroke-width:2;fill:none;
+            stroke-dasharray:200;stroke-dashoffset:200;animation:draw 1.5s ease forwards;}
+        .load-text{margin-top:10px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:4px;
+            color:rgba(124,196,245,0.4);animation:breathe 2s ease-in-out infinite;}
+        @keyframes draw{to{stroke-dashoffset:0}}
+        @keyframes breathe{0%,100%{opacity:.4}50%{opacity:1}}
+        @keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+        /* Nav */
+        .nav{position:fixed;top:0;left:0;right:0;height:52px;z-index:100;
+            background:linear-gradient(180deg,rgba(8,12,24,0.96),rgba(8,12,24,0.75));
+            backdrop-filter:blur(24px) saturate(1.8);
+            display:flex;align-items:center;justify-content:space-between;padding:0 20px;}
+        .nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+            background:linear-gradient(90deg,transparent,rgba(124,196,245,0.12) 30%,rgba(124,196,245,0.12) 70%,transparent);}
+        .nav-back{color:rgba(255,255,255,0.45);text-decoration:none;font-size:13px;
+            display:flex;align-items:center;gap:4px;transition:color .2s;min-width:80px;}
+        .nav-back:hover{color:var(--ice);}
+        .nav-title{font-family:'Cinzel','Noto Sans SC',serif;font-size:15px;font-weight:700;letter-spacing:4px;
+            background:linear-gradient(135deg,#fff 0%,var(--ice-bright) 40%,var(--ice) 60%,#fff 100%);
+            background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+            background-clip:text;animation:shimmer 4s linear infinite;}
+        .nav-right{min-width:80px;}
+
+        /* Hero Stats */
+        .hero-stats{margin-top:52px;padding:20px 0;text-align:center;
+            background:linear-gradient(180deg,rgba(10,14,28,0.95),rgba(8,12,24,0.6));
+            border-bottom:1px solid rgba(124,196,245,0.06);}
+        .hero-stats-inner{display:flex;justify-content:center;gap:40px;flex-wrap:wrap;}
+        .stat-item{text-align:center;}
+        .stat-num{font-family:'Cinzel',serif;font-size:28px;font-weight:700;line-height:1.2;}
+        .stat-num.ice{color:var(--ice);}
+        .stat-num.gold{color:var(--gold);}
+        .stat-num.green{color:var(--green);}
+        .stat-label{font-size:11px;color:rgba(255,255,255,0.3);letter-spacing:2px;margin-top:2px;}
+
+        /* Timeline Container */
+        .timeline-wrap{max-width:900px;margin:0 auto;padding:40px 20px 80px;position:relative;}
+
+        /* Vertical Line */
+        .timeline-wrap::before{content:'';position:absolute;top:0;bottom:0;left:50%;
+            width:2px;transform:translateX(-1px);
+            background:linear-gradient(180deg,transparent,rgba(124,196,245,0.12) 60px,
+            rgba(124,196,245,0.12) calc(100% - 60px),transparent);}
+
+        /* Year Divider */
+        .year-divider{position:relative;text-align:center;margin:50px 0 30px;clear:both;}
+        .year-divider:first-child{margin-top:10px;}
+        .year-label{font-family:'Cinzel',serif;font-size:42px;font-weight:700;letter-spacing:6px;
+            color:rgba(124,196,245,0.08);position:relative;display:inline-block;}
+        .year-label-inner{position:relative;z-index:2;
+            background:linear-gradient(180deg,rgba(124,196,245,0.2),rgba(124,196,245,0.06));
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+        .year-line{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+            width:200px;height:1px;
+            background:linear-gradient(90deg,transparent,rgba(124,196,245,0.1),transparent);}
+
+        /* Timeline Node */
+        .tl-node{position:relative;width:50%;margin-bottom:30px;animation:fadeUp .5s ease both;}
+        .tl-node.left{float:left;padding-right:40px;text-align:right;clear:left;}
+        .tl-node.right{float:right;padding-left:40px;text-align:left;clear:right;}
+
+        /* Dot on the line */
+        .tl-dot{position:absolute;top:20px;width:14px;height:14px;border-radius:50%;
+            border:2px solid var(--ice);background:var(--dark);z-index:5;
+            transition:all .3s;}
+        .tl-node.left .tl-dot{right:-7px;}
+        .tl-node.right .tl-dot{left:-7px;}
+        .tl-dot.visited{border-color:var(--gold);background:var(--gold);
+            box-shadow:0 0 10px rgba(212,168,90,0.4);}
+
+        /* Connector line from dot to card */
+        .tl-conn{position:absolute;top:26px;height:1px;width:28px;
+            background:rgba(124,196,245,0.12);}
+        .tl-node.left .tl-conn{right:7px;}
+        .tl-node.right .tl-conn{left:7px;}
+
+        /* City Card */
+        .city-card{display:inline-block;text-align:left;background:var(--card);
+            border:1px solid rgba(124,196,245,0.06);border-radius:14px;
+            padding:16px 20px;cursor:pointer;transition:all .3s cubic-bezier(0.16,1,0.3,1);
+            max-width:100%;position:relative;overflow:hidden;}
+        .city-card::before{content:'';position:absolute;inset:0;border-radius:14px;opacity:0;
+            background:linear-gradient(135deg,rgba(124,196,245,0.04),transparent);transition:opacity .3s;}
+        .city-card:hover{transform:translateY(-3px);
+            border-color:rgba(124,196,245,0.15);
+            box-shadow:0 8px 32px rgba(0,0,0,0.3),0 0 16px rgba(124,196,245,0.06);}
+        .city-card:hover::before{opacity:1;}
+        .city-card.expanded{border-color:rgba(124,196,245,0.2);
+            box-shadow:0 8px 32px rgba(0,0,0,0.3),0 0 20px rgba(124,196,245,0.08);}
+
+        .city-header{display:flex;align-items:center;gap:10px;position:relative;}
+        .city-name{font-size:18px;font-weight:700;letter-spacing:1px;}
+        .city-date{font-size:12px;color:rgba(255,255,255,0.3);font-family:'Cinzel',serif;letter-spacing:1px;}
+        .city-meta{display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;}
+        .city-spot-count{font-size:11px;color:rgba(255,255,255,0.35);
+            padding:2px 10px;border-radius:12px;
+            background:rgba(124,196,245,0.05);border:1px solid rgba(124,196,245,0.08);}
+        .city-emojis{font-size:14px;letter-spacing:2px;}
+        .city-expand-hint{font-size:10px;color:rgba(255,255,255,0.15);margin-top:6px;
+            transition:color .2s;}
+        .city-card:hover .city-expand-hint{color:rgba(255,255,255,0.3);}
+
+        /* Expanded spot list */
+        .spots-list{max-height:0;overflow:hidden;transition:max-height .4s ease;}
+        .city-card.expanded .spots-list{max-height:2000px;}
+        .spots-divider{height:1px;margin:14px 0 10px;
+            background:linear-gradient(90deg,rgba(124,196,245,0.08),transparent);}
+        .spot-item{padding:10px 12px;margin:6px 0;border-radius:10px;
+            background:rgba(124,196,245,0.02);border:1px solid rgba(124,196,245,0.04);
+            transition:all .2s;}
+        .spot-item:hover{background:rgba(124,196,245,0.05);border-color:rgba(124,196,245,0.1);}
+        .spot-header{display:flex;align-items:center;gap:8px;}
+        .spot-emoji{font-size:16px;flex-shrink:0;}
+        .spot-title{font-size:13px;font-weight:600;}
+        .spot-content{font-size:12px;color:rgba(255,255,255,0.4);line-height:1.6;margin-top:6px;
+            display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+        .spot-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px;}
+        .spot-tag{padding:1px 8px;border-radius:4px;font-size:10px;
+            border:1px solid rgba(255,255,255,0.05);background:rgba(255,255,255,0.02);
+            color:rgba(255,255,255,0.3);}
+
+        /* No-date section */
+        .no-date-section{clear:both;margin-top:60px;padding-top:40px;
+            border-top:1px solid rgba(124,196,245,0.06);}
+        .no-date-title{text-align:center;font-size:14px;color:rgba(255,255,255,0.25);
+            letter-spacing:3px;margin-bottom:24px;display:flex;align-items:center;
+            justify-content:center;gap:12px;}
+        .no-date-title::before,.no-date-title::after{content:'';width:40px;height:1px;
+            background:rgba(124,196,245,0.08);}
+        .no-date-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+            gap:12px;}
+        .no-date-card{background:var(--card);border:1px solid rgba(255,255,255,0.04);
+            border-radius:12px;padding:14px 16px;cursor:pointer;
+            transition:all .3s;border-left:3px solid rgba(124,196,245,0.1);}
+        .no-date-card:hover{border-color:rgba(124,196,245,0.12);
+            border-left-color:var(--ice);transform:translateY(-2px);
+            box-shadow:0 4px 16px rgba(0,0,0,0.2);}
+        .no-date-card.expanded{border-left-color:var(--ice);}
+
+        /* Clearfix */
+        .clearfix::after{content:'';display:table;clear:both;}
+
+        /* Mobile */
+        @media(max-width:700px){
+            .timeline-wrap::before{left:20px;}
+            .tl-node{width:100%;float:none !important;padding-left:50px !important;
+                padding-right:0 !important;text-align:left !important;}
+            .tl-node .tl-dot{left:13px !important;right:auto !important;}
+            .tl-node .tl-conn{left:27px !important;right:auto !important;width:16px;}
+            .hero-stats-inner{gap:24px;}
+            .stat-num{font-size:22px;}
+            .year-label{font-size:30px;}
+            .no-date-grid{grid-template-columns:1fr;}
+        }
+    </style>
+</head>
+<body>
+    <div class="loading" id="loading">
+        <div class="load-mount"><svg viewBox="0 0 80 80"><path d="M40 10 L10 65 L30 50 L40 60 L50 50 L70 65 Z"/><path d="M25 35 L35 22 L40 28"/></svg></div>
+        <div class="load-text">LOADING</div>
+    </div>
+
+    <nav class="nav">
+        <a class="nav-back" href="index.html">← 首页</a>
+        <span class="nav-title">旅 行 时 间 线</span>
+        <div class="nav-right"></div>
+    </nav>
+
+    <div class="hero-stats">
+        <div class="hero-stats-inner" id="heroStats"></div>
+    </div>
+
+    <div class="timeline-wrap clearfix" id="timeline"></div>
+
+    <script>
+    (function(){
+        var categoryEmoji = {
+            '自然景观': '🏔️',
+            '世界遗产': '🏛️',
+            '历史文化': '🏯',
+            '现代都市': '🌃',
+            '美食体验': '🍜',
+            '海岛海滩': '🏖️',
+            '主题乐园': '🎢',
+            '自驾公路': '🚗',
+            '地质奇观': '🌋'
+        };
+
+        function getEmoji(cat) {
+            return categoryEmoji[cat] || '📍';
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            var parts = dateStr.split('-');
+            if (parts.length >= 2) {
+                return parts[0] + '年' + parts[1] + '月';
+            }
+            return parts[0] + '年';
+        }
+
+        function getYear(dateStr) {
+            if (!dateStr) return '';
+            return dateStr.split('-')[0];
+        }
+
+        function getUniqueEmojis(spots) {
+            var seen = {};
+            var result = [];
+            spots.forEach(function(s) {
+                var e = getEmoji(s.category);
+                if (!seen[e]) {
+                    seen[e] = true;
+                    result.push(e);
+                }
+            });
+            return result.join('');
+        }
+
+        fetch('data/travel.json')
+            .then(function(r) { return r.json(); })
+            .then(function(data) { render(data); })
+            .catch(function() {
+                document.getElementById('loading').classList.add('hide');
+            });
+
+        function render(data) {
+            // Separate dated and undated cities
+            var dated = [];
+            var undated = [];
+            data.forEach(function(city) {
+                if (city.date && city.date.length > 0) {
+                    dated.push(city);
+                } else {
+                    undated.push(city);
+                }
+            });
+
+            // Sort dated cities descending by date
+            dated.sort(function(a, b) {
+                if (a.date > b.date) return -1;
+                if (a.date < b.date) return 1;
+                return 0;
+            });
+
+            // Compute stats
+            var allYears = {};
+            var totalCities = data.length;
+            var totalSpots = 0;
+            data.forEach(function(c) {
+                totalSpots += (c.spots || []).length;
+                var y = getYear(c.date);
+                if (y) allYears[y] = true;
+            });
+            var yearKeys = Object.keys(allYears).sort();
+            var spanStr = yearKeys.length > 0 ? yearKeys[0] + ' - ' + yearKeys[yearKeys.length - 1] : '—';
+
+            var statsHtml = '';
+            statsHtml += '<div class="stat-item"><div class="stat-num ice">' + spanStr + '</div>';
+            statsHtml += '<div class="stat-label">旅行跨度</div></div>';
+            statsHtml += '<div class="stat-item"><div class="stat-num gold">' + totalCities + '</div>';
+            statsHtml += '<div class="stat-label">目的地</div></div>';
+            statsHtml += '<div class="stat-item"><div class="stat-num green">' + totalSpots + '</div>';
+            statsHtml += '<div class="stat-label">足迹点</div></div>';
+            document.getElementById('heroStats').innerHTML = statsHtml;
+
+            // Build timeline
+            var html = '';
+            var currentYear = '';
+            var side = 0; // 0=left, 1=right
+
+            dated.forEach(function(city, idx) {
+                var y = getYear(city.date);
+
+                // Year divider
+                if (y !== currentYear) {
+                    currentYear = y;
+                    html += '<div class="year-divider" style="animation:fadeUp .5s ease both;animation-delay:' + (idx * 0.06) + 's;">';
+                    html += '<div class="year-line"></div>';
+                    html += '<div class="year-label"><span class="year-label-inner">' + y + '</span></div>';
+                    html += '</div>';
+                    // Reset clear
+                    html += '<div style="clear:both;"></div>';
+                    side = 0;
+                }
+
+                var sideClass = side % 2 === 0 ? 'left' : 'right';
+                var dotClass = city.visited ? ' visited' : '';
+                var spotsArr = city.spots || [];
+                var emojis = getUniqueEmojis(spotsArr);
+
+                html += '<div class="tl-node ' + sideClass + '" style="animation-delay:' + (idx * 0.06 + 0.1) + 's;" data-idx="' + idx + '">';
+                html += '<div class="tl-dot' + dotClass + '"></div>';
+                html += '<div class="tl-conn"></div>';
+                html += '<div class="city-card" data-city="dated-' + idx + '">';
+                html += '<div class="city-header">';
+                html += '<span class="city-name">' + city.city + '</span>';
+                html += '<span class="city-date">' + formatDate(city.date) + '</span>';
+                html += '</div>';
+                html += '<div class="city-meta">';
+                html += '<span class="city-spot-count">' + spotsArr.length + ' 个足迹</span>';
+                html += '<span class="city-emojis">' + emojis + '</span>';
+                html += '</div>';
+                if (spotsArr.length > 0) {
+                    html += '<div class="city-expand-hint">点击展开 ›</div>';
+                }
+
+                // Spots list (hidden by default)
+                html += '<div class="spots-list">';
+                html += '<div class="spots-divider"></div>';
+                spotsArr.forEach(function(spot) {
+                    html += buildSpotHtml(spot);
+                });
+                html += '</div>';
+
+                html += '</div>'; // city-card
+                html += '</div>'; // tl-node
+
+                side++;
+            });
+
+            // Clear floats
+            html += '<div style="clear:both;"></div>';
+
+            // No-date section
+            if (undated.length > 0) {
+                html += '<div class="no-date-section">';
+                html += '<div class="no-date-title">待补充日期</div>';
+                html += '<div class="no-date-grid">';
+                undated.forEach(function(city, idx) {
+                    var spotsArr = city.spots || [];
+                    var emojis = getUniqueEmojis(spotsArr);
+                    var dotStyle = city.visited
+                        ? 'border-left-color:var(--gold);'
+                        : 'border-left-color:rgba(124,196,245,0.1);';
+
+                    html += '<div class="no-date-card" data-city="undated-' + idx + '" style="' + dotStyle + '">';
+                    html += '<div class="city-header">';
+                    html += '<span class="city-name">' + city.city + '</span>';
+                    html += '<span class="city-emojis" style="margin-left:auto;">' + emojis + '</span>';
+                    html += '</div>';
+                    html += '<div class="city-meta">';
+                    html += '<span class="city-spot-count">' + spotsArr.length + ' 个足迹</span>';
+                    if (!city.visited) {
+                        html += '<span style="font-size:10px;color:rgba(255,255,255,0.2);border:1px dashed rgba(255,255,255,0.1);padding:1px 8px;border-radius:4px;">待探索</span>';
+                    }
+                    html += '</div>';
+
+                    // Spots list
+                    html += '<div class="spots-list">';
+                    html += '<div class="spots-divider"></div>';
+                    spotsArr.forEach(function(spot) {
+                        html += buildSpotHtml(spot);
+                    });
+                    html += '</div>';
+
+                    html += '</div>';
+                });
+                html += '</div>'; // no-date-grid
+                html += '</div>'; // no-date-section
+            }
+
+            document.getElementById('timeline').innerHTML = html;
+
+            // Bind card click events
+            bindCardClicks();
+
+            // Loading done
+            setTimeout(function() {
+                document.getElementById('loading').classList.add('hide');
+            }, 400);
+        }
+
+        function buildSpotHtml(spot) {
+            var h = '';
+            h += '<div class="spot-item">';
+            h += '<div class="spot-header">';
+            h += '<span class="spot-emoji">' + getEmoji(spot.category) + '</span>';
+            h += '<span class="spot-title">' + spot.title + '</span>';
+            h += '</div>';
+            if (spot.content) {
+                h += '<div class="spot-content">' + spot.content + '</div>';
+            }
+            if (spot.tags && spot.tags.length > 0) {
+                h += '<div class="spot-tags">';
+                spot.tags.forEach(function(tag) {
+                    h += '<span class="spot-tag">' + tag + '</span>';
+                });
+                h += '</div>';
+            }
+            h += '</div>';
+            return h;
+        }
+
+        function bindCardClicks() {
+            var cards = document.querySelectorAll('.city-card, .no-date-card');
+            cards.forEach(function(card) {
+                card.addEventListener('click', function(e) {
+                    var wasExpanded = this.classList.contains('expanded');
+                    // Collapse all
+                    cards.forEach(function(c) { c.classList.remove('expanded'); });
+                    if (!wasExpanded) {
+                        this.classList.add('expanded');
+                    }
+                });
+            });
+        }
+
+    })();
+    </script>
+</body>
+</html>

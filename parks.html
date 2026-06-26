@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>国家公园图鉴</title>
+    <link href="data/fonts/fonts_local.css" rel="stylesheet">
+    <script src="https://webapi.amap.com/maps?v=2.0&key=f66cdc07203c3075a2a2ae1ea67eea8e"></script>
+    <style>
+        :root{
+            --emerald:#22c55e;--emerald-bright:#4ade80;--emerald-faint:rgba(34,197,94,0.15);
+            --emerald-dark:#16a34a;
+            --gold:#d4a85a;--gold-bright:#f6c977;--gold-faint:rgba(212,168,90,0.18);
+            --earth:#a0845c;--earth-faint:rgba(160,132,92,0.12);
+            --dark:#080c18;--card:rgba(14,18,32,0.85);
+        }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Noto Sans SC',-apple-system,'PingFang SC',sans-serif;
+            background:var(--dark);color:rgba(255,255,255,0.88);min-height:100vh;overflow-x:hidden;}
+
+        /* Loading */
+        .loading{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;
+            align-items:center;justify-content:center;background:var(--dark);transition:opacity .6s;}
+        .loading.hide{opacity:0;pointer-events:none;}
+        .load-icon svg{width:64px;height:64px;filter:drop-shadow(0 0 16px rgba(34,197,94,0.3));}
+        .load-icon svg path{stroke:var(--emerald);stroke-width:2;fill:none;
+            stroke-dasharray:300;stroke-dashoffset:300;animation:draw 1.8s ease forwards;}
+        .load-text{margin-top:10px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:4px;
+            color:rgba(34,197,94,0.4);animation:breathe 2s ease-in-out infinite;}
+        @keyframes draw{to{stroke-dashoffset:0}}
+        @keyframes breathe{0%,100%{opacity:.4}50%{opacity:1}}
+        @keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+
+        /* Nav */
+        .nav{position:fixed;top:0;left:0;right:0;height:52px;z-index:100;
+            background:linear-gradient(180deg,rgba(8,12,24,0.96),rgba(8,12,24,0.75));
+            backdrop-filter:blur(24px) saturate(1.8);
+            display:flex;align-items:center;justify-content:space-between;padding:0 20px;}
+        .nav::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+            background:linear-gradient(90deg,transparent,rgba(34,197,94,0.12) 30%,rgba(34,197,94,0.12) 70%,transparent);}
+        .nav-back{color:rgba(255,255,255,0.45);text-decoration:none;font-size:13px;
+            display:flex;align-items:center;gap:4px;transition:color .2s;}
+        .nav-back:hover{color:var(--emerald);}
+        .nav-back svg{width:16px;height:16px;fill:currentColor;}
+        .nav-title{font-family:'Cinzel','Noto Sans SC',serif;font-size:15px;font-weight:700;letter-spacing:4px;
+            background:linear-gradient(135deg,#fff 0%,var(--emerald-bright) 40%,var(--emerald) 60%,#fff 100%);
+            background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+            background-clip:text;animation:shimmer 4s linear infinite;}
+        .nav-badge{background:linear-gradient(135deg,rgba(34,197,94,0.1),rgba(34,197,94,0.04));
+            color:var(--emerald);padding:3px 12px;border-radius:20px;font-size:11px;font-weight:600;
+            border:1px solid rgba(34,197,94,0.12);}
+
+        /* Hero */
+        .hero{position:relative;width:100%;height:200px;margin-top:52px;overflow:hidden;
+            background:linear-gradient(135deg,#0a1020,#081a14 50%,#0a1428);
+            display:flex;align-items:center;justify-content:center;}
+        .hero-overlay{position:absolute;inset:0;
+            background:linear-gradient(180deg,rgba(8,12,24,0.3) 0%,rgba(8,12,24,0.1) 40%,rgba(8,12,24,0.7) 85%,var(--dark) 100%);}
+        .hero-deco{position:absolute;inset:0;overflow:hidden;opacity:0.04;}
+        .hero-deco svg{position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);width:600px;height:160px;}
+        .hero-content{position:relative;z-index:2;text-align:center;}
+        .hero-num{font-family:'Cinzel',serif;font-size:52px;font-weight:700;line-height:1;
+            background:linear-gradient(180deg,rgba(255,255,255,0.95),var(--emerald));
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+            filter:drop-shadow(0 2px 12px rgba(34,197,94,0.2));}
+        .hero-label{font-size:12px;color:rgba(255,255,255,0.3);letter-spacing:3px;margin-top:4px;}
+        .hero-stats{display:flex;gap:24px;margin-top:16px;justify-content:center;}
+        .hero-stat{text-align:center;}
+        .hero-stat-num{font-family:'Cinzel',serif;font-size:22px;font-weight:700;color:var(--emerald);}
+        .hero-stat-num.gold{color:var(--gold);}
+        .hero-stat-num.earth{color:var(--earth);}
+        .hero-stat-label{font-size:10px;color:rgba(255,255,255,0.25);letter-spacing:1px;margin-top:2px;}
+
+        /* Filter */
+        .filter-wrap{position:sticky;top:52px;z-index:50;
+            background:linear-gradient(180deg,var(--dark),rgba(8,12,24,0.95) 80%,rgba(8,12,24,0));
+            padding:12px 20px 16px;}
+        .filter-bar{display:flex;gap:4px;flex-wrap:wrap;padding:8px 10px;
+            background:linear-gradient(135deg,rgba(14,18,32,0.9),rgba(18,22,40,0.85));
+            backdrop-filter:blur(16px);border-radius:14px;border:1px solid rgba(34,197,94,0.06);
+            box-shadow:0 4px 24px rgba(0,0,0,0.2);}
+        .f-group{display:flex;align-items:center;gap:3px;flex-wrap:wrap;}
+        .f-sep{width:1px;height:22px;background:linear-gradient(180deg,transparent,rgba(34,197,94,0.1),transparent);margin:0 6px;flex-shrink:0;}
+        .f-tab{padding:4px 12px;border-radius:6px;font-size:11px;cursor:pointer;
+            background:transparent;border:1px solid transparent;color:rgba(255,255,255,0.32);
+            transition:all .2s;white-space:nowrap;}
+        .f-tab:hover{color:rgba(255,255,255,0.65);background:rgba(255,255,255,0.03);}
+        .f-tab.active{font-weight:600;background:var(--emerald-faint);border-color:rgba(34,197,94,0.2);
+            color:var(--emerald);box-shadow:0 0 10px rgba(34,197,94,0.06);}
+
+        /* Grid */
+        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;
+            padding:0 20px 40px;max-width:1400px;margin:0 auto;position:relative;z-index:2;}
+        .grid-empty{grid-column:1/-1;text-align:center;padding:60px 0;color:rgba(255,255,255,0.2);font-size:14px;}
+
+        /* Card */
+        .card{position:relative;border-radius:16px;overflow:hidden;cursor:pointer;
+            background:var(--card);border:1px solid rgba(34,197,94,0.05);
+            transition:all .35s cubic-bezier(0.16,1,0.3,1);animation:fadeUp .4s ease both;
+            --glow:rgba(34,197,94,0.15);}
+        .card:hover{transform:translateY(-6px) scale(1.02);border-color:rgba(34,197,94,0.15);
+            box-shadow:0 16px 48px rgba(0,0,0,0.3),0 0 24px var(--glow);}
+        .card-cover{width:100%;height:160px;position:relative;overflow:hidden;
+            background:linear-gradient(135deg,rgba(8,20,12,1),rgba(12,24,16,1));}
+        .card-cover-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+        .card-cover-ph svg{width:56px;height:56px;opacity:0.06;}
+        .card-cover-grad{position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(transparent,var(--card));}
+        .card-badge{position:absolute;top:10px;left:12px;z-index:2;padding:2px 8px;border-radius:6px;
+            font-size:10px;font-weight:600;backdrop-filter:blur(8px);
+            background:rgba(212,168,90,0.2);color:var(--gold);border:1px solid rgba(212,168,90,0.25);}
+        .card-body{padding:14px 16px 16px;}
+        .card-name{font-size:16px;font-weight:700;line-height:1.3;}
+        .card-name-en{font-family:'Cinzel',serif;font-size:10px;color:rgba(255,255,255,0.2);margin-top:2px;
+            letter-spacing:.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+        .card-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px;}
+        .card-tag{padding:2px 8px;border-radius:5px;font-size:10px;
+            border:1px solid rgba(255,255,255,0.05);background:rgba(255,255,255,0.02);color:rgba(255,255,255,0.35);}
+        .card-tag-type{color:var(--emerald);border-color:rgba(34,197,94,0.12);}
+        .card-tag-country{color:var(--earth);border-color:rgba(160,132,92,0.12);}
+        .card-meta{display:flex;gap:12px;margin-top:8px;font-size:10px;color:rgba(255,255,255,0.2);}
+        .card-highlights{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;}
+        .card-hl{padding:1px 6px;border-radius:4px;font-size:9px;
+            background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.06);color:rgba(34,197,94,0.5);}
+
+        /* Modal */
+        .modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);
+            display:none;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity .3s;}
+        .modal-overlay.open{display:flex;opacity:1;}
+        .modal-ring-wrap{position:relative;width:100%;max-width:540px;}
+        .modal-ring-wrap::before{content:'';position:absolute;inset:-3px;border-radius:23px;padding:3px;
+            background:conic-gradient(from var(--ring-angle,0deg),transparent 0%,var(--emerald) 10%,transparent 22%,transparent 50%,var(--emerald) 60%,transparent 72%);
+            -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+            -webkit-mask-composite:xor;mask-composite:exclude;
+            animation:modalRing 3s linear infinite;opacity:0;transition:opacity .5s .3s;pointer-events:none;}
+        .modal-overlay.open .modal-ring-wrap::before{opacity:1;}
+        .modal-ring-wrap::after{content:'';position:absolute;inset:-6px;border-radius:26px;padding:6px;
+            background:conic-gradient(from var(--ring-angle,0deg),transparent 0%,var(--emerald) 10%,transparent 22%,transparent 50%,var(--emerald) 60%,transparent 72%);
+            -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+            -webkit-mask-composite:xor;mask-composite:exclude;
+            animation:modalRing 3s linear infinite;opacity:0;transition:opacity .5s .5s;filter:blur(8px);pointer-events:none;}
+        .modal-overlay.open .modal-ring-wrap::after{opacity:0.4;}
+        @property --ring-angle{syntax:'<angle>';initial-value:0deg;inherits:false;}
+        @keyframes modalRing{to{--ring-angle:360deg}}
+
+        .modal{width:100%;max-height:calc(100vh - 40px);
+            background:linear-gradient(180deg,rgba(12,16,30,0.98),rgba(10,14,26,0.98));
+            border:1px solid rgba(34,197,94,0.08);border-radius:20px;overflow:hidden;
+            box-shadow:0 24px 80px rgba(0,0,0,0.5),0 0 40px rgba(34,197,94,0.05);
+            display:flex;flex-direction:column;transform:scale(0.95);transition:transform .3s cubic-bezier(0.16,1,0.3,1);}
+        .modal-overlay.open .modal{transform:scale(1);}
+        .modal-scroll{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(34,197,94,0.12) transparent;}
+        .modal-scroll::-webkit-scrollbar{width:3px;}
+        .modal-scroll::-webkit-scrollbar-thumb{background:rgba(34,197,94,0.12);border-radius:2px;}
+
+        .modal-cover{width:100%;height:220px;position:relative;overflow:hidden;
+            background:linear-gradient(135deg,rgba(8,20,12,1),rgba(12,30,18,1));}
+        .modal-cover-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+        .modal-cover-ph svg{width:80px;height:80px;opacity:0.06;}
+        .modal-cover-grad{position:absolute;bottom:0;left:0;right:0;height:100px;
+            background:linear-gradient(transparent,rgba(12,16,30,0.98));}
+        .modal-close{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:10px;
+            background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.08);
+            color:rgba(255,255,255,0.5);font-size:18px;cursor:pointer;z-index:2;
+            display:flex;align-items:center;justify-content:center;transition:all .2s;}
+        .modal-close:hover{color:#fff;background:rgba(255,255,255,0.1);}
+
+        .modal-body{padding:0 20px 24px;}
+        .modal-name{font-size:24px;font-weight:700;line-height:1.3;margin-top:14px;}
+        .modal-name-en{font-family:'Cinzel',serif;font-size:12px;color:rgba(255,255,255,0.22);margin-top:2px;letter-spacing:1px;}
+        .modal-tags{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 16px;}
+        .modal-tag{padding:4px 12px;border-radius:8px;font-size:12px;font-weight:500;
+            border:1px solid rgba(255,255,255,0.05);background:rgba(255,255,255,0.02);transition:background .2s;}
+        .modal-tag:hover{background:rgba(255,255,255,0.05);}
+        .modal-tag-type{color:var(--emerald);border-color:rgba(34,197,94,0.12);}
+        .modal-tag-region{color:var(--earth);border-color:rgba(160,132,92,0.12);}
+
+        .modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+        .modal-cell{background:linear-gradient(135deg,rgba(34,197,94,0.03),rgba(34,197,94,0.01));
+            border-radius:10px;padding:11px 14px;border:1px solid rgba(34,197,94,0.03);transition:all .2s;}
+        .modal-cell:hover{border-color:rgba(34,197,94,0.08);background:rgba(34,197,94,0.05);}
+        .modal-cell-label{font-size:10px;color:rgba(255,255,255,0.22);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:3px;}
+        .modal-cell-value{font-size:13px;font-weight:600;}
+
+        .modal-desc{font-size:13px;line-height:1.8;color:rgba(255,255,255,0.55);margin:16px 0;}
+        .modal-sec{font-size:12px;font-weight:600;color:rgba(255,255,255,0.35);margin:18px 0 8px;
+            display:flex;align-items:center;gap:8px;letter-spacing:1px;}
+        .modal-sec::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(34,197,94,0.08),transparent);}
+        .modal-hl-tags{display:flex;flex-wrap:wrap;gap:5px;}
+        .modal-hl{padding:3px 10px;border-radius:6px;font-size:11px;
+            background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.08);color:rgba(34,197,94,0.7);}
+
+        .modal-wiki-link{display:inline-flex;align-items:center;gap:4px;margin-top:14px;padding:6px 14px;
+            border-radius:8px;background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.1);
+            color:#22c55e;font-size:11px;font-weight:600;text-decoration:none;transition:all .2s;}
+        .modal-wiki-link:hover{background:rgba(34,197,94,0.12);border-color:rgba(34,197,94,0.2);}
+        .modal-minimap{height:200px;border-radius:12px;overflow:hidden;margin-top:18px;
+            border:1px solid rgba(34,197,94,0.06);box-shadow:0 4px 16px rgba(0,0,0,0.15);}
+
+        @media(max-width:640px){
+            .grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;padding:0 12px 30px;}
+            .card-cover{height:120px;}
+            .hero{height:170px;}
+            .hero-num{font-size:36px;}
+            .modal{max-width:100%;border-radius:16px;}
+            .modal-cover{height:170px;}
+        }
+    </style>
+</head>
+<body>
+    <div class="loading" id="loading">
+        <div class="load-icon">
+            <svg viewBox="0 0 80 80">
+                <path d="M40 8 C40 8 38 20 30 28 C22 36 14 34 14 34 C14 34 18 48 26 54 C28 55.5 30 56.5 32 57 C30 58 27 60 20 60 C20 60 28 72 40 72 C52 72 60 60 60 60 C53 60 50 58 48 57 C50 56.5 52 55.5 54 54 C62 48 66 34 66 34 C66 34 58 36 50 28 C42 20 40 8 40 8Z"/>
+                <path d="M40 72 L40 78"/>
+            </svg>
+        </div>
+        <div class="load-text">NATIONAL PARKS</div>
+    </div>
+
+    <nav class="nav">
+        <a class="nav-back" href="index.html">
+            <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>首页
+        </a>
+        <span class="nav-title">国家公园图鉴</span>
+        <span class="nav-badge" id="navBadge">0</span>
+    </nav>
+
+    <div class="hero">
+        <div class="hero-deco">
+            <svg viewBox="0 0 600 160" fill="none">
+                <path d="M0 160 L80 40 L120 100 L180 20 L240 90 L300 30 L360 110 L420 50 L480 120 L540 60 L600 160Z" stroke="rgba(34,197,94,0.4)" stroke-width="1.5"/>
+            </svg>
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div class="hero-num" id="heroNum">0</div>
+            <div class="hero-label">NATIONAL PARKS WORLDWIDE</div>
+            <div class="hero-stats" id="heroStats"></div>
+        </div>
+    </div>
+
+    <div class="filter-wrap">
+        <div class="filter-bar" id="filterBar"></div>
+    </div>
+
+    <div class="grid" id="grid"></div>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-ring-wrap">
+            <div class="modal">
+                <div class="modal-scroll" id="modalScroll"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function(){
+        var allData = [], travelData = [];
+        var modalMap = null;
+        var activeType = 'all', activeRegion = 'all';
+
+        /* ---- Leaf SVG for placeholders ---- */
+        var leafSvg = '<svg viewBox="0 0 60 60"><path d="M30 6 C30 6 28 16 22 22 C16 28 10 26 10 26 C10 26 13 38 20 42 C22 43 24 43.5 26 44 C24 45 21 46 16 46 C16 46 22 56 30 56 C38 56 44 46 44 46 C39 46 36 45 34 44 C36 43.5 38 43 40 42 C47 38 50 26 50 26 C50 26 44 28 38 22 C32 16 30 6 30 6Z" fill="none" stroke="rgba(34,197,94,0.15)" stroke-width="1.2"/></svg>';
+        var treeSvg = '<svg viewBox="0 0 80 80"><path d="M40 8 L24 32 L30 32 L18 52 L26 52 L14 72 L66 72 L54 52 L62 52 L50 32 L56 32 Z" fill="none" stroke="rgba(34,197,94,0.12)" stroke-width="1.5" stroke-linejoin="round"/><line x1="40" y1="72" x2="40" y2="78" stroke="rgba(34,197,94,0.12)" stroke-width="1.5"/></svg>';
+
+        /* ---- Type colors ---- */
+        function typeColor(t){
+            if(t==='国家公园') return '#22c55e';
+            if(t==='自然保护区') return '#38bdf8';
+            if(t==='地质公园') return '#f59e0b';
+            if(t==='国家级风景区') return '#a78bfa';
+            return '#22c55e';
+        }
+
+        /* ---- Load data ---- */
+        Promise.all([
+            fetch('data/parks_global.json').then(function(r){return r.json();}),
+            fetch('data/travel.json').then(function(r){return r.json();})
+        ]).then(function(res){
+            allData = res[0]; travelData = res[1]; init();
+        });
+
+        function init(){
+            matchVisited();
+            renderHero();
+            renderFilters();
+            applyFilters();
+            bindEvents();
+            setTimeout(function(){document.getElementById('loading').classList.add('hide');},500);
+        }
+
+        /* ---- Visited matching ---- */
+        function matchVisited(){
+            var spots = [];
+            travelData.forEach(function(c){ (c.spots||[]).forEach(function(s){
+                spots.push({title:s.title, location:s.location||'', city:c.city});
+            }); });
+            allData.forEach(function(p){
+                p.visited = false;
+                var keys = p.matchKeys || [];
+                for(var i=0;i<spots.length;i++){
+                    var hay = spots[i].title+'|'+spots[i].location+'|'+spots[i].city;
+                    for(var j=0;j<keys.length;j++){
+                        if(hay.indexOf(keys[j])!==-1){p.visited=true;break;}
+                    }
+                    if(p.visited) break;
+                }
+            });
+            var vc = allData.filter(function(p){return p.visited;}).length;
+            document.getElementById('navBadge').textContent = vc + '/' + allData.length;
+        }
+
+        /* ---- Hero ---- */
+        function renderHero(){
+            var total = allData.length;
+            var visited = allData.filter(function(p){return p.visited;}).length;
+            var countries = {};
+            var continents = {};
+            allData.forEach(function(p){
+                countries[p.country] = true;
+                continents[p.region] = true;
+            });
+            document.getElementById('heroNum').textContent = total;
+            var html = '';
+            html += '<div class="hero-stat"><div class="hero-stat-num">'+total+'</div><div class="hero-stat-label">总数</div></div>';
+            html += '<div class="hero-stat"><div class="hero-stat-num gold">'+visited+'</div><div class="hero-stat-label">到过</div></div>';
+            html += '<div class="hero-stat"><div class="hero-stat-num earth">'+Object.keys(countries).length+'</div><div class="hero-stat-label">国家</div></div>';
+            html += '<div class="hero-stat"><div class="hero-stat-num">'+Object.keys(continents).length+'</div><div class="hero-stat-label">大洲</div></div>';
+            document.getElementById('heroStats').innerHTML = html;
+        }
+
+        /* ---- Filters ---- */
+        function renderFilters(){
+            var html = '';
+            // Type filters
+            html += '<div class="f-group">';
+            var types = [
+                {k:'all',l:'全部'},{k:'国家公园',l:'国家公园'},{k:'自然保护区',l:'自然保护区'},
+                {k:'地质公园',l:'地质公园'},{k:'国家级风景区',l:'国家级风景区'}
+            ];
+            types.forEach(function(t){
+                html += '<span class="f-tab'+(activeType===t.k?' active':'')+'" data-g="type" data-f="'+t.k+'">'+t.l+'</span>';
+            });
+            html += '</div><div class="f-sep"></div>';
+
+            // Region filters
+            html += '<div class="f-group">';
+            var regions = [
+                {k:'all',l:'全球'},{k:'亚洲',l:'亚洲'},{k:'欧洲',l:'欧洲'},
+                {k:'北美洲',l:'北美'},{k:'南美洲',l:'南美'},{k:'非洲',l:'非洲'},{k:'大洋洲',l:'大洋洲'}
+            ];
+            regions.forEach(function(r){
+                html += '<span class="f-tab'+(activeRegion===r.k?' active':'')+'" data-g="region" data-f="'+r.k+'">'+r.l+'</span>';
+            });
+            html += '</div>';
+            document.getElementById('filterBar').innerHTML = html;
+        }
+
+        function applyFilters(){
+            var filtered = allData.filter(function(p){
+                if(activeType!=='all' && p.type!==activeType) return false;
+                if(activeRegion!=='all' && p.region!==activeRegion) return false;
+                return true;
+            });
+            // Sort: visited first, then by established year ascending
+            filtered.sort(function(a,b){
+                if(a.visited!==b.visited) return a.visited?-1:1;
+                return (a.established||9999)-(b.established||9999);
+            });
+
+            var html = '';
+            if(filtered.length===0){
+                html = '<div class="grid-empty">没有匹配的公园</div>';
+            }
+            filtered.forEach(function(p,i){
+                var tc = typeColor(p.type);
+                var glowColor = p.visited ? 'rgba(212,168,90,0.15)' : 'rgba(34,197,94,0.12)';
+                html += '<div class="card" data-id="'+p.id+'" style="animation-delay:'+(i*0.03)+'s;--glow:'+glowColor+';">';
+                html += '<div class="card-cover">';
+                html += '<img src="data/park_images/'+p.id+'.webp" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;" onerror="this.style.display=\'none\'">';
+                html += '<div class="card-cover-ph">'+leafSvg+'</div>';
+                html += '<div class="card-cover-grad"></div>';
+                if(p.visited) html += '<div class="card-badge">★ 到过</div>';
+                html += '</div>';
+                html += '<div class="card-body">';
+                html += '<div class="card-name">'+p.name+'</div>';
+                html += '<div class="card-name-en">'+p.nameEn+'</div>';
+                html += '<div class="card-tags">';
+                html += '<span class="card-tag card-tag-type" style="color:'+tc+';border-color:'+tc+'20;">'+p.type+'</span>';
+                html += '<span class="card-tag card-tag-country">'+p.country+'</span>';
+                if(p.established) html += '<span class="card-tag">'+p.established+'年</span>';
+                if(p.area) html += '<span class="card-tag">'+p.area.toLocaleString()+' km²</span>';
+                html += '</div>';
+                if(p.highlights && p.highlights.length>0){
+                    html += '<div class="card-highlights">';
+                    p.highlights.slice(0,4).forEach(function(h){
+                        html += '<span class="card-hl">'+h+'</span>';
+                    });
+                    html += '</div>';
+                }
+                html += '</div></div>';
+            });
+            document.getElementById('grid').innerHTML = html;
+        }
+
+        /* ---- Modal ---- */
+        function openModal(p){
+            var tc = typeColor(p.type);
+            var html = '';
+            html += '<button class="modal-close" id="modalClose">&times;</button>';
+            html += '<div class="modal-cover">';
+            html += '<img src="data/park_images/'+p.id+'.webp" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;" onerror="this.style.display=\'none\'">';
+            html += '<div class="modal-cover-ph">'+treeSvg+'</div>';
+            html += '<div class="modal-cover-grad"></div>';
+            html += '</div>';
+
+            html += '<div class="modal-body">';
+            html += '<div class="modal-name">'+p.name;
+            if(p.visited) html += ' <span style="color:var(--gold);font-size:18px;filter:drop-shadow(0 0 4px rgba(212,168,90,0.4));animation:float 3s ease-in-out infinite;display:inline-block;">★</span>';
+            html += '</div>';
+            html += '<div class="modal-name-en">'+p.nameEn+'</div>';
+
+            html += '<div class="modal-tags">';
+            html += '<span class="modal-tag modal-tag-type" style="color:'+tc+';border-color:'+tc+'20;">'+p.type+'</span>';
+            html += '<span class="modal-tag" style="color:rgba(255,255,255,0.35)">'+p.country+'</span>';
+            html += '<span class="modal-tag modal-tag-region">'+p.region+'</span>';
+            if(p.visited) html += '<span class="modal-tag" style="color:var(--gold);border-color:rgba(212,168,90,0.12);background:rgba(212,168,90,0.05)">已到访</span>';
+            html += '</div>';
+
+            html += '<div class="modal-grid">';
+            html += mcell('建立年份', p.established ? p.established+'年' : '—');
+            html += mcell('面积', p.area ? p.area.toLocaleString()+' km²' : '—');
+            html += mcell('国家', p.country);
+            html += mcell('大洲', p.region);
+            html += '</div>';
+
+            if(p.description){
+                html += '<div class="modal-desc">'+p.description+'</div>';
+            }
+
+            if(p.highlights && p.highlights.length>0){
+                html += '<div class="modal-sec">特色亮点</div>';
+                html += '<div class="modal-hl-tags">';
+                p.highlights.forEach(function(h){
+                    html += '<span class="modal-hl">'+h+'</span>';
+                });
+                html += '</div>';
+            }
+
+            html += '<a class="modal-wiki-link" href="https://en.wikipedia.org/wiki/'+encodeURIComponent(p.nameEn.replace(/ /g,'_'))+'" target="_blank" rel="noopener">📖 Wikipedia</a>';
+            html += '<div class="modal-minimap" id="modalMinimap"></div>';
+            html += '</div>';
+
+            document.getElementById('modalScroll').innerHTML = html;
+            var overlay = document.getElementById('modalOverlay');
+            overlay.classList.add('open');
+            overlay.style.display = 'flex';
+            requestAnimationFrame(function(){overlay.style.opacity='1';});
+
+            document.getElementById('modalClose').addEventListener('click', closeModal);
+            overlay.addEventListener('click', function(e){
+                if(e.target===overlay || e.target.classList.contains('modal-ring-wrap')) closeModal();
+            });
+
+            // Minimap
+            setTimeout(function(){
+                if(modalMap){modalMap.destroy();modalMap=null;}
+                var el = document.getElementById('modalMinimap');
+                if(!el) return;
+                modalMap = new AMap.Map('modalMinimap',{
+                    zoom:6,center:[p.lng,p.lat],
+                    mapStyle:'amap://styles/darkblue',pitch:30,viewMode:'3D'
+                });
+                // Green circle marker
+                new AMap.CircleMarker({
+                    center:[p.lng,p.lat],radius:12,
+                    fillColor:'#22c55e',fillOpacity:0.35,
+                    strokeColor:'#22c55e',strokeWeight:2,strokeOpacity:0.8
+                }).setMap(modalMap);
+                // Smaller inner dot
+                new AMap.CircleMarker({
+                    center:[p.lng,p.lat],radius:4,
+                    fillColor:'#4ade80',fillOpacity:0.9,
+                    strokeColor:'#fff',strokeWeight:1,strokeOpacity:0.6
+                }).setMap(modalMap);
+                // Label
+                new AMap.Text({
+                    text:p.name,position:[p.lng,p.lat],offset:new AMap.Pixel(16,-8),
+                    style:{'font-size':'11px',color:'#fff',background:'rgba(10,14,26,0.8)',
+                        padding:'3px 8px','border-radius':'6px',border:'1px solid rgba(34,197,94,0.12)'}
+                }).setMap(modalMap);
+            },200);
+        }
+
+        function closeModal(){
+            var overlay = document.getElementById('modalOverlay');
+            overlay.style.opacity = '0';
+            setTimeout(function(){overlay.classList.remove('open');overlay.style.display='none';},300);
+            if(modalMap){modalMap.destroy();modalMap=null;}
+        }
+
+        function mcell(label,value){
+            return '<div class="modal-cell"><div class="modal-cell-label">'+label+'</div><div class="modal-cell-value">'+value+'</div></div>';
+        }
+
+        /* ---- Events ---- */
+        function bindEvents(){
+            // Filter clicks
+            document.getElementById('filterBar').addEventListener('click',function(e){
+                var tab = e.target.closest('.f-tab');
+                if(!tab) return;
+                var group = tab.getAttribute('data-g');
+                var val = tab.getAttribute('data-f');
+                if(group==='type') activeType = val;
+                if(group==='region') activeRegion = val;
+                renderFilters();
+                applyFilters();
+            });
+
+            // Card clicks
+            document.getElementById('grid').addEventListener('click',function(e){
+                var card = e.target.closest('.card');
+                if(!card) return;
+                var id = parseInt(card.getAttribute('data-id'));
+                var park = null;
+                for(var i=0;i<allData.length;i++){
+                    if(allData[i].id===id){park=allData[i];break;}
+                }
+                if(park) openModal(park);
+            });
+
+            // ESC close modal
+            document.addEventListener('keydown',function(e){
+                if(e.key==='Escape') closeModal();
+            });
+        }
+    })();
+    </script>
+</body>
+</html>

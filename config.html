@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据编辑器</title>
+    <link href="data/fonts/fonts_local.css" rel="stylesheet">
+    <script src="https://webapi.amap.com/maps?v=2.0&key=f66cdc07203c3075a2a2ae1ea67eea8e"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Noto Sans SC', -apple-system, 'PingFang SC', sans-serif;
+            background: #0a0e1a; color: rgba(255,255,255,0.9);
+            overflow: hidden; height: 100vh;
+        }
+
+        .nav {
+            position: fixed; top: 0; left: 0; right: 0; height: 48px;
+            background: rgba(30,38,68,0.82); backdrop-filter: blur(20px) saturate(1.6);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 16px; z-index: 100;
+        }
+        .nav-back {
+            color: #9f7aea; text-decoration: none; font-size: 13px; font-weight: 500;
+            display: flex; align-items: center; gap: 4px;
+        }
+        .nav-back:hover { color: #b794f4; }
+        .nav-back svg { width: 16px; height: 16px; fill: currentColor; }
+        .nav-title { font-size: 14px; font-weight: 700; }
+
+        /* Mode Tabs */
+        .mode-tabs {
+            display: flex; gap: 2px; background: rgba(255,255,255,0.04); border-radius: 8px; padding: 2px;
+            flex-wrap: wrap;
+        }
+        .mode-tab {
+            padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 600;
+            border: none; background: transparent; color: rgba(255,255,255,0.35);
+            cursor: pointer; transition: all 0.2s; white-space: nowrap;
+        }
+        .mode-tab:hover { color: rgba(255,255,255,0.6); }
+        .mode-tab.active-travel { background: rgba(159,122,234,0.2); color: #b794f4; }
+        .mode-tab.active-mountain { background: rgba(124,196,245,0.2); color: #7cc4f5; }
+        .mode-tab.active-park { background: rgba(34,197,94,0.2); color: #22c55e; }
+        .mode-tab.active-darksky { background: rgba(129,140,248,0.2); color: #818cf8; }
+        .mode-tab.active-diving { background: rgba(14,165,233,0.2); color: #0ea5e9; }
+        .mode-tab.active-hotspring { background: rgba(245,158,11,0.2); color: #f59e0b; }
+
+        .nav-info { font-size: 12px; color: rgba(255,255,255,0.35); }
+        .nav-actions { display: flex; gap: 6px; }
+        .nav-btn {
+            padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 500;
+            border: 1px solid rgba(255,255,255,0.1); background: transparent;
+            color: rgba(255,255,255,0.5); cursor: pointer; transition: all 0.2s;
+        }
+        .nav-btn:hover { border-color: #d4a85a; color: #d4a85a; }
+
+        .main { display: flex; height: calc(100vh - 48px); margin-top: 48px; }
+
+        .left {
+            width: 45%; display: flex; flex-direction: column;
+            border-right: 1px solid rgba(255,255,255,0.1);
+        }
+        .input-header {
+            padding: 10px 14px; display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .input-title { font-size: 13px; font-weight: 600; }
+        .template-btn {
+            padding: 3px 8px; border-radius: 4px; font-size: 11px;
+            border: 1px solid rgba(159,122,234,0.3); background: rgba(159,122,234,0.08);
+            color: #9f7aea; cursor: pointer; transition: all 0.15s;
+        }
+        .template-btn:hover { background: rgba(159,122,234,0.15); }
+        .template-btn.mountain { border-color: rgba(124,196,245,0.3); background: rgba(124,196,245,0.08); color: #7cc4f5; }
+        .template-btn.mountain:hover { background: rgba(124,196,245,0.15); }
+        .template-btn.park { border-color: rgba(34,197,94,0.3); background: rgba(34,197,94,0.08); color: #22c55e; }
+        .template-btn.park:hover { background: rgba(34,197,94,0.15); }
+        .template-btn.darksky { border-color: rgba(129,140,248,0.3); background: rgba(129,140,248,0.08); color: #818cf8; }
+        .template-btn.darksky:hover { background: rgba(129,140,248,0.15); }
+        .template-btn.diving { border-color: rgba(14,165,233,0.3); background: rgba(14,165,233,0.08); color: #0ea5e9; }
+        .template-btn.diving:hover { background: rgba(14,165,233,0.15); }
+        .template-btn.hotspring { border-color: rgba(245,158,11,0.3); background: rgba(245,158,11,0.08); color: #f59e0b; }
+        .template-btn.hotspring:hover { background: rgba(245,158,11,0.15); }
+
+        #jsonInput {
+            flex: 1; width: 100%; border: none; outline: none; resize: none;
+            background: #0d1117; color: #c9d1d9;
+            font-family: 'SF Mono', 'Fira Code', Menlo, monospace;
+            font-size: 12.5px; line-height: 1.6; padding: 14px 16px;
+            tab-size: 4;
+        }
+        #jsonInput::placeholder { color: rgba(255,255,255,0.15); }
+
+        .validate-bar {
+            padding: 10px 14px; border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex; align-items: center; justify-content: space-between; gap: 10px;
+            flex-shrink: 0;
+        }
+        .validate-status { font-size: 12px; flex: 1; }
+        .validate-status.ok { color: #48bb78; }
+        .validate-status.err { color: #fc8181; }
+        .validate-status.empty { color: rgba(255,255,255,0.25); }
+        .submit-btn {
+            padding: 7px 20px; border-radius: 6px; font-size: 13px; font-weight: 600;
+            border: none; cursor: pointer; transition: all 0.2s;
+            background: #48bb78; color: #0a0e1a;
+        }
+        .submit-btn:hover { background: #68d391; }
+        .submit-btn:disabled {
+            background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.2);
+            cursor: not-allowed;
+        }
+
+        .error-detail {
+            max-height: 0; overflow: hidden; transition: max-height 0.3s;
+            border-top: 1px solid rgba(252,129,129,0.15);
+        }
+        .error-detail.show { max-height: 160px; }
+        .error-detail-inner {
+            padding: 8px 14px; background: rgba(252,129,129,0.03);
+            font-size: 11px; color: #fc8181; line-height: 1.6; overflow-y: auto; max-height: 160px;
+        }
+
+        .right { flex: 1; display: flex; flex-direction: column; }
+        .map-wrap { flex: 1; position: relative; }
+        #previewMap { width: 100%; height: 100%; }
+
+        .existing-panel {
+            height: 240px; border-top: 1px solid rgba(255,255,255,0.1);
+            display: flex; flex-direction: column;
+        }
+        .existing-header {
+            padding: 8px 14px; font-size: 12px; font-weight: 600;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.4); flex-shrink: 0;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .existing-list { flex: 1; overflow-y: auto; background: #0d1117; }
+        .existing-item {
+            padding: 5px 14px; font-size: 12px; display: flex; align-items: center; gap: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.02); cursor: pointer;
+            transition: background 0.1s;
+        }
+        .existing-item:hover { background: rgba(255,255,255,0.03); }
+        .existing-item.new-entry { background: rgba(72,187,120,0.08); }
+        .existing-emoji { width: 20px; text-align: center; font-size: 13px; }
+        .existing-city { font-weight: 600; min-width: 50px; }
+        .existing-spot { color: rgba(255,255,255,0.4); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .existing-coord {
+            font-family: 'SF Mono', Menlo, monospace; font-size: 10px;
+            color: rgba(255,255,255,0.2);
+        }
+        .existing-badge {
+            font-size: 10px; padding: 1px 6px; border-radius: 8px;
+        }
+        .existing-badge.visited { background: rgba(159,122,234,0.12); color: #9f7aea; }
+        .existing-badge.wanted { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.3); }
+        .existing-badge.new { background: rgba(72,187,120,0.15); color: #48bb78; }
+        .existing-badge.diff-f { background: rgba(72,187,120,0.12); color: #48bb78; }
+        .existing-badge.diff-pd { background: rgba(66,153,225,0.12); color: #4299e1; }
+        .existing-badge.diff-ad { background: rgba(237,137,54,0.12); color: #ed8936; }
+        .existing-badge.diff-d { background: rgba(229,62,62,0.12); color: #e53e3e; }
+        .existing-badge.diff-td { background: rgba(159,122,234,0.12); color: #9f7aea; }
+        .existing-badge.diff-ban { background: rgba(113,128,150,0.12); color: #718096; }
+        .existing-type {
+            font-size: 10px; color: rgba(255,255,255,0.25);
+        }
+
+        .export-bar {
+            padding: 8px 14px; border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex; gap: 6px; justify-content: flex-end; flex-shrink: 0;
+        }
+        .export-btn {
+            padding: 5px 14px; border-radius: 6px; font-size: 12px; font-weight: 500;
+            border: 1px solid rgba(212,168,90,0.3); background: rgba(212,168,90,0.1);
+            color: #d4a85a; cursor: pointer; transition: all 0.15s;
+        }
+        .export-btn:hover { background: rgba(212,168,90,0.2); }
+        .export-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        .toast {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(80px);
+            padding: 10px 20px; border-radius: 8px; font-size: 13px;
+            background: rgba(30,38,68,0.92); backdrop-filter: blur(16px);
+            border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.9);
+            z-index: 300; opacity: 0; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none; max-width: 400px; text-align: center;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.6; }
+            70% { transform: scale(2); opacity: 0; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+
+        @media (max-width: 900px) {
+            .main { flex-direction: column; }
+            .left { width: 100%; height: 50%; border-right: none; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <a href="index.html" class="nav-back">
+            <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            首页
+        </a>
+        <div class="mode-tabs">
+            <button class="mode-tab active-travel" data-mode="travel">旅行记录</button>
+            <button class="mode-tab" data-mode="mountain">雪山图鉴</button>
+            <button class="mode-tab" data-mode="park">国家公园</button>
+            <button class="mode-tab" data-mode="darksky">暗夜星空</button>
+            <button class="mode-tab" data-mode="diving">潜水图鉴</button>
+            <button class="mode-tab" data-mode="hotspring">温泉图鉴</button>
+        </div>
+        <div class="nav-info" id="navInfo">加载中...</div>
+        <div class="nav-actions">
+            <button class="nav-btn" id="btnViewAll">查看完整 JSON</button>
+        </div>
+    </nav>
+
+    <div class="main">
+        <div class="left">
+            <div class="input-header">
+                <span class="input-title" id="inputTitle">输入新条目 (JSON)</span>
+                <button class="template-btn" id="btnTemplate">插入模板</button>
+            </div>
+            <textarea id="jsonInput" placeholder=""></textarea>
+            <div class="error-detail" id="errorDetail">
+                <div class="error-detail-inner" id="errorContent"></div>
+            </div>
+            <div class="validate-bar">
+                <div class="validate-status empty" id="validateStatus">等待输入...</div>
+                <button class="submit-btn" id="btnSubmit" disabled>提交合并</button>
+            </div>
+        </div>
+        <div class="right">
+            <div class="map-wrap">
+                <div id="previewMap"></div>
+            </div>
+            <div class="existing-panel">
+                <div class="existing-header">
+                    <span id="existingTitle">现有记录</span>
+                    <span style="font-size:11px;color:rgba(255,255,255,0.25);">点击定位</span>
+                </div>
+                <div class="existing-list" id="existingList"></div>
+                <div class="export-bar">
+                    <button class="export-btn" id="btnCopy">复制完整 JSON</button>
+                    <button class="export-btn" id="btnExport">导出文件</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+    (function() {
+        var map = null;
+        var currentMode = 'travel';
+
+        var categoryConfig = {
+            '自然景观': { emoji: '🏔️', color: '#48bb78' },
+            '世界遗产': { emoji: '🏛️', color: '#9f7aea' },
+            '历史文化': { emoji: '🏯', color: '#ed8936' },
+            '现代都市': { emoji: '🌃', color: '#4299e1' },
+            '美食体验': { emoji: '🍜', color: '#fc8181' },
+            '海岛海滩': { emoji: '🏖️', color: '#38b2ac' },
+            '主题乐园': { emoji: '🎢', color: '#ed64a6' },
+            '自驾公路': { emoji: '🚗', color: '#ecc94b' },
+            '地质奇观': { emoji: '🌋', color: '#a0aec0' }
+        };
+        var validCategories = Object.keys(categoryConfig);
+        var validTypes = ['极高峰','高峰','著名雪山','经典雪山','火山雪峰'];
+        var validDiffs = ['F','F+','PD-','PD','PD+','AD-','AD','AD+','D-','D','D+','TD','TD+','ED','ABO','禁登'];
+
+        // ---- Shared helpers for generic name-based modes ----
+        function genericNameValidate(parsed, errors, data, cfg) {
+            var entries = Array.isArray(parsed) ? parsed : [parsed];
+            entries.forEach(function(entry, idx) {
+                var p = entries.length > 1 ? '[' + idx + '] ' : '';
+                cfg.requiredFields.forEach(function(field) {
+                    var expectedType = cfg.requiredFieldTypes[field];
+                    if (expectedType === 'string') {
+                        if (!entry[field] || typeof entry[field] !== 'string') {
+                            errors.push(p + '"' + field + '" 必须是非空字符串');
+                        }
+                    } else if (expectedType === 'number') {
+                        if (typeof entry[field] !== 'number') {
+                            errors.push(p + '"' + field + '" 必须是数字');
+                        }
+                    }
+                });
+                if (entry.name && typeof entry.name === 'string') {
+                    var dup = null;
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].name === entry.name) { dup = data[i]; break; }
+                    }
+                    if (dup) errors.push(p + '"' + entry.name + '" 已存在 (id=' + dup.id + ', 将更新)');
+                }
+                if (typeof entry.lat === 'number' && typeof entry.lng === 'number') {
+                    if (entry.lat === 0 && entry.lng === 0) errors.push(p + '坐标为 (0, 0)，请设置正确坐标');
+                    if (entry.lat < -90 || entry.lat > 90) errors.push(p + '纬度超范围');
+                    if (entry.lng < -180 || entry.lng > 180) errors.push(p + '经度超范围');
+                }
+                if (cfg.validTypes && entry.type && typeof entry.type === 'string') {
+                    if (cfg.validTypes.indexOf(entry.type) === -1) {
+                        errors.push(p + '未知类型 "' + entry.type + '"，可选: ' + cfg.validTypes.join(', '));
+                    }
+                }
+                if (cfg.extraValidation) {
+                    cfg.extraValidation.call(cfg, entry, errors, p);
+                }
+            });
+            var hardErrors = errors.filter(function(e){ return e.indexOf('已存在')===-1; });
+            if (hardErrors.length === 0 && entries.length > 0) return entries;
+            return null;
+        }
+
+        function genericNameSubmit(entries, data, newEntries) {
+            var maxId = 0;
+            data.forEach(function(item){ if (item.id > maxId) maxId = item.id; });
+            var summary = [];
+            entries.forEach(function(entry) {
+                var existIdx = -1;
+                data.forEach(function(item, i) { if (item.name === entry.name) existIdx = i; });
+                if (existIdx >= 0) {
+                    var existing = data[existIdx];
+                    var keys = Object.keys(entry);
+                    for (var k = 0; k < keys.length; k++) {
+                        if (keys[k] !== 'id') existing[keys[k]] = entry[keys[k]];
+                    }
+                    summary.push(entry.name + '(更新 id=' + existing.id + ')');
+                    newEntries.push(existing.name);
+                } else {
+                    maxId++;
+                    entry.id = maxId;
+                    if (!entry.highlights) entry.highlights = [];
+                    if (!entry.matchKeys) entry.matchKeys = [];
+                    if (entry.description === undefined) entry.description = '';
+                    data.push(entry);
+                    summary.push(entry.name + '(新增 id=' + maxId + ')');
+                    newEntries.push(entry.name);
+                }
+            });
+            return summary;
+        }
+
+        function genericDotMarkers(data, newEntries, mapRef, color) {
+            var markers = [];
+            data.forEach(function(item) {
+                if (!item.lat || !item.lng) return;
+                var isNew = newEntries.indexOf(item.name) !== -1;
+                var sz = isNew ? 14 : 8;
+                var dot = document.createElement('div');
+                dot.style.cssText = 'width:' + sz + 'px;height:' + sz + 'px;border-radius:50%;background:' + color +
+                    ';opacity:' + (isNew ? '1' : '0.5') +
+                    (isNew ? ';border:2px solid #fff;box-shadow:0 0 8px ' + color : '') + ';';
+                var marker = new AMap.Marker({
+                    position: [item.lng, item.lat], content: dot,
+                    offset: new AMap.Pixel(-sz/2, -sz/2)
+                });
+                mapRef.add(marker);
+                markers.push(marker);
+            });
+            return markers;
+        }
+
+        function genericDotPreview(entries, mapRef, color, labelFn) {
+            var markers = [];
+            entries.forEach(function(item) {
+                if (!item.lat || !item.lng) return;
+                var wrapper = document.createElement('div');
+                wrapper.style.cssText = 'position:relative;';
+                var ring = document.createElement('div');
+                ring.style.cssText = 'width:28px;height:28px;border-radius:50%;border:2px solid ' + color +
+                    ';position:absolute;top:-7px;left:-7px;animation:pulse 2s ease-out infinite;';
+                wrapper.appendChild(ring);
+                var dot = document.createElement('div');
+                dot.style.cssText = 'width:14px;height:14px;border-radius:50%;background:' + color +
+                    ';border:2px solid #fff;box-shadow:0 0 12px ' + color + ';position:relative;z-index:1;';
+                wrapper.appendChild(dot);
+                var label = document.createElement('div');
+                label.style.cssText = 'position:absolute;top:18px;left:50%;transform:translateX(-50%);font-size:11px;color:#fff;white-space:nowrap;font-weight:600;background:rgba(0,0,0,0.6);padding:2px 6px;border-radius:4px;pointer-events:none;';
+                label.textContent = labelFn(item);
+                wrapper.appendChild(label);
+                var marker = new AMap.Marker({ position: [item.lng, item.lat], content: wrapper, offset: new AMap.Pixel(-7, -7) });
+                mapRef.add(marker);
+                markers.push(marker);
+                mapRef.setZoomAndCenter(8, [item.lng, item.lat]);
+            });
+            return markers;
+        }
+
+        function genericNameList(data, newEntries, cfg) {
+            var html = '';
+            data.forEach(function(item) {
+                var isNew = newEntries.indexOf(item.name) !== -1;
+                var metric = cfg.listMetric ? cfg.listMetric(item) : '';
+                var extra = cfg.listExtra ? cfg.listExtra(item) : '';
+                html += '<div class="existing-item' + (isNew ? ' new-entry' : '') + '" data-lat="' + (item.lat || '') + '" data-lng="' + (item.lng || '') + '">' +
+                    '<span class="existing-emoji">' + cfg.emoji + '</span>' +
+                    '<span class="existing-city">' + esc(item.name) + '</span>' +
+                    '<span class="existing-spot">' + esc(metric) + '</span>' +
+                    '<span class="existing-type">' + esc(extra) + '</span>' +
+                    (isNew ? '<span class="existing-badge new">新增</span>' : '') +
+                '</div>';
+            });
+            return html;
+        }
+
+        // ---- Mode Configuration ----
+        var modeConfig = {
+            travel: {
+                file: 'data/travel.json',
+                label: '旅行记录',
+                color: '#b794f4',
+                emoji: '📍',
+                listTitle: '现有记录',
+                inputTitle: '输入新条目 (JSON)',
+                placeholder: '粘贴或输入一个城市条目，例如：\n{\n    "city": "成都",\n    "visited": true,\n    "spots": [{\n        "title": "锦里古街",\n        "content": "成都的古街...",\n        "location": "四川省成都市武侯区",\n        "lat": 30.645,\n        "lng": 104.048,\n        "category": "历史文化",\n        "tags": ["古城", "美食"]\n    }]\n}',
+                template: '{\n    "city": "",\n    "visited": true,\n    "date": "",\n    "spots": [\n        {\n            "title": "",\n            "content": "",\n            "location": "",\n            "lat": 0,\n            "lng": 0,\n            "category": "自然景观",\n            "tags": ["", ""]\n        }\n    ]\n}',
+                validate: function(parsed, errors, data) {
+                    var entries = Array.isArray(parsed) ? parsed : [parsed];
+                    entries.forEach(function(e, idx) {
+                        var p = entries.length > 1 ? '[' + idx + '] ' : '';
+                        if (!e.city || typeof e.city !== 'string') errors.push(p + '"city" 必须是非空字符串');
+                        else {
+                            var dup = data.find(function(ex) { return ex.city === e.city; });
+                            if (dup) errors.push(p + '"' + e.city + '" 已存在于 travel.json 中（将合并景点）');
+                        }
+                        if (typeof e.visited !== 'boolean') errors.push(p + '"visited" 必须是 true 或 false');
+                        if (!Array.isArray(e.spots) || e.spots.length === 0) {
+                            errors.push(p + '"spots" 必须是非空数组');
+                        } else {
+                            e.spots.forEach(function(spot, si) {
+                                var sp = p + '景点' + (si + 1) + ': ';
+                                if (!spot.title || typeof spot.title !== 'string') errors.push(sp + '"title" 缺失');
+                                if (typeof spot.lat !== 'number' || typeof spot.lng !== 'number') errors.push(sp + '"lat"/"lng" 必须是数字');
+                                else {
+                                    if (spot.lat === 0 && spot.lng === 0) errors.push(sp + '坐标为 (0, 0)，请设置正确坐标');
+                                    if (spot.lat < -90 || spot.lat > 90) errors.push(sp + '纬度超范围');
+                                    if (spot.lng < -180 || spot.lng > 180) errors.push(sp + '经度超范围');
+                                }
+                                if (!spot.category) errors.push(sp + '"category" 缺失');
+                                else if (validCategories.indexOf(spot.category) === -1) errors.push(sp + '未知分类 "' + spot.category + '"，可选: ' + validCategories.join(', '));
+                                if (!Array.isArray(spot.tags) || spot.tags.length !== 2) errors.push(sp + '"tags" 应为长度 2 的数组');
+                                if (!spot.location) errors.push(sp + '"location" 建议填写');
+                                if (!spot.content) errors.push(sp + '"content" 建议填写');
+                            });
+                        }
+                    });
+                    var hardErrors = errors.filter(function(e){ return e.indexOf('建议')===-1 && e.indexOf('已存在')===-1; });
+                    if (hardErrors.length === 0 && entries.length > 0) return entries;
+                    return null;
+                },
+                getLabel: function(entries) {
+                    var names = entries.map(function(e){ return e.city; }).join(', ');
+                    var sc = 0; entries.forEach(function(e){ sc += e.spots ? e.spots.length : 0; });
+                    return names + ' (' + sc + ' 个景点)';
+                },
+                submit: function(entries, data, newEntries) {
+                    var summary = [];
+                    entries.forEach(function(entry) {
+                        var existIdx = -1;
+                        data.forEach(function(ex, i) { if (ex.city === entry.city) existIdx = i; });
+                        if (existIdx >= 0) {
+                            var existing = data[existIdx];
+                            if (entry.visited !== undefined) existing.visited = entry.visited;
+                            var newSpots = entry.spots || [];
+                            var existSpots = existing.spots || [];
+                            var added = 0, updated = 0;
+                            newSpots.forEach(function(ns) {
+                                var found = -1;
+                                existSpots.forEach(function(es, j) { if (es.title === ns.title) found = j; });
+                                if (found >= 0) { existSpots[found] = ns; updated++; }
+                                else { existSpots.push(ns); added++; }
+                            });
+                            existing.spots = existSpots;
+                            summary.push(entry.city + '(+' + added + (updated > 0 ? ', 更新' + updated : '') + ')');
+                        } else {
+                            data.push(entry);
+                            summary.push(entry.city + '(新城市)');
+                        }
+                        newEntries.push(entry.city);
+                    });
+                    return summary;
+                },
+                renderMarkers: function(data, newEntries, mapRef) {
+                    var markers = [];
+                    data.forEach(function(entry) {
+                        if (!entry.spots) return;
+                        entry.spots.forEach(function(spot) {
+                            if (!spot.lat || !spot.lng) return;
+                            var cat = spot.category || '';
+                            var color = (categoryConfig[cat] || {}).color || '#888';
+                            var isNew = newEntries.indexOf(entry.city) !== -1;
+                            var dot = document.createElement('div');
+                            dot.style.cssText = 'width:' + (isNew ? '14' : '8') + 'px;height:' + (isNew ? '14' : '8') + 'px;border-radius:50%;background:' + color +
+                                ';opacity:' + (isNew ? '1' : '0.5') + (isNew ? ';border:2px solid #fff;box-shadow:0 0 8px ' + color : '') + ';';
+                            var marker = new AMap.Marker({
+                                position: [spot.lng, spot.lat], content: dot,
+                                offset: new AMap.Pixel(isNew ? -7 : -4, isNew ? -7 : -4)
+                            });
+                            mapRef.add(marker);
+                            markers.push(marker);
+                        });
+                    });
+                    return markers;
+                },
+                showPreview: function(entries, mapRef) {
+                    var markers = [];
+                    entries.forEach(function(entry) {
+                        if (!entry.spots) return;
+                        entry.spots.forEach(function(spot) {
+                            if (!spot.lat || !spot.lng) return;
+                            var cat = spot.category || '';
+                            var color = (categoryConfig[cat] || {}).color || '#48bb78';
+                            var wrapper = document.createElement('div');
+                            wrapper.style.cssText = 'position:relative;';
+                            var ring = document.createElement('div');
+                            ring.style.cssText = 'width:28px;height:28px;border-radius:50%;border:2px solid ' + color +
+                                ';position:absolute;top:-7px;left:-7px;animation:pulse 2s ease-out infinite;';
+                            wrapper.appendChild(ring);
+                            var dot = document.createElement('div');
+                            dot.style.cssText = 'width:14px;height:14px;border-radius:50%;background:' + color +
+                                ';border:2px solid #fff;box-shadow:0 0 12px ' + color + ';position:relative;z-index:1;';
+                            wrapper.appendChild(dot);
+                            var label = document.createElement('div');
+                            label.style.cssText = 'position:absolute;top:18px;left:50%;transform:translateX(-50%);font-size:11px;color:#fff;white-space:nowrap;font-weight:600;background:rgba(0,0,0,0.6);padding:2px 6px;border-radius:4px;pointer-events:none;';
+                            label.textContent = entry.city + ' · ' + spot.title;
+                            wrapper.appendChild(label);
+                            var marker = new AMap.Marker({ position: [spot.lng, spot.lat], content: wrapper, offset: new AMap.Pixel(-7, -7) });
+                            mapRef.add(marker);
+                            markers.push(marker);
+                        });
+                        var firstSpot = entry.spots[0];
+                        if (firstSpot && firstSpot.lat && firstSpot.lng) mapRef.setZoomAndCenter(10, [firstSpot.lng, firstSpot.lat]);
+                    });
+                    return markers;
+                },
+                renderList: function(data, newEntries) {
+                    var html = '';
+                    data.forEach(function(entry) {
+                        if (!entry.spots) return;
+                        entry.spots.forEach(function(spot) {
+                            var cat = spot.category || '';
+                            var emoji = (categoryConfig[cat] || {}).emoji || '📍';
+                            var isNew = newEntries.indexOf(entry.city) !== -1;
+                            html += '<div class="existing-item' + (isNew ? ' new-entry' : '') + '" data-lat="' + (spot.lat || '') + '" data-lng="' + (spot.lng || '') + '">' +
+                                '<span class="existing-emoji">' + emoji + '</span>' +
+                                '<span class="existing-city">' + esc(entry.city) + '</span>' +
+                                '<span class="existing-spot">' + esc(spot.title) + '</span>' +
+                                '<span class="existing-coord">' + (spot.lat || '-') + ', ' + (spot.lng || '-') + '</span>' +
+                                '<span class="existing-badge ' + (isNew ? 'new' : (entry.visited ? 'visited' : 'wanted')) + '">' +
+                                    (isNew ? '新增' : (entry.visited ? '已去' : '想去')) +
+                                '</span>' +
+                            '</div>';
+                        });
+                    });
+                    return html;
+                },
+                getNavInfo: function(data, newEntries) {
+                    var spotCount = 0;
+                    data.forEach(function(e) { spotCount += e.spots ? e.spots.length : 0; });
+                    var newCount = newEntries.length;
+                    var info = data.length + ' 城市 · ' + spotCount + ' 景点' + (newCount > 0 ? ' · ' + newCount + ' 新增待导出' : '');
+                    var title = '现有记录 (' + data.length + ')' + (newCount > 0 ? ' — ' + newCount + ' 新增' : '');
+                    return { info: info, title: title };
+                },
+                formatExport: function(data) {
+                    return formatTravelJSON(data);
+                }
+            },
+            mountain: {
+                file: 'data/mountains_global.json',
+                label: '雪山图鉴',
+                color: '#7cc4f5',
+                emoji: '⛰',
+                listTitle: '雪山列表',
+                inputTitle: '输入新雪山 (JSON)',
+                placeholder: '粘贴或输入雪山条目，例如：\n{\n    "name": "哈巴雪山",\n    "nameEn": "Haba Snow Mountain",\n    "elevation": 5396,\n    "country": "中国",\n    "region": "亚洲",\n    "range": "横断山脉",\n    "lat": 27.37,\n    "lng": 100.08,\n    "type": "经典雪山",\n    "difficulty": "PD+",\n    "firstAscent": 2003,\n    "viewpoints": [{"name": "哈巴村", "lat": 27.35, "lng": 100.10}],\n    "matchKeys": ["哈巴"]\n}',
+                template: '{\n    "name": "",\n    "nameEn": "",\n    "elevation": 0,\n    "country": "中国",\n    "region": "亚洲",\n    "range": "",\n    "lat": 0,\n    "lng": 0,\n    "type": "著名雪山",\n    "difficulty": "PD",\n    "firstAscent": null,\n    "viewpoints": [\n        {\n            "name": "",\n            "lat": 0,\n            "lng": 0,\n            "route": ""\n        }\n    ],\n    "matchKeys": []\n}',
+                countUnit: '座雪山',
+                validate: function(parsed, errors, data) {
+                    var entries = Array.isArray(parsed) ? parsed : [parsed];
+                    entries.forEach(function(m, idx) {
+                        var p = entries.length > 1 ? '[' + idx + '] ' : '';
+                        if (!m.name || typeof m.name !== 'string') errors.push(p + '"name" 必须是非空字符串');
+                        else {
+                            var dup = data.find(function(ex){ return ex.name === m.name; });
+                            if (dup) errors.push(p + '"' + m.name + '" 已存在 (id=' + dup.id + ', 将更新)');
+                        }
+                        if (!m.nameEn || typeof m.nameEn !== 'string') errors.push(p + '"nameEn" 必须是非空字符串');
+                        if (typeof m.elevation !== 'number' || m.elevation <= 0) errors.push(p + '"elevation" 必须是正数');
+                        if (!m.country) errors.push(p + '"country" 缺失');
+                        if (!m.region) errors.push(p + '"region" 缺失');
+                        if (!m.range) errors.push(p + '"range" 缺失');
+                        if (typeof m.lat !== 'number' || typeof m.lng !== 'number') errors.push(p + '"lat"/"lng" 必须是数字');
+                        else {
+                            if (m.lat === 0 && m.lng === 0) errors.push(p + '坐标为 (0, 0)，请设置正确坐标');
+                            if (m.lat < -90 || m.lat > 90) errors.push(p + '纬度超范围');
+                            if (m.lng < -180 || m.lng > 180) errors.push(p + '经度超范围');
+                        }
+                        if (!m.type) errors.push(p + '"type" 缺失');
+                        else if (validTypes.indexOf(m.type) === -1) errors.push(p + '未知类型 "' + m.type + '"，可选: ' + validTypes.join(', '));
+                        if (!m.difficulty) errors.push(p + '"difficulty" 缺失');
+                        else if (validDiffs.indexOf(m.difficulty) === -1) errors.push(p + '未知难度 "' + m.difficulty + '"，可选: ' + validDiffs.join(', '));
+                        if (m.viewpoints && Array.isArray(m.viewpoints)) {
+                            m.viewpoints.forEach(function(v, vi) {
+                                var vp = p + '观赏点' + (vi + 1) + ': ';
+                                if (!v.name) errors.push(vp + '"name" 缺失');
+                                if (typeof v.lat !== 'number' || typeof v.lng !== 'number') errors.push(vp + '"lat"/"lng" 必须是数字');
+                            });
+                        }
+                        if (m.firstAscent !== undefined && m.firstAscent !== null && typeof m.firstAscent !== 'number') {
+                            errors.push(p + '"firstAscent" 必须是数字或 null');
+                        }
+                    });
+                    var hardErrors = errors.filter(function(e){ return e.indexOf('已存在')===-1; });
+                    if (hardErrors.length === 0 && entries.length > 0) return entries;
+                    return null;
+                },
+                getLabel: function(entries) {
+                    var names = entries.map(function(e){ return e.name; }).join(', ');
+                    return names + ' (' + entries.length + ' 座)';
+                },
+                submit: function(entries, data, newEntries) {
+                    var maxId = 0;
+                    data.forEach(function(m){ if (m.id > maxId) maxId = m.id; });
+                    var summary = [];
+                    entries.forEach(function(entry) {
+                        var existIdx = -1;
+                        data.forEach(function(m, i) { if (m.name === entry.name) existIdx = i; });
+                        if (existIdx >= 0) {
+                            var existing = data[existIdx];
+                            var fields = ['nameEn','elevation','country','region','range','lat','lng','type','difficulty','firstAscent','matchKeys'];
+                            fields.forEach(function(f) { if (entry[f] !== undefined) existing[f] = entry[f]; });
+                            if (entry.viewpoints && entry.viewpoints.length > 0) {
+                                var evps = existing.viewpoints || [];
+                                entry.viewpoints.forEach(function(nv) {
+                                    var found = -1;
+                                    evps.forEach(function(ev, j) { if (ev.name === nv.name) found = j; });
+                                    if (found >= 0) evps[found] = nv;
+                                    else evps.push(nv);
+                                });
+                                existing.viewpoints = evps;
+                            }
+                            summary.push(entry.name + '(更新 id=' + existing.id + ')');
+                            newEntries.push(existing.name);
+                        } else {
+                            maxId++;
+                            entry.id = maxId;
+                            if (!entry.viewpoints) entry.viewpoints = [];
+                            if (!entry.matchKeys) entry.matchKeys = [];
+                            if (entry.firstAscent === undefined) entry.firstAscent = null;
+                            data.push(entry);
+                            summary.push(entry.name + '(新增 id=' + maxId + ')');
+                            newEntries.push(entry.name);
+                        }
+                    });
+                    return summary;
+                },
+                renderMarkers: function(data, newEntries, mapRef) {
+                    var markers = [];
+                    data.forEach(function(m) {
+                        if (!m.lat || !m.lng) return;
+                        var color = getMtDiffColor(m.difficulty);
+                        var sz = m.elevation >= 8000 ? 12 : (m.elevation >= 7000 ? 10 : (m.elevation >= 5000 ? 7 : 5));
+                        var isNew = newEntries.indexOf(m.name) !== -1;
+                        var svgHtml = '<svg width="' + sz + '" height="' + sz + '" viewBox="0 0 24 24" style="filter:drop-shadow(0 0 3px ' + color + ');' +
+                            (isNew ? 'filter:drop-shadow(0 0 8px ' + color + ');' : '') + '">' +
+                            '<polygon points="12,2 2,22 22,22" fill="' + color + '" fill-opacity="' + (isNew ? '1' : '0.5') + '" stroke="' + (isNew ? '#fff' : color) + '" stroke-width="' + (isNew ? '2' : '1') + '" stroke-linejoin="round"/></svg>';
+                        var marker = new AMap.Marker({
+                            position: [m.lng, m.lat], content: svgHtml,
+                            offset: new AMap.Pixel(-sz/2, -sz/2)
+                        });
+                        mapRef.add(marker);
+                        markers.push(marker);
+                    });
+                    return markers;
+                },
+                showPreview: function(entries, mapRef) {
+                    var markers = [];
+                    entries.forEach(function(m) {
+                        if (!m.lat || !m.lng) return;
+                        var color = getMtDiffColor(m.difficulty);
+                        var wrapper = document.createElement('div');
+                        wrapper.style.cssText = 'position:relative;';
+                        var ring = document.createElement('div');
+                        ring.style.cssText = 'width:28px;height:28px;border-radius:50%;border:2px solid ' + color +
+                            ';position:absolute;top:-3px;left:-3px;animation:pulse 2s ease-out infinite;';
+                        wrapper.appendChild(ring);
+                        var svg = '<svg width="22" height="22" viewBox="0 0 24 24" style="filter:drop-shadow(0 0 8px ' + color + ');position:relative;z-index:1;">' +
+                            '<polygon points="12,2 2,22 22,22" fill="' + color + '" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg>';
+                        var svgDiv = document.createElement('div');
+                        svgDiv.innerHTML = svg;
+                        wrapper.appendChild(svgDiv.firstChild);
+                        var label = document.createElement('div');
+                        label.style.cssText = 'position:absolute;top:24px;left:50%;transform:translateX(-50%);font-size:11px;color:#fff;white-space:nowrap;font-weight:600;background:rgba(0,0,0,0.6);padding:2px 6px;border-radius:4px;pointer-events:none;';
+                        label.textContent = m.name + ' ' + m.elevation + 'm';
+                        wrapper.appendChild(label);
+                        var marker = new AMap.Marker({ position: [m.lng, m.lat], content: wrapper, offset: new AMap.Pixel(-11, -11) });
+                        mapRef.add(marker);
+                        markers.push(marker);
+                        (m.viewpoints || []).forEach(function(v) {
+                            if (!v.lat || !v.lng) return;
+                            var vpDot = document.createElement('div');
+                            vpDot.style.cssText = 'width:8px;height:8px;border-radius:50%;background:#f6c977;border:1.5px solid #fff;box-shadow:0 0 6px #f6c977;';
+                            var vpMarker = new AMap.Marker({ position: [v.lng, v.lat], content: vpDot, offset: new AMap.Pixel(-4, -4) });
+                            mapRef.add(vpMarker);
+                            markers.push(vpMarker);
+                        });
+                        mapRef.setZoomAndCenter(8, [m.lng, m.lat]);
+                    });
+                    return markers;
+                },
+                renderList: function(data, newEntries) {
+                    var html = '';
+                    data.forEach(function(m) {
+                        var isNew = newEntries.indexOf(m.name) !== -1;
+                        var diffCls = getMtDiffClass(m.difficulty);
+                        html += '<div class="existing-item' + (isNew ? ' new-entry' : '') + '" data-lat="' + m.lat + '" data-lng="' + m.lng + '">' +
+                            '<span class="existing-emoji">⛰</span>' +
+                            '<span class="existing-city">' + esc(m.name) + '</span>' +
+                            '<span class="existing-spot">' + m.elevation + 'm · ' + esc(m.range) + '</span>' +
+                            '<span class="existing-badge ' + diffCls + '">' + (m.difficulty || '-') + '</span>' +
+                            '<span class="existing-type">' + esc(m.type) + '</span>' +
+                            (isNew ? '<span class="existing-badge new">新增</span>' : '') +
+                        '</div>';
+                    });
+                    return html;
+                },
+                getNavInfo: function(data, newEntries) {
+                    var newCount = newEntries.length;
+                    var info = data.length + ' 座雪山' + (newCount > 0 ? ' · ' + newCount + ' 新增待导出' : '');
+                    var title = '雪山列表 (' + data.length + ')' + (newCount > 0 ? ' — ' + newCount + ' 新增' : '');
+                    return { info: info, title: title };
+                },
+                formatExport: function(data) {
+                    return JSON.stringify(data, null, 2);
+                }
+            },
+            park: {
+                file: 'data/parks_global.json',
+                label: '国家公园',
+                color: '#22c55e',
+                emoji: '🌲',
+                listTitle: '公园列表',
+                inputTitle: '输入新公园 (JSON)',
+                countUnit: '个公园',
+                validTypes: ['国家公园','自然保护区','地质公园','国家级风景区'],
+                requiredFields: ['name','nameEn','country','region','lat','lng','type','area','established'],
+                requiredFieldTypes: { name:'string', nameEn:'string', country:'string', region:'string', lat:'number', lng:'number', type:'string', area:'number', established:'number' },
+                template: { name: '', nameEn: '', country: '中国', region: '亚洲', area: 0, established: 2000, lat: 0, lng: 0, type: '国家公园', highlights: [], description: '', matchKeys: [] },
+                listMetric: function(item) { return item.area + ' km²'; },
+                listExtra: function(item) { return item.type; }
+            },
+            darksky: {
+                file: 'data/darksky_global.json',
+                label: '暗夜星空',
+                color: '#818cf8',
+                emoji: '⭐',
+                listTitle: '暗夜列表',
+                inputTitle: '输入新暗夜点 (JSON)',
+                countUnit: '个暗夜点',
+                validTypes: ['国际暗夜公园','天文台区域','暗夜保护区','观星胜地','暗夜社区'],
+                requiredFields: ['name','nameEn','country','region','lat','lng','type','bortle','altitude','bestSeason'],
+                requiredFieldTypes: { name:'string', nameEn:'string', country:'string', region:'string', lat:'number', lng:'number', type:'string', bortle:'number', altitude:'number', bestSeason:'string' },
+                extraValidation: function(entry, errors, prefix) {
+                    if (typeof entry.bortle === 'number' && (entry.bortle < 1 || entry.bortle > 9)) {
+                        errors.push(prefix + '"bortle" 必须在 1-9 之间');
+                    }
+                },
+                template: { name: '', nameEn: '', country: '中国', region: '亚洲', lat: 0, lng: 0, type: '观星胜地', bortle: 3, bestSeason: '全年', altitude: 0, highlights: [], description: '', matchKeys: [] },
+                listMetric: function(item) { return 'Bortle ' + item.bortle; },
+                listExtra: function(item) { return item.type; }
+            },
+            diving: {
+                file: 'data/diving_global.json',
+                label: '潜水图鉴',
+                color: '#0ea5e9',
+                emoji: '🤿',
+                listTitle: '潜点列表',
+                inputTitle: '输入新潜点 (JSON)',
+                countUnit: '个潜点',
+                validTypes: ['珊瑚礁','沉船潜点','洞穴潜水','峭壁潜水','远洋大物','海洋保护区','冰潜'],
+                validLevels: ['初级','进阶','高级','专业'],
+                requiredFields: ['name','nameEn','country','region','lat','lng','type','depth','visibility','level','bestSeason'],
+                requiredFieldTypes: { name:'string', nameEn:'string', country:'string', region:'string', lat:'number', lng:'number', type:'string', depth:'number', visibility:'number', level:'string', bestSeason:'string' },
+                extraValidation: function(entry, errors, prefix) {
+                    if (entry.level && this.validLevels.indexOf(entry.level) === -1) {
+                        errors.push(prefix + '未知等级 "' + entry.level + '"，可选: ' + this.validLevels.join(', '));
+                    }
+                },
+                template: { name: '', nameEn: '', country: '中国', region: '亚洲', lat: 0, lng: 0, type: '珊瑚礁', depth: 20, visibility: 20, bestSeason: '全年', level: '进阶', highlights: [], description: '', matchKeys: [] },
+                listMetric: function(item) { return item.depth + 'm'; },
+                listExtra: function(item) { return item.type + ' · ' + item.level; }
+            },
+            hotspring: {
+                file: 'data/hotspring_global.json',
+                label: '温泉图鉴',
+                color: '#f59e0b',
+                emoji: '♨️',
+                listTitle: '温泉列表',
+                inputTitle: '输入新温泉 (JSON)',
+                countUnit: '个温泉',
+                validTypes: ['地热温泉','野温泉','间歇泉','温泉小镇','火山温泉','海滨温泉','地热奇观'],
+                requiredFields: ['name','nameEn','country','region','lat','lng','type','temperature','altitude','bestSeason'],
+                requiredFieldTypes: { name:'string', nameEn:'string', country:'string', region:'string', lat:'number', lng:'number', type:'string', temperature:'number', altitude:'number', bestSeason:'string' },
+                template: { name: '', nameEn: '', country: '中国', region: '亚洲', lat: 0, lng: 0, type: '地热温泉', temperature: 40, altitude: 0, bestSeason: '全年', highlights: [], description: '', matchKeys: [] },
+                listMetric: function(item) { return item.temperature + '°C'; },
+                listExtra: function(item) { return item.type; }
+            }
+        };
+
+        // Wire up default callbacks for simple modes (park, darksky, diving, hotspring)
+        ['park', 'darksky', 'diving', 'hotspring'].forEach(function(mode) {
+            var cfg = modeConfig[mode];
+            cfg.placeholder = '粘贴或输入条目，例如：\n' + JSON.stringify(cfg.template, null, 4);
+            cfg.validate = function(parsed, errors, data) {
+                return genericNameValidate(parsed, errors, data, cfg);
+            };
+            cfg.getLabel = function(entries) {
+                var names = entries.map(function(e){ return e.name; }).join(', ');
+                return names + ' (' + entries.length + ' 条)';
+            };
+            cfg.submit = function(entries, data, newEntries) {
+                return genericNameSubmit(entries, data, newEntries);
+            };
+            cfg.renderMarkers = function(data, newEntries, mapRef) {
+                return genericDotMarkers(data, newEntries, mapRef, cfg.color);
+            };
+            cfg.showPreview = function(entries, mapRef) {
+                var metricFn = cfg.listMetric;
+                return genericDotPreview(entries, mapRef, cfg.color, function(item) {
+                    var metricText = metricFn ? metricFn(item) : '';
+                    return item.name + (metricText ? ' ' + metricText : '');
+                });
+            };
+            cfg.renderList = function(data, newEntries) {
+                return genericNameList(data, newEntries, cfg);
+            };
+            cfg.getNavInfo = function(data, newEntries) {
+                var newCount = newEntries.length;
+                var unit = cfg.countUnit || '条';
+                var info = data.length + ' ' + unit + (newCount > 0 ? ' · ' + newCount + ' 新增待导出' : '');
+                var title = cfg.listTitle + ' (' + data.length + ')' + (newCount > 0 ? ' — ' + newCount + ' 新增' : '');
+                return { info: info, title: title };
+            };
+            cfg.formatExport = function(data) {
+                return JSON.stringify(data, null, 2);
+            };
+        });
+
+        // Per-mode data and new-entry tracking
+        var modeData = { travel: [], mountain: [], park: [], darksky: [], diving: [], hotspring: [] };
+        var modeNewEntries = { travel: [], mountain: [], park: [], darksky: [], diving: [], hotspring: [] };
+
+        var allMarkers = [];
+        var newMarkers = [];
+        var parseTimer = null;
+        var currentValid = null;
+
+        init();
+
+        function init() {
+            map = new AMap.Map('previewMap', {
+                zoom: 5, center: [104, 35],
+                mapStyle: 'amap://styles/darkblue', resizeEnable: true
+            });
+
+            loadData('travel');
+
+            document.getElementById('jsonInput').addEventListener('input', function() {
+                clearTimeout(parseTimer);
+                parseTimer = setTimeout(validateInput, 400);
+            });
+            document.getElementById('btnTemplate').addEventListener('click', insertTemplate);
+            document.getElementById('btnSubmit').addEventListener('click', submitEntry);
+            document.getElementById('btnExport').addEventListener('click', exportJSON);
+            document.getElementById('btnCopy').addEventListener('click', copyJSON);
+            document.getElementById('btnViewAll').addEventListener('click', viewFullJSON);
+
+            var tabs = document.querySelectorAll('.mode-tab');
+            for (var i = 0; i < tabs.length; i++) {
+                (function(tab) {
+                    tab.addEventListener('click', function() {
+                        switchMode(tab.getAttribute('data-mode'));
+                    });
+                })(tabs[i]);
+            }
+
+            document.getElementById('jsonInput').addEventListener('keydown', function(e) {
+                if (e.key === 'Tab') {
+                    e.preventDefault();
+                    var s = this.selectionStart;
+                    this.value = this.value.substring(0, s) + '    ' + this.value.substring(this.selectionEnd);
+                    this.selectionStart = this.selectionEnd = s + 4;
+                }
+            });
+
+            updatePlaceholder();
+        }
+
+        // ---- Mode Switching ----
+        function switchMode(mode) {
+            if (mode === currentMode) return;
+            currentMode = mode;
+            var tabs = document.querySelectorAll('.mode-tab');
+            for (var i = 0; i < tabs.length; i++) {
+                var tabMode = tabs[i].getAttribute('data-mode');
+                tabs[i].className = 'mode-tab' + (tabMode === mode ? ' active-' + mode : '');
+            }
+            var tmpl = document.getElementById('btnTemplate');
+            tmpl.className = 'template-btn' + (mode !== 'travel' ? ' ' + mode : '');
+            document.getElementById('jsonInput').value = '';
+            currentValid = null;
+            document.getElementById('btnSubmit').disabled = true;
+            document.getElementById('validateStatus').textContent = '等待输入...';
+            document.getElementById('validateStatus').className = 'validate-status empty';
+            document.getElementById('errorDetail').classList.remove('show');
+            clearNewMarkers();
+            updatePlaceholder();
+            loadData(mode);
+        }
+
+        function loadData(mode) {
+            var cfg = modeConfig[mode];
+            fetch(cfg.file).then(function(r){ return r.json(); }).then(function(d) {
+                modeData[mode] = d;
+                renderExistingMarkers();
+                renderExistingList();
+                updateNav();
+            });
+        }
+
+        function updatePlaceholder() {
+            var el = document.getElementById('jsonInput');
+            var titleEl = document.getElementById('inputTitle');
+            var cfg = modeConfig[currentMode];
+            titleEl.textContent = cfg.inputTitle;
+            el.placeholder = cfg.placeholder;
+        }
+
+        // ---- Validation (unified dispatcher) ----
+        function validateInput() {
+            var text = document.getElementById('jsonInput').value.trim();
+            var statusEl = document.getElementById('validateStatus');
+            var submitBtn = document.getElementById('btnSubmit');
+            var errorPanel = document.getElementById('errorDetail');
+            var errorContent = document.getElementById('errorContent');
+
+            clearNewMarkers();
+            currentValid = null;
+            submitBtn.disabled = true;
+
+            if (!text) {
+                statusEl.textContent = '等待输入...';
+                statusEl.className = 'validate-status empty';
+                errorPanel.classList.remove('show');
+                return;
+            }
+
+            var parsed = null;
+            var errors = [];
+
+            try { parsed = JSON.parse(text); } catch(e) {
+                var match = e.message.match(/position (\d+)/);
+                var pos = match ? parseInt(match[1]) : -1;
+                var line = pos >= 0 ? text.substring(0, pos).split('\n').length : '?';
+                errors.push('JSON 语法错误 (行 ' + line + '): ' + e.message);
+            }
+
+            if (parsed && typeof parsed === 'object') {
+                var cfg = modeConfig[currentMode];
+                currentValid = cfg.validate(parsed, errors, modeData[currentMode]);
+            } else if (parsed !== null) {
+                errors.push('输入必须是 JSON 对象 {} 或数组 []');
+                showErrors(errors, true);
+                return;
+            } else {
+                showErrors(errors, true);
+                return;
+            }
+
+            var hardErrors = errors.filter(function(e) {
+                return e.indexOf('建议') === -1 && e.indexOf('已存在') === -1;
+            });
+
+            if (hardErrors.length === 0 && currentValid) {
+                var cfg = modeConfig[currentMode];
+                var label = cfg.getLabel(currentValid);
+                statusEl.textContent = '✓ 验证通过 — ' + label;
+                statusEl.className = 'validate-status ok';
+                submitBtn.disabled = false;
+                newMarkers = cfg.showPreview(currentValid, map);
+                if (errors.length > 0) {
+                    errorContent.innerHTML = errors.map(function(e) {
+                        return '<div style="color:#ecc94b;">⚠ ' + esc(e) + '</div>';
+                    }).join('');
+                    errorPanel.classList.add('show');
+                } else {
+                    errorPanel.classList.remove('show');
+                }
+            } else {
+                showErrors(errors, hardErrors.length > 0);
+            }
+        }
+
+        function showErrors(errors, isFatal) {
+            var statusEl = document.getElementById('validateStatus');
+            var errorPanel = document.getElementById('errorDetail');
+            var errorContent = document.getElementById('errorContent');
+            if (isFatal) {
+                var hardCount = errors.filter(function(e){ return e.indexOf('建议')===-1 && e.indexOf('已存在')===-1; }).length;
+                statusEl.textContent = '✗ 有 ' + hardCount + ' 个错误需修复';
+                statusEl.className = 'validate-status err';
+            }
+            errorContent.innerHTML = errors.map(function(e) {
+                var isWarn = e.indexOf('建议') !== -1 || e.indexOf('已存在') !== -1;
+                return '<div style="color:' + (isWarn ? '#ecc94b' : '#fc8181') + ';">' + (isWarn ? '⚠' : '✗') + ' ' + esc(e) + '</div>';
+            }).join('');
+            errorPanel.classList.add('show');
+        }
+
+        // ---- Submit (unified dispatcher) ----
+        function submitEntry() {
+            if (!currentValid || currentValid.length === 0) return;
+            var cfg = modeConfig[currentMode];
+            var summary = cfg.submit(currentValid, modeData[currentMode], modeNewEntries[currentMode]);
+            showToast('已合并: ' + summary.join(', ') + ' → 请导出保存');
+            resetInput();
+        }
+
+        function resetInput() {
+            document.getElementById('jsonInput').value = '';
+            currentValid = null;
+            document.getElementById('btnSubmit').disabled = true;
+            document.getElementById('validateStatus').textContent = '等待输入...';
+            document.getElementById('validateStatus').className = 'validate-status empty';
+            document.getElementById('errorDetail').classList.remove('show');
+            clearNewMarkers();
+            renderExistingMarkers();
+            renderExistingList();
+            updateNav();
+        }
+
+        // ---- Markers (unified dispatcher) ----
+        function renderExistingMarkers() {
+            allMarkers.forEach(function(m) { map.remove(m); });
+            allMarkers = [];
+            var cfg = modeConfig[currentMode];
+            allMarkers = cfg.renderMarkers(modeData[currentMode], modeNewEntries[currentMode], map);
+        }
+
+        function clearNewMarkers() {
+            newMarkers.forEach(function(m) { map.remove(m); });
+            newMarkers = [];
+        }
+
+        // ---- Existing List (unified dispatcher) ----
+        function renderExistingList() {
+            var cfg = modeConfig[currentMode];
+            var html = cfg.renderList(modeData[currentMode], modeNewEntries[currentMode]);
+            document.getElementById('existingList').innerHTML = html;
+
+            var items = document.querySelectorAll('.existing-item');
+            for (var i = 0; i < items.length; i++) {
+                (function(item) {
+                    item.addEventListener('click', function() {
+                        var lat = parseFloat(this.getAttribute('data-lat'));
+                        var lng = parseFloat(this.getAttribute('data-lng'));
+                        if (lat && lng) map.setZoomAndCenter(13, [lng, lat]);
+                    });
+                })(items[i]);
+            }
+        }
+
+        // ---- Nav (unified dispatcher) ----
+        function updateNav() {
+            var cfg = modeConfig[currentMode];
+            var navData = cfg.getNavInfo(modeData[currentMode], modeNewEntries[currentMode]);
+            document.getElementById('navInfo').textContent = navData.info;
+            document.getElementById('existingTitle').textContent = navData.title;
+        }
+
+        // ---- Template (unified dispatcher) ----
+        function insertTemplate() {
+            var el = document.getElementById('jsonInput');
+            var cfg = modeConfig[currentMode];
+            if (typeof cfg.template === 'string') {
+                el.value = cfg.template;
+            } else {
+                el.value = JSON.stringify(cfg.template, null, 4);
+            }
+            el.focus();
+            validateInput();
+        }
+
+        // ---- Export (unified dispatcher) ----
+        function exportJSON() {
+            var cfg = modeConfig[currentMode];
+            var data = cfg.formatExport(modeData[currentMode]);
+            var parts = cfg.file.split('/');
+            var filename = parts[parts.length - 1];
+            var blob = new Blob([data], { type: 'application/json' });
+            var a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(a.href);
+            showToast('已导出 ' + filename);
+        }
+
+        function copyJSON() {
+            var cfg = modeConfig[currentMode];
+            var data = cfg.formatExport(modeData[currentMode]);
+            navigator.clipboard.writeText(data).then(function() {
+                showToast('已复制完整 JSON 到剪贴板');
+            });
+        }
+
+        function viewFullJSON() {
+            var cfg = modeConfig[currentMode];
+            var data = cfg.formatExport(modeData[currentMode]);
+            document.getElementById('jsonInput').value = data;
+        }
+
+        // ---- Kept Helpers ----
+        function formatTravelJSON(arr) {
+            var lines = ['['];
+            arr.forEach(function(entry, i) {
+                var spotsStr = entry.spots.map(function(s) { return JSON.stringify(s); }).join(', ');
+                lines.push('    {"city": ' + JSON.stringify(entry.city) +
+                    ', "visited": ' + entry.visited +
+                    ', "spots": [' + spotsStr + ']}' + (i < arr.length - 1 ? ',' : ''));
+            });
+            lines.push(']');
+            return lines.join('\n');
+        }
+
+        function getMtDiffColor(d) {
+            if (!d) return '#888';
+            if (d === '禁登') return '#718096';
+            if (d.indexOf('F') === 0) return '#48bb78';
+            if (d.indexOf('PD') === 0) return '#4299e1';
+            if (d.indexOf('AD') === 0) return '#ed8936';
+            if (d.indexOf('TD') === 0 || d.indexOf('ED') === 0 || d === 'ABO') return '#9f7aea';
+            if (d.indexOf('D') === 0) return '#e53e3e';
+            return '#888';
+        }
+
+        function getMtDiffClass(d) {
+            if (!d) return '';
+            if (d === '禁登') return 'diff-ban';
+            if (d.indexOf('F') === 0) return 'diff-f';
+            if (d.indexOf('PD') === 0) return 'diff-pd';
+            if (d.indexOf('AD') === 0) return 'diff-ad';
+            if (d.indexOf('TD') === 0 || d.indexOf('ED') === 0 || d === 'ABO') return 'diff-td';
+            if (d.indexOf('D') === 0) return 'diff-d';
+            return '';
+        }
+
+        function showToast(msg) {
+            var el = document.getElementById('toast');
+            el.textContent = msg;
+            el.className = 'toast show';
+            setTimeout(function() { el.classList.remove('show'); }, 2500);
+        }
+
+        function esc(s) {
+            return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+    })();
+    </script>
+</body>
+</html>
