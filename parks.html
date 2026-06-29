@@ -377,7 +377,7 @@
             filtered.forEach(function(p,i){
                 var tc = typeColor(p.type);
                 var glowColor = p.visited ? 'rgba(212,168,90,0.15)' : 'rgba(34,197,94,0.12)';
-                var parkHasImg={1:1,3:1,6:1,12:1,13:1,18:1,26:1,30:1,42:1,43:1};
+                var parkHasImg={1:1,2:1,3:1,4:1,5:1,6:1,7:1,8:1,9:1,10:1,11:1,12:1,13:1,14:1,15:1,17:1,18:1,19:1,20:1,21:1,22:1,23:1,24:1,25:1,26:1,27:1,28:1,29:1,30:1,31:1,32:1,33:1,34:1,35:1,36:1,39:1,41:1,42:1,43:1,44:1,45:1,46:1,56:1,88:1,92:1,102:1,106:1,113:1,115:1,116:1};
                 html += '<div class="card" data-id="'+p.id+'" style="animation-delay:'+(i*0.03)+'s;--glow:'+glowColor+';">';
                 html += '<div class="card-cover">';
                 if(parkHasImg[p.id]) html += '<img src="data/park_images/'+p.id+'.webp" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;">';
@@ -411,7 +411,7 @@
             var tc = typeColor(p.type);
             var html = '';
             html += '<button class="modal-close" id="modalClose">&times;</button>';
-            var parkHasImg2={1:1,3:1,6:1,12:1,13:1,18:1,26:1,30:1,42:1,43:1};
+            var parkHasImg2={1:1,2:1,3:1,4:1,5:1,6:1,7:1,8:1,9:1,10:1,11:1,12:1,13:1,14:1,15:1,17:1,18:1,19:1,20:1,21:1,22:1,23:1,24:1,25:1,26:1,27:1,28:1,29:1,30:1,31:1,32:1,33:1,34:1,35:1,36:1,39:1,41:1,42:1,43:1,44:1,45:1,46:1,56:1,88:1,92:1,102:1,106:1,113:1,115:1,116:1};
             html += '<div class="modal-cover">';
             if(parkHasImg2[p.id]) html += '<img src="data/park_images/'+p.id+'.webp" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;">';
             html += '<div class="modal-cover-ph">'+treeSvg+'</div>';
